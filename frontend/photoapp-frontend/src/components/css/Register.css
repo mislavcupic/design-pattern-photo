@@ -1,0 +1,247 @@
+/* --- CSS varijable za boje i fontove (preuzeto iz ProfilePage.css) --- */
+:root {
+    /* Boje */
+    --bg-primary: #F8F8F8; /* Vrlo svijetlo siva/prljavo bijela pozadina */
+    --bg-secondary: #FFFFFF; /* Čista bijela za kartice */
+    --text-primary: #333333; /* Tamna siva za glavni tekst */
+    --text-secondary: #555555; /* Srednja siva za prigušeni tekst */
+    --text-heading: #222222; /* Skoro crna za naslove */
+    --border-color: #DDDDDD; /* Vrlo svijetla siva za obrube */
+    --primary-accent: #A0C4FF; /* Pastelno plava */
+    --primary-accent-hover: #8AB3F0; /* Tamnija pastelno plava na hoveru */
+    --danger-accent: #E57373; /* Pastelno crvena za greške/brisanje */
+    --info-accent: #81D4FA; /* Svjetlija pastelno plava za info */
+    --warning-accent: #FFEB3B; /* Pastelno žuta za upozorenja */
+    --google-blue: #4285F4; /* Google plava */
+    --google-blue-hover: #357ae8;
+    --github-black: #333333; /* GitHub tamna */
+    --github-black-hover: #222222;
+
+
+    /* Sjene */
+    --shadow-light: rgba(0, 0, 0, 0.05); /* Vrlo lagana sjena */
+    --shadow-medium: rgba(0, 0, 0, 0.1); /* Srednja sjena za hover */
+
+    /* Fontovi */
+    --font-monospace: 'Inconsolata', 'Roboto Mono', monospace; /* Font pisaćeg stroja */
+    --font-sans-serif: 'Open Sans', sans-serif; /* Moderni sans-serif za općeniti tekst */
+}
+
+/* --- Općeniti stilovi za register stranicu --- */
+html, body, #root {
+    height: 100%;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    background-color: var(--bg-primary);
+    font-family: var(--font-sans-serif);
+    color: var(--text-primary);
+    line-height: 1.6;
+}
+
+.register-container {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column; /* Za flex-grow-1 na Row */
+    align-items: center;
+    justify-content: center;
+    padding: 1rem;
+}
+
+/* Osigurava da redak zauzima sav dostupan prostor u flex kontejneru */
+.register-container .row {
+    height: 100%;
+    width: 100%;
+    flex-grow: 1;
+}
+
+/* --- Stilovi za registracijsku karticu (Card) --- */
+.register-card {
+    background-color: var(--bg-secondary);
+    border: 1px solid var(--border-color);
+    border-radius: 0.25rem;
+    box-shadow: 0 0.25rem 0.75rem var(--shadow-light);
+    transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+}
+
+.register-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 0.5rem 1rem var(--shadow-medium);
+}
+
+.register-card .card-body {
+    padding: 2.5rem !important;
+}
+
+.register-title {
+    font-family: var(--font-sans-serif);
+    font-size: 2rem;
+    color: var(--text-heading);
+    font-weight: 700;
+}
+
+/* --- Stilovi za forme i inpute --- */
+.form-label-custom {
+    font-family: var(--font-sans-serif);
+    font-weight: 600;
+    color: var(--text-primary);
+    margin-bottom: 0.5rem;
+}
+
+.form-control-custom,
+.form-select-custom { /* Dodan stil za select */
+    background-color: var(--bg-secondary);
+    color: var(--text-primary);
+    border: 1px solid var(--border-color);
+    border-radius: 0.25rem;
+    padding: 0.75rem 1rem;
+    font-size: 1rem;
+    font-family: var(--font-monospace); /* Font pisaćeg stroja */
+}
+
+.form-control-custom:focus,
+.form-select-custom:focus {
+    background-color: var(--bg-secondary);
+    color: var(--text-primary);
+    border-color: var(--primary-accent);
+    box-shadow: 0 0 0 0.2rem rgba(160, 196, 255, 0.4);
+}
+
+/* --- Stilovi za gumbe --- */
+.register-btn,
+.social-btn {
+    font-family: var(--font-monospace);
+    font-weight: 600;
+    letter-spacing: 0.05rem;
+    background-color: transparent;
+    padding: 0.75rem 1.5rem;
+    border-radius: 0.25rem;
+    box-shadow: 0 0.125rem 0.25rem var(--shadow-light);
+    transition: all 0.2s ease-in-out;
+}
+
+/* Register putem emaila */
+.register-btn {
+    border: 2px solid var(--primary-accent);
+    color: var(--primary-accent);
+}
+
+.register-btn:hover:not(:disabled) {
+    background-color: var(--primary-accent);
+    color: var(--bg-secondary);
+    box-shadow: 0 0.25rem 0.5rem var(--shadow-medium);
+}
+
+.register-btn:disabled {
+    background-color: #E0E0E0;
+    border-color: #CCCCCC;
+    color: #999999;
+    cursor: not-allowed;
+    box-shadow: none;
+}
+
+/* Social Login Buttons */
+.social-login-buttons {
+    margin-top: 1.5rem; /* Razmak iznad gumba */
+}
+
+.social-login-text {
+    font-family: var(--font-sans-serif);
+    font-size: 0.9rem;
+    color: var(--text-secondary);
+    margin-bottom: 1rem; /* Razmak ispod teksta */
+}
+
+.social-btn {
+    border: 2px solid; /* Svi social gumbi imaju border */
+    color: var(--text-primary);
+}
+
+.social-btn.google-btn {
+    border-color: var(--google-blue);
+    color: var(--google-blue);
+}
+
+.social-btn.google-btn:hover:not(:disabled) {
+    background-color: var(--google-blue);
+    color: var(--bg-secondary);
+    border-color: var(--google-blue-hover);
+}
+
+.social-btn.github-btn {
+    border-color: var(--github-black);
+    color: var(--github-black);
+}
+
+.social-btn.github-btn:hover:not(:disabled) {
+    background-color: var(--github-black);
+    color: var(--bg-secondary);
+    border-color: var(--github-black-hover);
+}
+
+.social-btn:disabled {
+    background-color: #E0E0E0;
+    border-color: #CCCCCC;
+    color: #999999;
+    cursor: not-allowed;
+    box-shadow: none;
+}
+
+
+/* --- Stilovi za poruke (Alert) --- */
+.register-alert.alert-danger {
+    background-color: rgba(229, 115, 115, 0.1);
+    color: var(--danger-accent) !important;
+    border: 1px solid var(--danger-accent) !important;
+    font-family: var(--font-monospace);
+    font-size: 0.95rem;
+    padding: 0.75rem 1.25rem;
+    border-radius: 0.25rem;
+    display: flex;
+    align-items: center;
+    margin-bottom: 1.5rem;
+}
+
+/* Animacija za shake */
+@keyframes shake {
+    0%, 100% { transform: translateX(0); }
+    10%, 30%, 50%, 70%, 90% { transform: translateX(-5px); }
+    20%, 40%, 60%, 80% { transform: translateX(5px); }
+}
+
+.shake-animation {
+    animation: shake 0.5s;
+}
+
+/* --- Responsivni dizajn --- */
+@media (max-width: 767.98px) {
+    .register-card .card-body {
+        padding: 1.5rem !important;
+    }
+
+    .register-title {
+        font-size: 1.75rem;
+    }
+
+    .form-label-custom {
+        font-size: 0.9rem;
+    }
+
+    .form-control-custom,
+    .form-select-custom {
+        font-size: 0.9rem;
+        padding: 0.6rem 0.8rem;
+    }
+
+    .register-btn,
+    .social-btn {
+        padding: 0.6rem 1rem;
+        font-size: 0.95rem;
+    }
+
+    .social-login-text {
+        font-size: 0.8rem;
+    }
+}

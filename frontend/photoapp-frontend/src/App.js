@@ -9,7 +9,8 @@ import DeleteAccount from "./components/DeleteAccount";
 import Logout from "./components/Logout";
 import './App.css';
 
-import PhotoUploadForm from "./components/PhotoUploadForm"; // Dodatni CSS za specifične stilove
+import PhotoUploadForm from "./components/PhotoUploadForm";
+import HomePage from "./components/HomePage"; // Dodatni CSS za specifične stilove
 
 function App() {
     const navigate = useNavigate();
@@ -19,16 +20,16 @@ function App() {
             {/* Navigacijski meni */}
             <Navbar bg="dark" variant="dark" expand="lg" className="shadow-sm">
                 <Container>
-                    <Navbar.Brand as={Link} to="/">Photo Upload App</Navbar.Brand>
+                    <Navbar.Brand as={Link} to="/">Naslovna</Navbar.Brand>
                     <Navbar.Toggle aria-controls="basic-navbar-nav" />
                     <Navbar.Collapse id="basic-navbar-nav" className="justify-content-end">
                         <Nav className="ml-auto">
                             <Nav.Item>
                                 <Nav.Link as={Link} to="/profile">Profil</Nav.Link>
                             </Nav.Item>
-                            <Nav.Item>
-                                <Nav.Link as={Link} to="/photouploadform">Upload</Nav.Link>
-                            </Nav.Item>
+                            {/*<Nav.Item>*/}
+                            {/*    <Nav.Link as={Link} to="/photouploadform">Upload</Nav.Link>*/}
+                            {/*</Nav.Item>*/}
                             <Nav.Item>
                                 <Nav.Link as={Link} to="/login">Prijava</Nav.Link>
                             </Nav.Item>
@@ -49,11 +50,11 @@ function App() {
             {/* Routing: Definiramo koje komponente se prikazuju za svaku rutu */}
             <Container className="mt-4">
                 <Routes>
-                    <Route path="/" element={<div className="text-center"><h1>Dobrodošli u aplikaciju za upload fotografija</h1><p className="lead">Pregledajte profil, uploadajte nove fotografije i upravljajte svojim računom.</p></div>} />
+                    <Route path="/" element={<HomePage/>} />
                     <Route path="/profile" element={<ProfilePage />} />
                     <Route path="/login" element={<Login />} />
                     <Route path="/register" element={<Register />} />
-                    <Route path="/photouploadform" element={<PhotoUploadForm />} />
+                    {/*<Route path="/photouploadform" element={<PhotoUploadForm />} />*/}
                     <Route path="/delete-account" element={<DeleteAccount />} />
                     <Route path="/logout" element={<Logout />} />
                     {/*<Route path="/admin" element={<AdminPanel/>} />*/}

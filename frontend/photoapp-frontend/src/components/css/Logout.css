@@ -1,0 +1,198 @@
+/* --- CSS varijable za boje i fontove (preuzeto iz ProfilePage.css) --- */
+:root {
+    /* Boje */
+    --bg-primary: #F8F8F8; /* Vrlo svijetlo siva/prljavo bijela pozadina */
+    --bg-secondary: #FFFFFF; /* Čista bijela za kartice */
+    --text-primary: #333333; /* Tamna siva za glavni tekst */
+    --text-secondary: #555555; /* Srednja siva za prigušeni tekst */
+    --text-heading: #222222; /* Skoro crna za naslove */
+    --border-color: #DDDDDD; /* Vrlo svijetla siva za obrube */
+    --primary-accent: #A0C4FF; /* Pastelno plava */
+    --primary-accent-hover: #8AB3F0; /* Tamnija pastelno plava na hoveru */
+    --danger-accent: #E57373; /* Pastelno crvena za greške/brisanje */
+    --info-accent: #81D4FA; /* Svjetlija pastelno plava za info */
+    --warning-accent: #FFEB3B; /* Pastelno žuta za upozorenja */
+
+    /* Sjene */
+    --shadow-light: rgba(0, 0, 0, 0.05); /* Vrlo lagana sjena */
+    --shadow-medium: rgba(0, 0, 0, 0.1); /* Srednja sjena za hover */
+
+    /* Fontovi */
+    --font-monospace: 'Inconsolata', 'Roboto Mono', monospace; /* Font pisaćeg stroja */
+    --font-sans-serif: 'Open Sans', sans-serif; /* Moderni sans-serif za općeniti tekst */
+}
+
+/* --- Općeniti stilovi za logout stranicu --- */
+html, body, #root {
+    height: 100%;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    background-color: var(--bg-primary);
+    font-family: var(--font-sans-serif);
+    color: var(--text-primary);
+    line-height: 1.6;
+}
+
+.logout-container {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column; /* Za flex-grow-1 na Row */
+    align-items: center;
+    justify-content: center;
+    padding: 1rem;
+}
+
+/* Osigurava da redak zauzima sav dostupan prostor u flex kontejneru */
+.logout-container .row {
+    height: 100%;
+    width: 100%;
+    flex-grow: 1;
+}
+
+/* --- Stilovi za loading stanje --- */
+.logout-container.loading-state {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.logout-spinner {
+    width: 3.5rem;
+    height: 3.5rem;
+    color: var(--primary-accent);
+}
+
+.loading-text {
+    font-family: var(--font-monospace);
+    font-size: 1.1rem;
+    color: var(--text-primary);
+    font-weight: 500;
+    margin-top: 1rem;
+}
+
+/* --- Stilovi za logout karticu (Card) --- */
+.logout-card {
+    background-color: var(--bg-secondary);
+    border: 1px solid var(--border-color);
+    border-radius: 0.25rem;
+    box-shadow: 0 0.25rem 0.75rem var(--shadow-light);
+    transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+}
+
+.logout-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 0.5rem 1rem var(--shadow-medium);
+}
+
+.logout-card .card-body {
+    padding: 2.5rem !important;
+}
+
+.logout-message {
+    font-family: var(--font-sans-serif);
+    font-size: 1.5rem;
+    color: var(--text-heading);
+    font-weight: 600;
+}
+
+/* --- Stilovi za gumbe --- */
+.logout-btn {
+    font-family: var(--font-monospace);
+    font-weight: 600;
+    letter-spacing: 0.05rem;
+    background-color: transparent;
+    border: 2px solid var(--danger-accent); /* Crveni outline za odjavu */
+    color: var(--danger-accent);
+    padding: 0.75rem 1.5rem;
+    border-radius: 0.25rem;
+    box-shadow: 0 0.125rem 0.25rem var(--shadow-light);
+    transition: all 0.2s ease-in-out;
+}
+
+.logout-btn:hover:not(:disabled) {
+    background-color: var(--danger-accent);
+    color: var(--bg-secondary);
+    box-shadow: 0 0.25rem 0.5rem var(--shadow-medium);
+}
+
+.logout-btn:disabled {
+    background-color: #E0E0E0;
+    border-color: #CCCCCC;
+    color: #999999;
+    cursor: not-allowed;
+    box-shadow: none;
+}
+
+/* --- Stilovi za poruke (Alert) --- */
+.logout-alert.alert-info {
+    background-color: rgba(160, 196, 255, 0.1); /* Vrlo svijetla pastelna plava */
+    color: var(--primary-accent) !important;
+    border: 1px solid var(--primary-accent) !important;
+    font-family: var(--font-monospace);
+    font-size: 0.95rem;
+    padding: 0.75rem 1.25rem;
+    border-radius: 0.25rem;
+    display: flex;
+    align-items: center;
+    justify-content: center; /* Centriraj tekst unutar alert-a */
+    text-align: center;
+}
+
+.logout-alert.alert-danger {
+    background-color: rgba(229, 115, 115, 0.1);
+    color: var(--danger-accent) !important;
+    border: 1px solid var(--danger-accent) !important;
+    font-family: var(--font-monospace);
+    font-size: 0.95rem;
+    padding: 0.75rem 1.25rem;
+    border-radius: 0.25rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+}
+
+/* Animacija za shake */
+@keyframes shake {
+    0%, 100% { transform: translateX(0); }
+    10%, 30%, 50%, 70%, 90% { transform: translateX(-5px); }
+    20%, 40%, 60%, 80% { transform: translateX(5px); }
+}
+
+.shake-animation {
+    animation: shake 0.5s;
+}
+
+/* --- Responsivni dizajn --- */
+@media (max-width: 767.98px) {
+    .logout-card .card-body {
+        padding: 1.5rem !important;
+    }
+
+    .logout-message {
+        font-size: 1.2rem;
+    }
+
+    .logout-btn {
+        padding: 0.6rem 1rem;
+        font-size: 0.95rem;
+    }
+
+    .logout-spinner {
+        width: 2.5rem;
+        height: 2.5rem;
+    }
+
+    .loading-text {
+        font-size: 0.95rem;
+    }
+
+    .logout-alert {
+        font-size: 0.85rem;
+    }
+}

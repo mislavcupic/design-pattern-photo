@@ -1,7 +1,11 @@
 package hr.algebra.nrako.photoapp_backend.service;
 
 import com.google.api.core.ApiFuture;
-import com.google.cloud.firestore.DocumentReference;
+import com.google.cloud.firestore.*;
+import com.google.cloud.storage.Blob;
+import com.google.cloud.storage.BlobId;
+import com.google.cloud.storage.Bucket;
+import com.google.firebase.cloud.StorageClient;
 import hr.algebra.nrako.photoapp_backend.domain.User;
 import hr.algebra.nrako.photoapp_backend.domain.UserPackage;
 import hr.algebra.nrako.photoapp_backend.domain.UserPackageData;
@@ -36,6 +40,8 @@ public class UserServiceImpl implements UserService {
     private final PhotoRepository photoRepository;
     private final StorageService storageService;
     private final UserPackageService userPackageService;
+    private final Firestore firestore; // Potreban ti je Firestore instanca
+    private final Bucket bucket;
     @Override
     public CompletableFuture<Optional<AuthResponse>> registerUser(RegistrationRequest request) {
         return CompletableFuture.supplyAsync(() -> {
@@ -174,78 +180,6 @@ public class UserServiceImpl implements UserService {
                     });
         });
     }
-//     @Override
-//    public CompletableFuture<Optional<AuthResponse>> loginUser(LoginRequest request) {
-//        return CompletableFuture.supplyAsync(() -> {
-//            try {
-//                FirebaseToken decodedToken = firebaseAuth.verifyIdToken(request.getIdToken());
-//                return decodedToken.getUid();
-//            } catch (FirebaseAuthException e) {
-//                logger.error("FirebaseAuthException during login: {}", e.getMessage());
-//                return null;
-//            } catch (Exception e) {
-//                logger.error("Exception during login: {}", e.getMessage());
-//                return null;
-//            }
-//        }).thenCompose(uid -> {
-//            if (uid == null) {
-//                return CompletableFuture.completedFuture(Optional.empty());
-//            }
-//
-//            return userRepository.findByFirebaseUid(uid)
-//                    .thenCompose(userOptional -> {
-//                        if (userOptional.isPresent()) {
-//                            User user = userOptional.get();
-//                            logger.info("✔️ Korisnik pronađen: {}", user.getEmail());
-//
-//                            try {
-//                                String token = firebaseAuth.createCustomToken(uid);
-//                                return CompletableFuture.completedFuture(
-//                                        Optional.of(new AuthResponse(token, request.getRefreshToken(), mapToDto(user)))
-//                                );
-//                            } catch (FirebaseAuthException e) {
-//                                logger.error("Greška kod generiranja tokena: {}", e.getMessage());
-//                                return CompletableFuture.completedFuture(Optional.empty());
-//                            }
-//
-//                        } else {
-//                            logger.warn("❌ Korisnik s UID-om {} nije u bazi, dohvaćam iz Firebasea...", uid);
-//
-//                            try {
-//                                UserRecord firebaseUser = firebaseAuth.getUser(uid);
-//                                UserPackage userPackage = UserPackage.valueOf(
-//                                        Optional.ofNullable(request.getUserPackage()).orElse("FREE").toUpperCase()
-//                                );
-//
-//                                // Kreiraj i spremi korisnika
-//                                User newUser = new User();
-//                                newUser.setFirebaseUid(firebaseUser.getUid());
-//                                newUser.setEmail(firebaseUser.getEmail());
-//                                newUser.setDisplayName(firebaseUser.getDisplayName());
-//                                newUser.setUserPackage(userPackage);
-//                                userRepository.save(newUser);
-//
-//                                // Kreiraj UserPackageData za novog korisnika
-//                                userPackageService.createUserPackageData(firebaseUser.getUid(), userPackage);
-//
-//                                String token = firebaseAuth.createCustomToken(uid);
-//                                return CompletableFuture.completedFuture(
-//                                        Optional.of(new AuthResponse(token, request.getRefreshToken(), mapToDto(newUser)))
-//                                );
-//
-//                            } catch (FirebaseAuthException e) {
-//                                logger.error("❌ FirebaseAuthException: {}", e.getMessage());
-//                            } catch (IllegalArgumentException e) {
-//                                logger.error("❌ Neispravan userType ili userPackage u loginRequestu: {}", e.getMessage());
-//                            } catch (Exception e) {
-//                                logger.error("❌ General Exception kod automatskog spremanja korisnika: {}", e.getMessage());
-//                            }
-//
-//                            return CompletableFuture.completedFuture(Optional.empty());
-//                        }
-//                    });
-//        });
-//    }
 
     @Override
     public CompletableFuture<Optional<UserDto>> getUserByFirebaseUid(String uid) {
@@ -301,30 +235,7 @@ public class UserServiceImpl implements UserService {
                 });
     }
 
-//    @Override
-//    public CompletableFuture<Void> logout(String idToken) {
-//        return CompletableFuture.runAsync(() -> {
-//            try {
-//                // Ukloni "Bearer " prefiks ako je prisutan
-//                if (idToken.startsWith("Bearer ")) {
-//                    idToken = idToken.substring(7); // Uklanja "Bearer "
-//                }
-//
-//                // Verifikacija idToken-a pomoću Firebase Admin SDK
-//                FirebaseToken decodedToken = firebaseAuth.verifyIdToken(request.getIdToken());
-//                return decodedToken.getUid();  // Ovdje uzimamo UID korisnika iz tokena
-//                System.out.println("Odjava korisnika s UID-om: " + uid);
-//
-//                // Revokacija refresh tokena za korisnika s UID-om
-//                FirebaseAuth.getInstance().revokeRefreshTokens(uid);
-//                System.out.println("Refresh tokeni za UID " + uid + " su revokirani.");
-//
-//            } catch (FirebaseAuthException e) {
-//                // Logiraj grešku i baci odgovarajuću iznimku
-//                throw new RuntimeException("Neispravan Firebase token: " + e.getMessage());
-//            }
-//        });
-//    }
+
 
     @Override
     public CompletableFuture<Void> logout(String idToken) {
@@ -352,31 +263,141 @@ public class UserServiceImpl implements UserService {
     }
 
 
-    @Override
-    public CompletableFuture<Void> deleteAccount(String idToken) {
-        return CompletableFuture.supplyAsync(() -> {
-            try {
-                // Verifikacija ID tokena i ekstrakcija UID-a
-                FirebaseToken decodedToken = firebaseAuth.verifyIdToken(idToken);
-                String uid = decodedToken.getUid();  // UID korisnika
+//    @Override
+//    public CompletableFuture<Void> deleteAccount(String idToken) {
+//        return CompletableFuture.supplyAsync(() -> {
+//            try {
+//                // Verifikacija ID tokena i ekstrakcija UID-a
+//                FirebaseToken decodedToken = firebaseAuth.verifyIdToken(idToken);
+//                String uid = decodedToken.getUid();  // UID korisnika
+//
+//                // Brisanje korisničkih podataka iz Firestore-a
+//                userRepository.deleteUserData(uid);
+//
+//
+//
+//                // Opcionalno: brisanje korisnika iz Firebase Authentication-a
+//                firebaseAuth.deleteUser(uid);
+//
+//                return null;  // Brisanje je uspješno
+//
+//            } catch (Exception e) {
+//                // Logiranje i obraditi greške
+//                throw new RuntimeException("Greška prilikom brisanja računa: " + e.getMessage(), e);
+//            }
+//        });
+//    }
+@Override
+public CompletableFuture<Void> deleteAccount(String idToken) {
+    return CompletableFuture.supplyAsync(() -> {
+        try {
+            FirebaseToken decodedToken = firebaseAuth.verifyIdToken(idToken);
+            String uid = decodedToken.getUid();
 
-                // Brisanje korisničkih podataka iz Firestore-a
-                userRepository.deleteUserData(uid);
+            // DOHVATI STORAGE BUCKET
+            StorageClient storageClient = StorageClient.getInstance();
+            Bucket bucket = storageClient.bucket();
 
+            // 1. BRIŠI PODATKE IZ FIRESTORE 'photos' KOLEKCIJE I CORRESPONDING STORAGE DATOTEKE
+            CollectionReference photosCollection = firestore.collection("photos");
+            ApiFuture<QuerySnapshot> photosFuture = photosCollection.whereEqualTo("uploadedBy", uid).get();
+            List<QueryDocumentSnapshot> photoDocuments = photosFuture.get().getDocuments();
 
-
-                // Opcionalno: brisanje korisnika iz Firebase Authentication-a
-                firebaseAuth.deleteUser(uid);
-
-                return null;  // Brisanje je uspješno
-
-            } catch (Exception e) {
-                // Logiranje i obraditi greške
-                throw new RuntimeException("Greška prilikom brisanja računa: " + e.getMessage(), e);
+            if (photoDocuments != null && !photoDocuments.isEmpty()) {
+                for (QueryDocumentSnapshot document : photoDocuments) {
+                    String fileUrl = document.getString("fileUrl");
+                    if (fileUrl != null && !fileUrl.isEmpty()) {
+                        String storagePath = extractStoragePathFromUrl(fileUrl);
+                        if (storagePath != null) {
+                            try {
+                                BlobId blobId = BlobId.of(bucket.getName(), storagePath);
+                                Blob blob = bucket.getStorage().get(blobId);
+                                if (blob != null && blob.exists()) {
+                                    blob.delete();
+                                    System.out.println("Obrisana datoteka iz Storagea: " + storagePath);
+                                } else {
+                                    System.out.println("Datoteka ne postoji u Storageu ili već obrisana: " + storagePath);
+                                }
+                            } catch (Exception storageEx) {
+                                System.err.println("Greška prilikom brisanja datoteke iz Storagea: " + storagePath + ". Greška: " + storageEx.getMessage());
+                            }
+                        }
+                    }
+                    // Nakon pokušaja brisanja iz Storagea, obriši dokument iz Firestore 'photos' kolekcije
+                    document.getReference().delete();
+                    System.out.println("Obrisan dokument iz Firestore 'photos' kolekcije: " + document.getId());
+                }
             }
-        });
-    }
 
+            // 2. BRIŠI PODATKE IZ FIRESTORE 'user_package_data' KOLEKCIJE
+            CollectionReference userPackageCollection = firestore.collection("user_package_data");
+            ApiFuture<QuerySnapshot> userPackageFuture = userPackageCollection.whereEqualTo("firebaseUid", uid).get(); // Pretpostavka da imaš 'userId' polje
+            List<QueryDocumentSnapshot> userPackageDocuments = userPackageFuture.get().getDocuments();
+
+            if (userPackageDocuments != null && !userPackageDocuments.isEmpty()) {
+                for (QueryDocumentSnapshot document : userPackageDocuments) {
+                    document.getReference().delete();
+                    System.out.println("Obrisan dokument iz Firestore 'user_package_data' kolekcije: " + document.getId());
+                }
+            } else {
+                // Ako 'user_package_data' ima dokument ID koji je isti kao UID, možeš i direktno
+                // firestore.collection("user_package_data").document(uid).delete();
+                // Provjeri kako ti je strukturiran user_package_data
+                System.out.println("Nema dokumenata u 'user_package_data' za brisanje ili već obrisani.");
+            }
+
+
+            // 3. BRIŠI GLAVNI KORISNIČKI DOKUMENT IZ 'users' KOLEKCIJE
+            // Ovo je vjerojatno ono što tvoj userRepository.deleteUserData(uid) radi
+            // Ako tvoj UserRepository sadrži više složenu logiku, ostavi ga.
+            // Ako ne, možeš ga zamijeniti direktnim pozivom:
+            // firestore.collection("users").document(uid).delete();
+            userRepository.deleteUserData(uid); // Ovo je za glavni users dokument
+            System.out.println("Korisnički podaci obrisani iz Firestore 'users' kolekcije za UID: " + uid);
+
+
+            // 4. BRIŠI KORISNIKA IZ FIREBASE AUTHENTICATION-A
+            firebaseAuth.deleteUser(uid);
+            System.out.println("Korisnik obrisan iz Firebase Authentikacije: " + uid);
+
+            return null;
+
+        } catch (ExecutionException | InterruptedException e) {
+            Thread.currentThread().interrupt();
+            System.err.println("Greška prilikom dohvata ili obrade podataka za brisanje (ExecutionException/InterruptedException): " + e.getMessage());
+            throw new RuntimeException("Greška prilikom dohvata podataka za brisanje: " + e.getMessage(), e);
+        } catch (Exception e) {
+            System.err.println("FATALNA Greška prilikom brisanja računa za UID. Provjerite dozvole ili strukturu baze: " + e.getMessage());
+            e.printStackTrace(); // Ispiši cijeli stack trace za debug
+            throw new RuntimeException("Opća greška prilikom brisanja računa: " + e.getMessage(), e);
+        }
+    });
+}
+
+    // Pomoćna funkcija ostaje ista
+    private String extractStoragePathFromUrl(String fileUrl) {
+        if (fileUrl == null || fileUrl.isEmpty()) {
+            return null;
+        }
+        try {
+            int oIndex = fileUrl.indexOf("/o/");
+            if (oIndex == -1) {
+                return null;
+            }
+
+            String pathWithQueryParams = fileUrl.substring(oIndex + 3);
+
+            int qIndex = pathWithQueryParams.indexOf("?");
+            String encodedPath = (qIndex == -1) ? pathWithQueryParams : pathWithQueryParams.substring(0, qIndex);
+
+            String decodedPath = java.net.URLDecoder.decode(encodedPath, "UTF-8");
+
+            return decodedPath;
+        } catch (Exception e) {
+            System.err.println("Greška prilikom parsiranja Storage URL-a: " + fileUrl + ". Greška: " + e.getMessage());
+            return null;
+        }
+    }
     @Override
     public void setAdminUserType(String firebaseUid) {
         try {

@@ -48,17 +48,27 @@ public class SecurityConfig implements WebMvcConfigurer {
                 .csrf(AbstractHttpConfigurer::disable)
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests((auth) -> auth
+                        // 1. Najspecifičnije i posebne HTTP metode (OPTIONS uvijek prvi za CORS)
                         .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
-                        .requestMatchers("/error").permitAll()
-                        .requestMatchers("/auth/login", "/auth/register").permitAll()
-                        .requestMatchers("/api/public/**").permitAll()
+                        .requestMatchers("/error").permitAll() // Greška endpoint
+                        .requestMatchers("/auth/login", "/auth/register").permitAll() // Autentifikacija
+                        .requestMatchers(HttpMethod.DELETE, "/auth/delete").hasAnyRole("REGISTERED", "ADMIN") // Samo registrirani korisnici ili admin mogu brisati svoj account
+
+                        // 2. Specifične putanje koje zahtijevaju ULOGE
+                        .requestMatchers("/api/photos/{photoId}/download").hasAnyRole("ADMIN","REGISTERED") // <-- OVO MORA BITI PRIJE /api/photos/{id}
                         .requestMatchers("/api/photos/upload", "/api/photos/user").hasAnyRole("ADMIN","REGISTERED")
                         .requestMatchers("/user-package/**").hasAnyRole("REGISTERED", "ADMIN")
-                        .requestMatchers(API_PHOTOS_ID, "/api/photos/last10").permitAll()
-                        .requestMatchers("/api/photos/user/{uid}").hasAnyRole("REGISTERED", "ADMIN")
+                        .requestMatchers("/api/photos/user/{uid}").hasAnyRole("REGISTERED", "ADMIN") // Jedanput je dovoljno
                         .requestMatchers("/auth/update").hasRole("ADMIN")
-                        .requestMatchers("/api/photos/user/{uid}").hasRole("ADMIN")
-                        .anyRequest().authenticated() // Zahtijevaj autentikaciju za SVE ostale endpoint-e
+
+                        // 3. Općenite putanje koje su PERMITALL (ali manje specifične od gornjih)
+                        // Pazite da ovo ne preklapa download!
+                        .requestMatchers("/api/public/**").permitAll() // Ako su javne fotografije
+                        .requestMatchers("/api/photos/last10").permitAll() // Ako su zadnjih 10 javne
+                        .requestMatchers(API_PHOTOS_ID).permitAll() // Ako je /api/photos/{id} javna (za view, ne download)
+
+                        // 4. Sve ostalo zahtijeva autentifikaciju
+                        .anyRequest().authenticated()
                 )
                 .addFilterBefore(firebaseAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
                 .exceptionHandling(exceptionHandling ->

@@ -2,8 +2,10 @@ import React, { useState, useEffect } from "react";
 import { auth } from "./Firebase"; // Import Firebase auth
 import { signInWithEmailAndPassword, signOut, onAuthStateChanged } from "firebase/auth";
 import { useNavigate } from "react-router-dom";
-import { Button, Form, Container, Row, Col, Spinner, Alert } from "react-bootstrap";
+import { Button, Form, Container, Row, Col, Spinner, Alert, Card } from "react-bootstrap"; // Dodan Card
 import { useAuth } from "../context/AuthContext"; // Importuj useAuth
+import { FaSignInAlt, FaUserCircle, FaSignOutAlt, FaExclamationCircle } from "react-icons/fa"; // Dodane ikone
+import './css/Login.css'; // Importiramo novi CSS
 
 function Login() {
     const [email, setEmail] = useState("");
@@ -12,7 +14,7 @@ function Login() {
     const [isLoading, setIsLoading] = useState(false);  // Za kontrolu učitavanja
     const [error, setError] = useState(""); // Za praćenje grešaka
     const navigate = useNavigate();
-   // const { loginAnonymously } = useAuth();  // Uzimamo loginAnonymously iz konteksta
+    // const { loginAnonymously } = useAuth();  // Uzimamo loginAnonymously iz konteksta
 
     useEffect(() => {
         // Provjera prijavljenog korisnika pri učitavanju stranice
@@ -25,22 +27,16 @@ function Login() {
         });
 
         return () => unsubscribe();  // Očisti listener pri unmountu komponente
-    }, [user]);
+    }, []); // Uklonjen 'user' iz dependency arraya da se ne re-runna nepotrebno
 
     const handleLogin = async () => {
+        setError(""); // Clear previous errors
         setIsLoading(true);
         try {
-            // Prijava korisnika putem Firebase auth
             const userCredential = await signInWithEmailAndPassword(auth, email, password);
-
-            // Dohvati ID token nakon uspješne prijave
             const idToken = await userCredential.user.getIdToken();
-
-            // Pohrani ID token u localStorage
             localStorage.setItem("idToken", idToken);
-            console.log("✅ Token:", idToken);
 
-            // Pošaljite login podatke prema backendu
             const response = await fetch("http://localhost:8080/auth/login", {
                 method: "POST",
                 headers: {
@@ -49,47 +45,46 @@ function Login() {
                 body: JSON.stringify({
                     email: email,
                     password: password,
-                    idToken: idToken, // Važno: šaljemo ID token
+                    idToken: idToken,
                 }),
             });
 
             if (response.ok) {
-                const data = await response.json();
-                console.log('✅ Login successful:', data);
-                alert("Prijavljen!");
-                navigate("/profile");  // Preusmjeri korisnika na profilnu stranicu
+                // const data = await response.json(); // Nije potrebno hvatati odgovor ako ga ne koristimo
+                navigate("/profile");
             } else {
-                const errorData = await response.text();
-                console.error('❌ Login failed:', errorData);
-                alert("Login nije uspio");
+                const errorText = await response.text();
+                setError(errorText || "Login nije uspio. Provjerite email i lozinku.");
             }
         } catch (error) {
             console.error('💥 Error during login:', error);
-            alert("Greška pri prijavi");
+            setError("Greška pri prijavi: " + error.message);
         } finally {
             setIsLoading(false);
         }
     };
 
     const handleLogout = async () => {
+        setError(""); // Clear previous errors
+        setIsLoading(true); // Maybe show a spinner for logout too
         try {
-            // Izvršavamo signOut iz Firebase-a
             await signOut(auth);
-            localStorage.removeItem("idToken");  // Uklonimo token iz localStorage
-            setUser(null);  // Resetiraj korisnika
-            alert("Odjavljen!");
-            navigate("/login");  // Preusmjeri na login stranicu
+            localStorage.removeItem("idToken");
+            setUser(null);
+            navigate("/login");
         } catch (error) {
             console.error('💥 Error during logout:', error);
-            alert("Greška pri odjavi");
+            setError("Greška pri odjavi: " + error.message);
+        } finally {
+            setIsLoading(false); // Hide spinner
         }
     };
 
     // const handleAnonymousLogin = async () => {
     //     try {
     //         setIsLoading(true);
-    //         await loginAnonymously();  // Pozivanje anonimne prijave iz konteksta
-    //         navigate("/profile");  // Preusmjeri korisnika na profilnu stranicu
+    //         await loginAnonymously();
+    //         navigate("/profile");
     //     } catch (error) {
     //         setError("Greška pri anonimnoj prijavi: " + error.message);
     //         console.error("Greška pri anonimnoj prijavi:", error);
@@ -99,73 +94,87 @@ function Login() {
     // };
 
     return (
-        <Container className="d-flex justify-content-center align-items-center" style={{ minHeight: "100vh" }}>
-            <Row className="w-100">
-                <Col md={6} lg={4} className="mx-auto">
-                    <div className="text-center mb-4">
-                        <h2>Prijava</h2>
-                    </div>
+        <Container fluid className="login-container">
+            {/* Dodana klasa 'flex-grow-1' za Row */}
+            <Row className="justify-content-center align-items-center h-100 flex-grow-1">
+                <Col xs={10} sm={8} md={6} lg={4}> {/* Prilagođene veličine kolone za responsivnost */}
+                    <Card className="login-card shadow-lg border-0">
+                        <Card.Body className="p-4 p-md-5">
+                            <Card.Title className="text-center mb-4 login-title">
+                                <FaSignInAlt className="me-2 text-primary" /> Prijava
+                            </Card.Title>
 
-                    {error && <Alert variant="danger">{error}</Alert>} {/* Prikazivanje greške ako postoji */}
+                            {error && (
+                                <Alert variant="danger" className="shake-animation login-alert">
+                                    <FaExclamationCircle className="me-2" />{error}
+                                </Alert>
+                            )}
 
-                    {user ? (
-                        <div className="text-center">
-                            <p>Dobrodošli, {user.displayName || user.email}!</p>
-                            <Button variant="danger" onClick={handleLogout}>Odjava</Button>
-                        </div>
-                    ) : (
-                        <div>
-                            <Form>
-                                <Form.Group controlId="email" className="mb-3">
-                                    <Form.Label>Email</Form.Label>
-                                    <Form.Control
-                                        type="email"
-                                        placeholder="Unesite email"
-                                        value={email}
-                                        onChange={(e) => setEmail(e.target.value)}
-                                    />
-                                </Form.Group>
+                            {user ? (
+                                <div className="text-center logged-in-state">
+                                    <p className="welcome-text">
+                                        <FaUserCircle className="me-2 text-primary" />Dobrodošli, <span className="user-email-display">{user.email}</span>!
+                                    </p>
+                                    <Button variant="outline-danger" onClick={handleLogout} className="w-100 logout-btn" disabled={isLoading}>
+                                        {isLoading ? (
+                                            <>
+                                                <Spinner as="span" animation="border" size="sm" role="status" aria-hidden="true" className="me-2" />
+                                                Odjavljujem se...
+                                            </>
+                                        ) : (
+                                            <>
+                                                <FaSignOutAlt className="me-2" /> Odjava
+                                            </>
+                                        )}
+                                    </Button>
+                                </div>
+                            ) : (
+                                <Form>
+                                    <Form.Group controlId="email" className="mb-3">
+                                        <Form.Label className="form-label-custom">Email</Form.Label>
+                                        <Form.Control
+                                            type="email"
+                                            placeholder="vas.email@primjer.com"
+                                            value={email}
+                                            onChange={(e) => setEmail(e.target.value)}
+                                            className="form-control-custom"
+                                            disabled={isLoading}
+                                        />
+                                    </Form.Group>
 
-                                <Form.Group controlId="password" className="mb-3">
-                                    <Form.Label>Lozinka</Form.Label>
-                                    <Form.Control
-                                        type="password"
-                                        placeholder="Unesite lozinku"
-                                        value={password}
-                                        onChange={(e) => setPassword(e.target.value)}
-                                    />
-                                </Form.Group>
+                                    <Form.Group controlId="password" className="mb-4">
+                                        <Form.Label className="form-label-custom">Lozinka</Form.Label>
+                                        <Form.Control
+                                            type="password"
+                                            placeholder="••••••••"
+                                            value={password}
+                                            onChange={(e) => setPassword(e.target.value)}
+                                            className="form-control-custom"
+                                            disabled={isLoading}
+                                        />
+                                    </Form.Group>
 
-                                <Button
-                                    variant="primary"
-                                    onClick={handleLogin}
-                                    style={{ width: "100%" }}
-                                    disabled={isLoading}
-                                >
-                                    {isLoading ? (
-                                        <Spinner animation="border" size="sm" />
-                                    ) : (
-                                        "Prijava"
-                                    )}
-                                </Button>
-                            </Form>
-
-                            {/*<div className="mt-3 text-center">*/}
-                            {/*    <Button*/}
-                            {/*        variant="secondary"*/}
-                            {/*        onClick={handleAnonymousLogin}*/}
-                            {/*        style={{ width: "100%" }}*/}
-                            {/*        disabled={isLoading}*/}
-                            {/*    >*/}
-                            {/*        {isLoading ? (*/}
-                            {/*            <Spinner animation="border" size="sm" />*/}
-                            {/*        ) : (*/}
-                            {/*            "Anonimna prijava"*/}
-                            {/*        )}*/}
-                            {/*    </Button>*/}
-                            {/*</div>*/}
-                        </div>
-                    )}
+                                    <Button
+                                        variant="outline-primary"
+                                        onClick={handleLogin}
+                                        className="w-100 login-btn"
+                                        disabled={isLoading || !email || !password}
+                                    >
+                                        {isLoading ? (
+                                            <>
+                                                <Spinner as="span" animation="border" size="sm" role="status" aria-hidden="true" className="me-2" />
+                                                Prijavljujem se...
+                                            </>
+                                        ) : (
+                                            <>
+                                                <FaSignInAlt className="me-2" /> Prijava
+                                            </>
+                                        )}
+                                    </Button>
+                                </Form>
+                            )}
+                        </Card.Body>
+                    </Card>
                 </Col>
             </Row>
         </Container>

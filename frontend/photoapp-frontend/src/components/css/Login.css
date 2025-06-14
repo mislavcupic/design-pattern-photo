@@ -1,0 +1,217 @@
+/* --- CSS varijable za boje i fontove (preuzeto iz ProfilePage.css) --- */
+:root {
+    /* Boje */
+    --bg-primary: #F8F8F8; /* Vrlo svijetlo siva/prljavo bijela pozadina */
+    --bg-secondary: #FFFFFF; /* Čista bijela za kartice */
+    --text-primary: #333333; /* Tamna siva za glavni tekst */
+    --text-secondary: #555555; /* Srednja siva za prigušeni tekst */
+    --text-heading: #222222; /* Skoro crna za naslove */
+    --border-color: #DDDDDD; /* Vrlo svijetla siva za obrube */
+    --primary-accent: #A0C4FF; /* Pastelno plava */
+    --primary-accent-hover: #8AB3F0; /* Tamnija pastelno plava na hoveru */
+    --danger-accent: #E57373; /* Pastelno crvena za greške/brisanje */
+    --info-accent: #81D4FA; /* Svjetlija pastelno plava za info */
+    --warning-accent: #FFEB3B; /* Pastelno žuta za upozorenja */
+
+    /* Sjene */
+    --shadow-light: rgba(0, 0, 0, 0.05); /* Vrlo lagana sjena */
+    --shadow-medium: rgba(0, 0, 0, 0.1); /* Srednja sjena za hover */
+
+    /* Fontovi */
+    --font-monospace: 'Inconsolata', 'Roboto Mono', monospace; /* Font pisaćeg stroja */
+    --font-sans-serif: 'Open Sans', sans-serif; /* Moderni sans-serif za općeniti tekst */
+}
+
+/* --- Općeniti stilovi za login stranicu --- */
+html, body, #root {
+    height: 100%; /* Osigurava da se kontejner razvuče preko cijelog ekrana */
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    background-color: var(--bg-primary);
+    font-family: var(--font-sans-serif);
+    color: var(--text-primary);
+    line-height: 1.6;
+}
+
+.login-container {
+    min-height: 100vh; /* Osigurava da je kontejner visok barem 100% viewporta */
+    display: flex;
+    align-items: center; /* Centriranje po visini */
+    justify-content: center; /* Centriranje po širini */
+    padding: 1rem; /* Dodaj malo paddinga za manje ekrane */
+}
+
+/* --- Stilovi za login karticu (Card) --- */
+.login-card {
+    background-color: var(--bg-secondary);
+    border: 1px solid var(--border-color);
+    border-radius: 0.25rem;
+    box-shadow: 0 0.25rem 0.75rem var(--shadow-light);
+    transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+}
+
+.login-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 0.5rem 1rem var(--shadow-medium);
+}
+
+.login-card .card-body {
+    padding: 2.5rem !important;
+}
+
+.login-title {
+    font-family: var(--font-sans-serif);
+    font-size: 2rem;
+    color: var(--text-heading);
+    font-weight: 700;
+}
+
+/* --- Stilovi za forme i inpute --- */
+.form-label-custom {
+    font-family: var(--font-sans-serif);
+    font-weight: 600;
+    color: var(--text-primary);
+    margin-bottom: 0.5rem;
+}
+
+.form-control-custom {
+    background-color: var(--bg-secondary);
+    color: var(--text-primary);
+    border: 1px solid var(--border-color);
+    border-radius: 0.25rem;
+    padding: 0.75rem 1rem;
+    font-size: 1rem;
+    font-family: var(--font-monospace); /* Font pisaćeg stroja */
+}
+
+.form-control-custom:focus {
+    background-color: var(--bg-secondary);
+    color: var(--text-primary);
+    border-color: var(--primary-accent);
+    box-shadow: 0 0 0 0.2rem rgba(160, 196, 255, 0.4);
+}
+
+/* --- Stilovi za gumbe --- */
+.login-btn,
+.logout-btn {
+    font-family: var(--font-monospace);
+    font-weight: 600;
+    letter-spacing: 0.05rem;
+    background-color: transparent;
+    border: 2px solid var(--primary-accent);
+    color: var(--primary-accent);
+    padding: 0.75rem 1.5rem;
+    border-radius: 0.25rem;
+    box-shadow: 0 0.125rem 0.25rem var(--shadow-light);
+    transition: all 0.2s ease-in-out;
+}
+
+.login-btn:hover:not(:disabled),
+.logout-btn:hover:not(:disabled) {
+    background-color: var(--primary-accent);
+    color: var(--bg-secondary);
+    box-shadow: 0 0.25rem 0.5rem var(--shadow-medium);
+}
+
+.login-btn:disabled,
+.logout-btn:disabled {
+    background-color: #E0E0E0;
+    border-color: #CCCCCC;
+    color: #999999;
+    cursor: not-allowed;
+    box-shadow: none;
+}
+
+/* Poseban stil za logout gumb, koji je danger */
+.logout-btn {
+    border-color: var(--danger-accent);
+    color: var(--danger-accent);
+}
+
+.logout-btn:hover:not(:disabled) {
+    background-color: var(--danger-accent);
+    color: var(--bg-secondary);
+}
+
+/* --- Stilovi za poruke (Alert) --- */
+.login-alert.alert-danger {
+    background-color: rgba(229, 115, 115, 0.1);
+    color: var(--danger-accent) !important;
+    border: 1px solid var(--danger-accent) !important;
+    font-family: var(--font-monospace);
+    font-size: 0.95rem;
+    padding: 0.75rem 1.25rem;
+    border-radius: 0.25rem;
+    display: flex;
+    align-items: center;
+    margin-bottom: 1.5rem;
+}
+
+/* Animacija za shake */
+@keyframes shake {
+    0%, 100% { transform: translateX(0); }
+    10%, 30%, 50%, 70%, 90% { transform: translateX(-5px); }
+    20%, 40%, 60%, 80% { transform: translateX(5px); }
+}
+
+.shake-animation {
+    animation: shake 0.5s;
+}
+
+/* --- Stilovi za prijavljenog korisnika --- */
+.logged-in-state {
+    padding-top: 1rem;
+    padding-bottom: 1rem;
+}
+
+.welcome-text {
+    font-family: var(--font-sans-serif);
+    font-size: 1.2rem;
+    color: var(--text-primary);
+    margin-bottom: 1.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-wrap: wrap; /* Omogući prelamanje na manje ekrane */
+}
+
+.welcome-text .user-email-display {
+    font-family: var(--font-monospace);
+    font-weight: 700;
+    color: var(--primary-accent);
+    margin-left: 0.25rem;
+    word-break: break-all; /* Omogući prelamanje dugih emailova */
+}
+
+/* --- Responsivni dizajn --- */
+@media (max-width: 767.98px) {
+    .login-card .card-body {
+        padding: 1.5rem !important;
+    }
+
+    .login-title {
+        font-size: 1.75rem;
+    }
+
+    .form-control-custom,
+    .form-label-custom {
+        font-size: 0.9rem;
+    }
+
+    .login-btn,
+    .logout-btn {
+        padding: 0.6rem 1rem;
+        font-size: 0.95rem;
+    }
+
+    .welcome-text {
+        font-size: 1rem;
+    }
+
+    .welcome-text svg {
+        font-size: 1.5rem; /* Smanji ikonu u welcome tekstu */
+    }
+}

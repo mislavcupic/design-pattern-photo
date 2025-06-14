@@ -7,10 +7,12 @@ public class UserPackageData {
     private String userPackage;
     private Timestamp lastPackageChangeDateTime;
     private Timestamp nextEligibleChangeDateTime;
-
+    private int currentDailyUploadCount; // Broj uploadova za tekući dan
     public UserPackageData() {
         // Firestore treba prazan konstruktor
     }
+    private Timestamp lastUploadDate;
+
 
     public UserPackageData(String firebaseUid, String userPackage, Timestamp lastPackageChangeDateTime) {
         this.firebaseUid = firebaseUid;
@@ -20,6 +22,9 @@ public class UserPackageData {
                 lastPackageChangeDateTime.getSeconds() + 86400, // +1 dan
                 lastPackageChangeDateTime.getNanos()
         );
+        this.currentDailyUploadCount = currentDailyUploadCount;
+        this.lastUploadDate = lastUploadDate;
+
     }
 
     // Getteri i setteri
@@ -63,4 +68,20 @@ public class UserPackageData {
     public void setUserPackageEnum(UserPackage userPackage) {
         this.userPackage = userPackage.name();
     }
+
+    public int getCurrentDailyUploadCount() {
+        return currentDailyUploadCount;
+    }
+    public void setCurrentDailyUploadCount(int currentDailyUploadCount) {
+        this.currentDailyUploadCount = currentDailyUploadCount;
+    }
+    public Timestamp getLastUploadDate() {
+        return lastUploadDate;
+    }
+    public void setLastUploadDate(Timestamp lastUploadDate) {
+        this.lastUploadDate = lastUploadDate;
+    }
+
+
 }
+

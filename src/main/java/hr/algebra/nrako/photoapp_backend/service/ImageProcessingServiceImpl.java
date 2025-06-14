@@ -1,6 +1,5 @@
 package hr.algebra.nrako.photoapp_backend.service;
 
-
 import net.coobird.thumbnailator.Thumbnails;
 import org.springframework.stereotype.Service;
 
@@ -12,34 +11,54 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.Iterator;
-import javax.imageio.ImageIO; // Korištenje javax.imageio kao što je u tvom sučelju
+import javax.imageio.ImageIO;
 import javax.imageio.ImageReader;
 import javax.imageio.stream.ImageInputStream;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 
 @Service
 public class ImageProcessingServiceImpl implements ImageProcessingService {
 
+    private static final Logger logger = LoggerFactory.getLogger(ImageProcessingServiceImpl.class);
+
     @Override
     public byte[] processImage(byte[] originalImageBytes, Integer maxWidth, Integer maxHeight, String outputFormat, boolean applySepia, boolean applyBlur) throws IOException {
+        // Logiraj format prije čitanja
+        String detectedFormat = getOriginalImageFormat(originalImageBytes);
+        logger.info("Pokušavam pročitati sliku format: {}", detectedFormat);
+
         BufferedImage image = ImageIO.read(new ByteArrayInputStream(originalImageBytes));
         if (image == null) {
-            throw new IOException("Failed to read image bytes into BufferedImage.");
+            // Dodaj više detalja u iznimku
+            throw new IOException("Failed to read image bytes into BufferedImage. Format detected: " + detectedFormat + ". Provjeri ImageIO plugine (npr. TwelveMonkeys).");
         }
 
         BufferedImage processedImage = image;
 
         // 1. Promjena veličine
-        if (maxWidth != null && maxHeight != null) {
-            processedImage = resizeImage(processedImage, maxWidth, maxHeight);
-        } else if (maxWidth != null) {
-            // Skaliranje po širini uz zadržavanje omjera
-            int newHeight = (int) (processedImage.getHeight() * ((double) maxWidth / processedImage.getWidth()));
-            processedImage = resizeImage(processedImage, maxWidth, newHeight);
-        } else if (maxHeight != null) {
-            // Skaliranje po visini uz zadržavanje omjera
-            int newWidth = (int) (processedImage.getWidth() * ((double) maxHeight / processedImage.getHeight()));
-            processedImage = resizeImage(processedImage, newWidth, maxHeight);
+        // Ovdje provjeravamo je li barem jedna dimenzija zadana za resize
+        if (maxWidth != null || maxHeight != null) {
+            int currentWidth = processedImage.getWidth();
+            int currentHeight = processedImage.getHeight();
+            int targetWidth = maxWidth != null ? maxWidth : currentWidth;
+            int targetHeight = maxHeight != null ? maxHeight : currentHeight;
+
+            // Ako je zadana samo jedna dimenzija, izračunaj drugu da zadržiš omjer
+            if (maxWidth != null && maxHeight == null) {
+                targetHeight = (int) (currentHeight * ((double) targetWidth / currentWidth));
+            } else if (maxHeight != null && maxWidth == null) {
+                targetWidth = (int) (currentWidth * ((double) targetHeight / currentHeight));
+            }
+            // Ako su oba null, nema resizea. Ako su oba zadana, koriste se direktno.
+
+            // Samo ako je neka dimenzija promijenjena ili ako treba forsirati resize
+            if (targetWidth != currentWidth || targetHeight != currentHeight) {
+                processedImage = resizeImage(processedImage, targetWidth, targetHeight);
+            }
         }
+
 
         // 2. Primjena filtera
         if (applySepia) {
@@ -52,25 +71,27 @@ public class ImageProcessingServiceImpl implements ImageProcessingService {
         // 3. Konverzija u bajtove željenog formata
         String finalOutputFormat = outputFormat;
         if (finalOutputFormat == null || finalOutputFormat.isEmpty()) {
-            finalOutputFormat = getOriginalImageFormat(originalImageBytes);
+            finalOutputFormat = detectedFormat; // Koristi već detektirani format
             if (finalOutputFormat == null) {
                 finalOutputFormat = "png"; // Fallback ako se originalni format ne može odrediti
             }
         }
+        // Osiguraj da je format malim slovima jer ImageIO.write očekuje to
+        finalOutputFormat = finalOutputFormat.toLowerCase();
 
         return toByteArray(processedImage, finalOutputFormat);
     }
 
     @Override
     public BufferedImage resizeImage(BufferedImage originalImage, int targetWidth, int targetHeight) {
-        // Koristimo Thumbnailator za jednostavnije i kvalitetnije mijenjanje veličine
-        try (ByteArrayOutputStream os = new ByteArrayOutputStream()) {
-            Thumbnails.of(originalImage)
+        try {
+            // Direktno koristi Thumbnailator za resize i vrati BufferedImage
+            // Koristimo .asBufferedImage() za dobivanje BufferedImage objekta
+            return Thumbnails.of(originalImage)
                     .size(targetWidth, targetHeight)
-                    .toOutputStream(os);
-            return ImageIO.read(new ByteArrayInputStream(os.toByteArray()));
+                    .asBufferedImage();
         } catch (IOException e) {
-            // Logirajte grešku ili bacite prilagođeni runtime exception
+            logger.error("Failed to resize image using Thumbnailator.", e);
             throw new RuntimeException("Failed to resize image using Thumbnailator.", e);
         }
     }
@@ -112,8 +133,14 @@ public class ImageProcessingServiceImpl implements ImageProcessingService {
         Kernel kernel = new Kernel(radius * 2 + 1, radius * 2 + 1, data);
         ConvolveOp op = new ConvolveOp(kernel, ConvolveOp.EDGE_NO_OP, null);
 
-        // Provjeri tip slike; ponekad je potrebno koristiti TYPE_INT_ARGB za filtere
-        BufferedImage blurredImage = new BufferedImage(originalImage.getWidth(), originalImage.getHeight(), originalImage.getType() == 0 ? BufferedImage.TYPE_INT_ARGB : originalImage.getType());
+        // Kreiraj novu sliku s ARGB tipom ako originalna nema alfu ili je nepoznat tip,
+        // jer neki filteri bolje rade s njim.
+        BufferedImage blurredImage = new BufferedImage(
+                originalImage.getWidth(),
+                originalImage.getHeight(),
+                originalImage.getType() == BufferedImage.TYPE_CUSTOM || originalImage.getType() == 0 ?
+                        BufferedImage.TYPE_INT_ARGB : originalImage.getType()
+        );
         op.filter(originalImage, blurredImage);
         return blurredImage;
     }
@@ -123,7 +150,12 @@ public class ImageProcessingServiceImpl implements ImageProcessingService {
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         boolean written = ImageIO.write(image, format, baos);
         if (!written) {
-            throw new IOException("No ImageWriter found for format: " + format);
+            // Možeš dodati logiranje dostupnih ImageWriter-a ovdje za debug
+            // Iterator<ImageWriter> writers = ImageIO.getImageWritersByFormatName(format);
+            // while(writers.hasNext()) {
+            //     logger.warn("Dostupan writer za {}: {}", format, writers.next().getClass().getName());
+            // }
+            throw new IOException("No ImageWriter found for format: " + format + ". Provjeri podršku za format.");
         }
         return baos.toByteArray();
     }

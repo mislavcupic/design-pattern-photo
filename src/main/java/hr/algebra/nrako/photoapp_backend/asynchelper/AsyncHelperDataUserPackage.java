@@ -35,7 +35,7 @@ public class AsyncHelperDataUserPackage {
     public LocalDateTime getNextEligibleChange(String firebaseUid) throws ExecutionException, InterruptedException {
         return userPackageService.getNextEligibleChange(firebaseUid).get();
     }
-    public Void createUserPackageData(String firebaseUid, UserPackage initialPackage) throws ExecutionException, InterruptedException {
+    public UserPackageData createUserPackageData(String firebaseUid, UserPackage initialPackage) throws ExecutionException, InterruptedException {
         return userPackageService.createUserPackageData(firebaseUid, initialPackage).get();
     }
 

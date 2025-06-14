@@ -14,6 +14,8 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
+
+import java.io.FileOutputStream;
 import java.io.IOException; // Ostaje, jer se koristi u drugim dijelovima koda
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
@@ -355,14 +357,35 @@ import java.util.stream.Collectors;
                 }
 
                 byte[] originalImageBytes = storageService.downloadPhotoAsBytes(photo.getFilename());
-                if (originalImageBytes == null || originalImageBytes.length == 0) {
-                    // KLJUČNA PROMJENA: Umotavanje IOException u RuntimeException
-                    throw new RuntimeException("Could not download original image bytes for photo: " + photo.getFilename());
+
+                // --- DODAJ OVDJE ---
+                if (originalImageBytes == null) {
+                    logger.error("Originalni bajtovi slike su NULL za ID: {} (filename: {})", photoId, photo.getFilename());
+                    throw new RuntimeException("Originalni podaci slike nisu pronađeni.");
                 }
+                if (originalImageBytes.length == 0) {
+                    logger.error("Originalni bajtovi slike su PRAZNI (duljina 0) za ID: {} (filename: {})", photoId, photo.getFilename());
+                    throw new RuntimeException("Prazni podaci slike.");
+                }
+                logger.info("Preuzeto {} bajtova za sliku ID: {} (filename: {})", originalImageBytes.length, photoId, photo.getFilename());
+
+                // PRIVREMENO: Pokušaj spremanja bajtova u datoteku za debugging!
+                try (FileOutputStream fos = new FileOutputStream("debug_image_" + photoId + "_" + System.currentTimeMillis() + ".bin")) {
+                    fos.write(originalImageBytes);
+                    logger.info("Spremljeni sirovi bajtovi u datoteku: debug_image_{}.bin", photoId);
+                } catch (IOException e) {
+                    logger.error("Greška prilikom spremanja debug datoteke: {}", e.getMessage());
+                }
+                // --- KRAJ DODATKA ---
+
+                // Ovu provjeru iznad sam već ugradio, pa možeš ukloniti ovaj if blok ili ga ostaviti kao dodatnu zaštitu
+                // if (originalImageBytes == null || originalImageBytes.length == 0) {
+                //     throw new RuntimeException("Could not download original image bytes for photo: " + photo.getFilename());
+                // }
 
                 imageProcessorBuilder.reset();
                 ImageProcessingOptions options = imageProcessorBuilder
-                        .withImageBytes(originalImageBytes)
+                        .withImageBytes(originalImageBytes) // Ovdje se koriste originalImageBytes
                         .resize(maxWidth, maxHeight)
                         .format(outputFormat)
                         .sepia(applySepia)
@@ -371,7 +394,7 @@ import java.util.stream.Collectors;
 
                 try {
                     return imageProcessingService.processImage(
-                            options.getImageBytes(),
+                            options.getImageBytes(), // Ovi bajtovi idu u ImageProcessingService
                             options.getMaxWidth(),
                             options.getMaxHeight(),
                             options.getOutputFormat(),
@@ -379,13 +402,11 @@ import java.util.stream.Collectors;
                             options.isApplyBlur()
                     );
                 } catch (IOException e) {
-                    // Ovdje se već lovi IOException iz imageProcessingService.processImage
                     logger.error("Greška prilikom obrade slike ID {}: {}", photoId, e.getMessage(), e);
                     throw new RuntimeException("Greška prilikom obrade slike: " + e.getMessage(), e);
                 }
             });
         }
-
         @Override
         public CompletableFuture<List<Photo>> searchPhotos(
                 String searchTerm,

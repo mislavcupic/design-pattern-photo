@@ -1,0 +1,344 @@
+/* --- CSS varijable za boje i fontove (preuzeto iz ProfilePage.css) --- */
+:root {
+    /* Boje */
+    --bg-primary: #F8F8F8; /* Vrlo svijetlo siva/prljavo bijela pozadina */
+    --bg-secondary: #FFFFFF; /* Čista bijela za kartice */
+    --text-primary: #333333; /* Tamna siva za glavni tekst */
+    --text-secondary: #555555; /* Srednja siva za prigušeni tekst */
+    --text-heading: #222222; /* Skoro crna za naslove */
+    --border-color: #DDDDDD; /* Vrlo svijetla siva za obrube */
+    --primary-accent: #A0C4FF; /* Pastelno plava */
+    --primary-accent-hover: #8AB3F0; /* Tamnija pastelno plava na hoveru */
+    --danger-accent: #E57373; /* Pastelno crvena za greške/brisanje */
+    --info-accent: #81D4FA; /* Svjetlija pastelno plava za info */
+    --warning-accent: #FFEB3B; /* Pastelno žuta za upozorenja */
+    --success-accent: #A8E6CF; /* Pastelno zelena za uspjeh */
+
+
+    /* Sjene */
+    --shadow-light: rgba(0, 0, 0, 0.05); /* Vrlo lagana sjena */
+    --shadow-medium: rgba(0, 0, 0, 0.1); /* Srednja sjena za hover */
+
+    /* Fontovi */
+    --font-monospace: 'Inconsolata', 'Roboto Mono', monospace; /* Font pisaćeg stroja */
+    --font-sans-serif: 'Open Sans', sans-serif; /* Moderni sans-serif za općeniti tekst */
+}
+
+/* --- Općeniti stilovi za HomePage --- */
+html, body, #root {
+    height: 100%;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    background-color: var(--bg-primary);
+    font-family: var(--font-sans-serif);
+    color: var(--text-primary);
+    line-height: 1.6;
+}
+
+.homepage-container {
+    padding-top: 3rem;
+    padding-bottom: 3rem;
+    min-height: 100vh;
+}
+
+/* Heading stilovi (preuzeto iz ProfilePage.css) */
+.section-heading {
+    font-family: var(--font-sans-serif);
+    font-size: 2.2rem;
+    color: var(--text-heading);
+    font-weight: 700;
+    margin-bottom: 2rem;
+    text-align: center;
+    position: relative;
+    padding-bottom: 0.5rem;
+}
+
+.section-heading::after {
+    content: '';
+    position: absolute;
+    left: 50%;
+    bottom: 0;
+    transform: translateX(-50%);
+    width: 60px;
+    height: 3px;
+    background-color: var(--primary-accent);
+    border-radius: 2px;
+}
+
+/* --- Stilovi za karticu za pretragu --- */
+.search-card {
+    background-color: var(--bg-secondary);
+    border: 1px solid var(--border-color);
+    border-radius: 0.25rem;
+    box-shadow: 0 0.25rem 0.75rem var(--shadow-light);
+    margin: 0 auto; /* Centriranje kartice */
+    max-width: 700px; /* Ograniči širinu za bolji izgled */
+    padding: 1rem;
+}
+
+.search-card-title {
+    font-family: var(--font-sans-serif);
+    font-size: 1.75rem;
+    color: var(--text-heading);
+    font-weight: 700;
+}
+
+.search-input {
+    font-family: var(--font-monospace);
+    border: 1px solid var(--border-color);
+    border-radius: 0.25rem;
+    padding: 0.75rem 1rem;
+    box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.05);
+    transition: border-color 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+}
+
+.search-input:focus {
+    border-color: var(--primary-accent);
+    box-shadow: 0 0 0 0.2rem rgba(160, 196, 255, 0.25); /* Blaga plava sjena na focus */
+}
+
+/* Stilovi za gumbe unutar pretrage */
+.search-btn, .clear-search-btn {
+    font-family: var(--font-monospace);
+    font-weight: 600;
+    letter-spacing: 0.05rem;
+    padding: 0.75rem 1.5rem;
+    border-radius: 0.25rem;
+    box-shadow: 0 0.125rem 0.25rem var(--shadow-light);
+    transition: all 0.2s ease-in-out;
+}
+
+.search-btn {
+    background-color: var(--primary-accent);
+    border-color: var(--primary-accent);
+    color: var(--bg-secondary);
+}
+
+.search-btn:hover:not(:disabled) {
+    background-color: var(--primary-accent-hover);
+    border-color: var(--primary-accent-hover);
+    box-shadow: 0 0.25rem 0.5rem var(--shadow-medium);
+}
+
+.search-btn:disabled {
+    background-color: #E0E0E0;
+    border-color: #CCCCCC;
+    color: #999999;
+    cursor: not-allowed;
+    box-shadow: none;
+}
+
+.clear-search-btn {
+    background-color: transparent;
+    border: 2px solid var(--text-secondary);
+    color: var(--text-secondary);
+}
+
+.clear-search-btn:hover:not(:disabled) {
+    background-color: var(--text-secondary);
+    color: var(--bg-secondary);
+    box-shadow: 0 0.25rem 0.5rem var(--shadow-medium);
+}
+
+.clear-search-btn:disabled {
+    background-color: #E0E0E0;
+    border-color: #CCCCCC;
+    color: #999999;
+    cursor: not-allowed;
+    box-shadow: none;
+}
+
+/* --- Stilovi za loading i error poruke --- */
+.loading-spinner-section {
+    min-height: 200px;
+    margin-top: 2rem;
+    margin-bottom: 2rem;
+}
+
+.loading-spinner {
+    color: var(--primary-accent) !important; /* Pastelno plavi spinner */
+    width: 3rem;
+    height: 3rem;
+}
+
+.loading-text {
+    font-family: var(--font-monospace);
+    font-size: 1.1rem;
+    color: var(--text-secondary);
+}
+
+.alert-message {
+    font-family: var(--font-monospace);
+    font-size: 0.95rem;
+    padding: 0.75rem 1.25rem;
+    border-radius: 0.25rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    margin-top: 2rem;
+    margin-bottom: 2rem;
+}
+
+.alert-message.alert-danger {
+    background-color: rgba(229, 115, 115, 0.1);
+    color: var(--danger-accent) !important;
+    border: 1px solid var(--danger-accent) !important;
+}
+
+.alert-message.alert-info {
+    background-color: rgba(129, 212, 250, 0.1);
+    color: var(--info-accent) !important;
+    border: 1px solid var(--info-accent) !important;
+}
+
+/* Animacija za shake (preuzeto iz DeleteAccount.css) */
+@keyframes shake {
+    0%, 100% { transform: translateX(0); }
+    10%, 30%, 50%, 70%, 90% { transform: translateX(-5px); }
+    20%, 40%, 60%, 80% { transform: translateX(5px); }
+}
+
+.shake-animation {
+    animation: shake 0.5s;
+}
+
+/* --- Stilovi za javne foto kartice (Public Photo Card) --- */
+.public-photo-grid {
+    margin-top: 3rem; /* Odmak od search forme */
+}
+
+.public-photo-card {
+    background-color: var(--bg-secondary);
+    border: 1px solid var(--border-color);
+    border-radius: 0.25rem;
+    box-shadow: 0 0.125rem 0.25rem var(--shadow-light);
+    transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+}
+
+.public-photo-card {
+    background-color: var(--bg-secondary);
+    border: 1px solid var(--border-color);
+    border-radius: 0.25rem;
+    box-shadow: 0 0.125rem 0.25rem var(--shadow-light);
+    height: 100%; /* Dodano da osigura istu visinu kartica u gridu */
+    transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out, z-index 0s; /* Glatka tranzicija */
+    position: relative; /* Ključno za z-index da radi */
+    z-index: 1; /* Početni z-index */
+    cursor: pointer; /* Vizualni pokazatelj interaktivnosti */
+}
+
+.public-photo-card:hover {
+    transform: scale(1.07) translateY(-5px); /* Povećava karticu za 7% i lagano pomiče gore */
+    box-shadow: 0 0.75rem 1.5rem var(--shadow-medium); /* Još izraženija sjena na hoveru */
+    z-index: 10; /* Postavlja hoveranu karticu iznad ostalih */
+}
+
+.public-photo-img {
+    width: 100%;
+    height: 220px; /* Povećana visina slike */
+    object-fit: cover;
+    border-top-left-radius: 0.25rem;
+    border-top-right-radius: 0.25rem;
+}
+
+.public-photo-card .card-body {
+    padding: 1.25rem;
+}
+
+.public-photo-card .photo-card-title {
+    font-family: var(--font-sans-serif);
+    font-size: 1.35rem; /* Malo veći naslov */
+    color: var(--text-heading);
+    font-weight: 700;
+    margin-bottom: 0.75rem;
+    line-height: 1.3;
+}
+
+.public-photo-card .photo-card-hashtags {
+    font-family: var(--font-monospace);
+    font-size: 0.9rem;
+    color: var(--primary-accent); /* Pastelno plava za hashtagove */
+    margin-bottom: 0.5rem;
+    word-break: break-all;
+}
+
+.public-photo-card .photo-card-author {
+    font-family: var(--font-sans-serif);
+    font-size: 0.85rem;
+    color: var(--text-secondary);
+    margin-top: 1rem;
+}
+
+.public-photo-card .photo-card-author strong {
+    color: var(--text-primary);
+    font-weight: 600;
+}
+
+.public-photo-card .photo-card-footer {
+    background-color: rgba(221, 221, 221, 0.2); /* Vrlo svijetla siva pozadina za footer */
+    border-top: 1px solid var(--border-color);
+    font-family: var(--font-monospace);
+    font-size: 0.8rem;
+    color: var(--text-secondary);
+    padding: 0.75rem 1.25rem;
+}
+
+/* --- Responsivni dizajn --- */
+@media (max-width: 767.98px) {
+    .homepage-container {
+        padding-top: 2rem;
+        padding-bottom: 2rem;
+    }
+
+    .section-heading {
+        font-size: 1.8rem;
+        margin-bottom: 1.5rem;
+    }
+
+    .search-card {
+        padding: 1rem;
+        margin-bottom: 2rem;
+    }
+
+    .search-card-title {
+        font-size: 1.5rem;
+    }
+
+    .search-input {
+        padding: 0.6rem 0.8rem;
+        font-size: 0.9rem;
+    }
+
+    .search-btn, .clear-search-btn {
+        padding: 0.6rem 1rem;
+        font-size: 0.9rem;
+    }
+
+    .public-photo-img {
+        height: 180px;
+    }
+
+    .public-photo-card .photo-card-title {
+        font-size: 1.2rem;
+    }
+
+    .public-photo-card .photo-card-hashtags {
+        font-size: 0.8rem;
+    }
+
+    .public-photo-card .photo-card-author {
+        font-size: 0.75rem;
+    }
+
+    .public-photo-card .photo-card-footer {
+        font-size: 0.7rem;
+    }
+
+    .alert-message {
+        font-size: 0.85rem;
+    }
+}

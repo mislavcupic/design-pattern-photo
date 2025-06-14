@@ -1,189 +1,363 @@
-/* ... (Sav prethodni CSS kod koji si već imao, uključujući ono iz mog zadnjeg rješenja) ... */
+/* --- CSS varijable za boje i fontove --- */
+:root {
+    /* Boje */
+    --bg-primary: #F8F8F8; /* Vrlo svijetlo siva/prljavo bijela pozadina */
+    --bg-secondary: #FFFFFF; /* Čista bijela za kartice */
+    --text-primary: #333333; /* Tamna siva za glavni tekst */
+    --text-secondary: #555555; /* Srednja siva za prigušeni tekst */
+    --text-heading: #222222; /* Skoro crna za naslove */
+    --border-color: #DDDDDD; /* Vrlo svijetla siva za obrube */
+    --primary-accent: #A0C4FF; /* Pastelno plava */
+    --primary-accent-hover: #8AB3F0; /* Tamnija pastelno plava na hoveru */
+    --danger-accent: #E57373; /* Pastelno crvena za greške/brisanje */
+    --info-accent: #81D4FA; /* Svjetlija pastelno plava za info */
+    --warning-accent: #FFEB3B; /* Pastelno žuta za upozorenja */
 
-/* --- NOVE I MODIFICIRANE SEKCIJE ZA POBOLJŠANU VIDLJIVOST --- */
+    /* Sjene */
+    --shadow-light: rgba(0, 0, 0, 0.05); /* Vrlo lagana sjena */
+    --shadow-medium: rgba(0, 0, 0, 0.1); /* Srednja sjena za hover */
 
-/* Wrapper za sliku i hover efekte - ovo je ključno za pozicioniranje */
-.photo-image-wrapper {
+    /* Fontovi */
+    --font-monospace: 'Inconsolata', 'Roboto Mono', monospace; /* Font pisaćeg stroja */
+    --font-sans-serif: 'Open Sans', sans-serif; /* Moderni sans-serif za općeniti tekst */
+}
+
+/* --- Općeniti stilovi za cijelu stranicu (reset i osnovni stilovi) --- */
+html, body, #root {
+    height: 100%;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    background-color: var(--bg-primary);
+    font-family: var(--font-sans-serif);
+    color: var(--text-primary);
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+/* Kontejner za cijelu profilnu stranicu */
+.profile-page-container {
+    padding-top: 3rem; /* Odmak od vrha */
+    padding-bottom: 3rem; /* Odmak od dna */
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+/* Heading stilovi */
+.section-heading {
+    font-family: var(--font-sans-serif);
+    font-size: 2.2rem;
+    color: var(--text-heading);
+    font-weight: 700;
+    margin-bottom: 2rem;
+    text-align: center;
     position: relative;
-    overflow: hidden;
-    height: 180px; /* Visina wrappera za sliku, prilagodi po potrebi */
-    /* Dodaj blagi blur na hover da se akcije više istaknu */
-    transition: filter 0.3s ease-in-out;
+    padding-bottom: 0.5rem;
 }
 
-.photo-item:hover .photo-image-wrapper .photo-image {
-    transform: scale(1.08); /* Jači zoom na hover */
-    /* filter: brightness(0.7); */ /* Ovo je alternativa prozirnoj pozadini, smanjuje svjetlinu slike */
-}
-
-/* Akcije na slici (gumbi i ikone) */
-.photo-actions {
+.section-heading::after {
+    content: '';
     position: absolute;
+    left: 50%;
     bottom: 0;
-    left: 0;
-    right: 0;
-    /* Promjena pozadine: Potpuno neprozirna tamna pozadina */
-    background: rgba(0, 0, 0, 0.85); /* Gotovo crna, visoko neprozirna */
-    color: #fff; /* Bijeli tekst/ikone */
-    padding: 0.75rem 0.5rem; /* Prilagođen padding */
-    display: flex;
-    justify-content: space-around;
-    align-items: center;
-    /* Uklanjamo transform: translateY(100%) za odmah vidljivost na hover */
-    /* Ostavljamo transform: translateY(100%) ako i dalje želiš fade-in/slide-up */
-    transform: translateY(100%); /* Zadrži animaciju ako ti se sviđa */
-    transition: transform 0.3s ease-in-out; /* Samo za animaciju ulaska */
-    pointer-events: none; /* Omogući klikanje kroz div kad je skriven */
-    z-index: 2; /* Osiguraj da je iznad slike */
-}
-
-/* Prikaz photo-actions na hover */
-.photo-item:hover .photo-actions {
-    transform: translateY(0); /* Potpuno vidljivo */
-    pointer-events: auto; /* Omogući klikanje kada je vidljiv */
-}
-
-/* Stil za pojedine gumbe/ikone unutar photo-actions */
-.photo-action-btn {
-    background: none !important;
-    border: none !important;
-    color: #fff !important; /* Bijele ikone */
-    font-size: 1.6rem !important; /* Još veće ikone */
-    cursor: pointer;
-    padding: 0.5rem !important;
-    transition: color 0.2s ease-in-out, transform 0.2s ease-in-out;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    text-decoration: none; /* Ukloni podcrtavanje ako je gumb link */
-}
-
-.photo-action-btn:hover {
-    transform: scale(1.2) !important; /* Još veći zoom na hover */
-}
-
-/* Specifične boje za zvjezdicu */
-.star-icon {
-    color: #fff; /* Defaultno bijela (za praznu zvjezdicu) */
-    transition: color 0.2s ease-in-out;
-}
-
-.star-icon.filled {
-    color: #ffd700; /* Zlatna kad je ispunjena (privatna) */
-}
-
-.privacy-toggle-btn:hover .star-icon {
-    color: #ffeb3b !important; /* Svjetlija zlatna na hover */
-}
-
-/* Boja za brisanje */
-.delete-btn {
-    color: #fff !important; /* Bijela */
-    font-weight: bold; /* Za tekst "Obriši" ako je to gumb */
-    font-size: 1.1rem !important; /* Podesi veličinu teksta ako je gumb */
-}
-.delete-btn:hover {
-    color: #dc3545 !important; /* Crvena na hover */
-}
-
-/* Stil za ime korisnika koji je uploadovao sliku */
-.photo-uploader-name {
-    font-weight: bold; /* Istakni ime */
-    color: #007bff; /* Plava boja za ime korisnika */
-    text-decoration: none; /* Ukloni podcrtavanje ako je link */
-}
-/* Ako želite da bude klikabilno kao link: */
-.photo-uploader-name:hover {
-    text-decoration: underline;
-    cursor: pointer;
-}
-
-
-/* MODIFIKACIJE ZA HASHTAGOVE (iz prošlog rješenja, možda treba prilagoditi) */
-.hashtag-badge {
-    display: inline-block;
-    background-color: #e9ecef; /* Svijetlo siva pozadina */
-    color: #007bff; /* Plavi tekst za hashtagove */
-    padding: 0.2em 0.5em; /* Padding oko teksta */
-    margin: 0.2em; /* Mali razmak između hashtagova */
-    border-radius: 0.25rem; /* Zaobljeni rubovi */
-    font-size: 0.85rem;
-    font-weight: 500;
-    border: 1px solid #ced4da; /* **Tanka bordura za dodatnu definiciju** */
-    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05); /* Vrlo blaga sjena */
-    text-transform: lowercase;
-    white-space: nowrap; /* Spriječi prelamanje unutar badge-a */
-}
-.hashtag-badge:hover {
-    background-color: #007bff;
-    color: #fff;
-    border-color: #0056b3;
-}
-
-
-/* MODIFIKACIJE ZA BOJE TEKSTA OKO PAKETA I PROFILNE IKONE */
-
-/* Tekst unutar user-card */
-.profile-name-text {
-    font-size: 1.6rem;
-    font-weight: bold;
-    color: #343a40; /* Tamnija boja */
-}
-.profile-subtitle-text {
-    font-size: 0.9rem;
-    color: #6c757d; /* Standardna siva */
-}
-
-/* ListGroup.Item tekstualne labele (npr. "Paket:") */
-.list-group-item {
-    font-weight: 500;
-    color: #495057; /* Tamnija boja za tekst "Paket:", "Preostali uploadovi:" */
-    background-color: transparent !important;
-    border-color: #e9ecef; /* Svijetlija granica između stavki */
-    display: flex; /* Koristi flexbox za poravnanje */
-    justify-content: space-between; /* Razmakni labelu i badge */
-    align-items: center;
-}
-
-/* Boja profilnog kruga */
-.profile-icon {
-    background-color: #007bff !important; /* Plava boja, koristi !important */
-    color: #fff !important;
+    transform: translateX(-50%);
     width: 60px;
-    height: 60px;
+    height: 3px;
+    background-color: var(--primary-accent);
+    border-radius: 2px;
+}
+
+/* --- Stilovi za glavnu profilnu karticu (Card) --- */
+.profile-main-card {
+    background-color: var(--bg-secondary);
+    border: 1px solid var(--border-color);
+    border-radius: 0.25rem;
+    box-shadow: 0 0.25rem 0.75rem var(--shadow-light);
+    margin-bottom: 3rem; /* Razmak ispod kartice */
+    padding: 2rem;
+}
+
+.profile-avatar {
+    width: 120px;
+    height: 120px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 3px solid var(--primary-accent);
+    padding: 3px; /* Mali padding da se vidi border */
+    margin-bottom: 1.5rem;
+    box-shadow: 0 0 0.5rem rgba(0, 0, 0, 0.1);
+    transition: transform 0.2s ease-in-out;
+}
+
+.profile-avatar:hover {
+    transform: scale(1.05);
+}
+
+/* ************************************************* */
+/* OVDJE SU DODANI NOVI STILOVI ZA VELIKU IKONU */
+/* ************************************************* */
+.profile-icon-large {
+    width: 100px; /* Definiraj širinu */
+    height: 100px; /* Definiraj visinu */
+    background-color: var(--primary-accent); /* Tvoja pastelno plava boja */
+    border-radius: 50%; /* Okrugli oblik */
+    display: flex; /* Koristi flexbox za centriranje sadržaja */
+    align-items: center; /* Vertikalno centriranje */
+    justify-content: center; /* Horizontalno centriranje */
+    flex-shrink: 0; /* Osigurava da se ne smanji ako nema dovoljno mjesta */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Blaga sjena za vizualni efekt */
+}
+
+.profile-icon-large .profile-icon-svg {
+    font-size: 60px; /* Veličina SVG ikone unutar diva */
+    color: var(--bg-secondary); /* Bijela boja za ikonu unutar plavog kruga */
+}
+/* ************************************************* */
+/* KRAJ NOVIH STILOVA */
+/* ************************************************* */
+
+
+.profile-name {
+    font-family: var(--font-sans-serif);
     font-size: 2rem;
-    border-radius: 50% !important;
+    color: var(--text-heading);
+    font-weight: 700;
+    margin-bottom: 0.5rem;
+    /* Dodatni stilovi za flexbox ako se ne koristi Bootstrap klase u JS-u */
+    /* display: flex; */
+    /* align-items: center; */
+    /* justify-content: center; */
 }
 
-/* Stil za Badgeve paketa - osiguraj da imaju jasnu boju i kontrast */
-.package-badge {
-    /* Ovdje odabireš boju koja će se koristiti za sve pakete */
-    background-color: #007bff !important; /* Neka bude ista plava kao profilni krug */
-    color: #fff !important;
-    padding: 0.35em 0.65em;
-    border-radius: 0.3rem;
-    font-weight: bold;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+/* Stil za ikonu unutar imena */
+.profile-name svg { /* Gađa sve SVG ikone unutar profile-name */
+    font-size: 1.8rem; /* Malo manja od naslova da se ne natječe */
+    /* Boja i margina se postavljaju inline u JS-u, ali se mogu i ovdje definirati */
+    /* color: var(--primary-accent); */
+    /* margin-right: 10px; */
 }
-/* Ako želiš da GOLD bude zlatna, PRO zelena, FREE siva, onda koristi ove klase: */
-/* .package-badge.bg-secondary { background-color: #6c757d !important; } */
-/* .package-badge.bg-success { background-color: #28a745 !important; } */
-/* .package-badge.bg-info { background-color: #17a2b8 !important; } */
-/* .package-badge.bg-warning { background-color: #ffc107 !important; } */
-/* I osiguraj da tvoj React kod šalje pravu bg klasu */
-/* <Badge pill bg={userPackage === 'FREE' ? 'secondary' : (userPackage === 'PRO' ? 'success' : 'primary')} className="package-badge">{userPackage}</Badge> */
 
-/* Tekstualne boje unutar upload i gallery kartica */
-.upload-card-title, .gallery-card-title {
-    color: #343a40; /* Tamna boja za naslove */
-    font-weight: bold;
+
+.profile-email {
+    font-family: var(--font-monospace);
+    font-size: 1.1rem;
+    color: var(--text-secondary);
+    margin-bottom: 1.5rem;
 }
-.form-label-custom {
-    color: #343a40;
+
+.profile-package-badge {
+    font-family: var(--font-monospace);
+    font-weight: 700;
+    text-transform: uppercase;
+    padding: 0.5em 0.8em;
+    border-radius: 0.25rem;
+    font-size: 0.9em;
+    display: inline-block; /* Da bi se pravilno ponašao sa marginama */
+    margin-bottom: 1rem;
 }
-.photo-description {
-    color: #343a40;
+
+.badge-free {
+    background-color: #E0E0E0;
+    color: #666666;
 }
-.no-photos-text {
-    color: #6c757d;
+
+.badge-pro {
+    background-color: var(--primary-accent);
+    color: var(--bg-secondary);
+}
+
+.badge-gold {
+    background-color: #FFD700; /* Zlatna boja */
+    color: #6B4C00;
+}
+
+.profile-actions .btn {
+    font-family: var(--font-monospace);
+    font-weight: 600;
+    letter-spacing: 0.05rem;
+    padding: 0.75rem 1.5rem;
+    border-radius: 0.25rem;
+    box-shadow: 0 0.125rem 0.25rem var(--shadow-light);
+    transition: all 0.2s ease-in-out;
+}
+
+.profile-actions .btn-primary-outline {
+    background-color: transparent;
+    border: 2px solid var(--primary-accent);
+    color: var(--primary-accent);
+}
+
+.profile-actions .btn-primary-outline:hover {
+    background-color: var(--primary-accent);
+    color: var(--bg-secondary);
+    box-shadow: 0 0.25rem 0.5rem var(--shadow-medium);
+}
+
+.profile-actions .btn-danger {
+    background-color: var(--danger-accent);
+    border: none;
+    color: var(--bg-secondary);
+}
+
+.profile-actions .btn-danger:hover {
+    background-color: var(--danger-accent-hover); /* Tamnija crvena na hoveru */
+    color: var(--bg-secondary);
+    box-shadow: 0 0.25rem 0.5rem var(--shadow-medium);
+}
+
+/* --- Stilovi za foto kartice (Photo Card) --- */
+.photo-card {
+    background-color: var(--bg-secondary);
+    border: 1px solid var(--border-color);
+    border-radius: 0.25rem;
+    box-shadow: 0 0.125rem 0.25rem var(--shadow-light);
+    height: 100%; /* Osigurava da su sve kartice iste visine u redu */
+    display: flex;
+    flex-direction: column;
+    overflow: hidden; /* Dodano za izbjegavanje curenja sjene ili transformacije izvan okvira */
+
+    position: relative; /* Omogućuje z-index da radi (ako ga negdje drugdje koristiš) */
+    z-index: 1; /* Početni z-index (ako ga negdje drugdje koristiš) */
+    transition: box-shadow 0.3s ease-in-out; /* Glatka tranzicija samo za sjenu */
+    cursor: default; /* Nema posebnog kursora ako nema interakcije */
+}
+
+.photo-card:hover {
+    box-shadow: 0 0.25rem 0.5rem var(--shadow-medium); /* Blago izraženija sjena na hoveru */
+}
+
+
+/* Stil za sliku unutar kartice - osiguraj da se slika rasteže */
+.photo-card .card-img-top {
+    width: 100%;
+    height: 200px; /* Postavi fiksnu visinu za sliku da bude konzistentna */
+    object-fit: cover; /* Osigurava da slika popuni prostor bez izobličenja */
+}
+
+.photo-card .card-body {
+    padding: 1.25rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between; /* Gura akcije na dno */
+    flex-grow: 1;
+}
+
+.photo-card .card-title {
+    font-family: var(--font-sans-serif);
+    font-size: 1.25rem;
+    color: var(--text-heading);
+    font-weight: 700;
+    margin-bottom: 0.75rem;
+}
+
+.photo-card .card-text {
+    font-family: var(--font-monospace);
+    font-size: 0.9rem;
+    color: var(--text-secondary);
+    margin-bottom: 1rem;
+    word-break: break-word; /* Za duge tekstove */
+}
+
+.photo-card .card-text strong {
+    color: var(--text-primary);
+}
+
+.photo-card .btn-group {
+    margin-top: 1rem;
+}
+
+.photo-card .btn {
+    font-family: var(--font-monospace);
+    font-size: 0.85rem;
+    padding: 0.5rem 1rem;
+    border-radius: 0.2rem;
+    transition: all 0.2s ease-in-out;
+}
+
+/* Specific button colors */
+.photo-card .btn-outline-primary {
+    border-color: var(--primary-accent);
+    color: var(--primary-accent);
+}
+.photo-card .btn-outline-primary:hover {
+    background-color: var(--primary-accent);
+    color: var(--bg-secondary);
+}
+
+.photo-card .btn-outline-danger {
+    border-color: var(--danger-accent);
+    color: var(--danger-accent);
+}
+.photo-card .btn-outline-danger:hover {
+    background-color: var(--danger-accent);
+    color: var(--bg-secondary);
+}
+
+/* --- Responsivni dizajn --- */
+@media (max-width: 767.98px) {
+    .profile-page-container {
+        padding-top: 2rem;
+        padding-bottom: 2rem;
+    }
+
+    .section-heading {
+        font-size: 1.8rem;
+        margin-bottom: 1.5rem;
+    }
+
+    .profile-main-card {
+        padding: 1.5rem;
+        margin-bottom: 2rem;
+    }
+
+    .profile-avatar {
+        width: 90px;
+        height: 90px;
+        margin-bottom: 1rem;
+    }
+
+    .profile-name {
+        font-size: 1.6rem;
+    }
+
+    .profile-email {
+        font-size: 1.1rem;
+        margin-bottom: 1rem;
+    }
+
+    .profile-package-badge {
+        font-size: 0.8em;
+    }
+
+    .profile-actions .btn {
+        padding: 0.6rem 1rem;
+        font-size: 0.9rem;
+    }
+
+    .photo-card .card-img-top {
+        height: 180px; /* Malo manja visina na mobitelima */
+    }
+
+    .photo-card .card-body {
+        padding: 1rem;
+    }
+
+    .photo-card .card-title {
+        font-size: 1.1rem;
+        margin-bottom: 0.5rem;
+    }
+
+    .photo-card .card-text {
+        font-size: 0.85rem;
+        margin-bottom: 0.75rem;
+    }
+
+    .photo-card .btn {
+        font-size: 0.8rem;
+        padding: 0.4rem 0.8rem;
+    }
 }

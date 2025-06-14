@@ -87,7 +87,7 @@ public class AuthController {
     }
 
     @DeleteMapping("/delete")
-    @PreAuthorize("#firebaseUid == authentication.principal")
+    @PreAuthorize("isAuthenticated() or hasRole('ADMIN') or hasRole('REGISTERED')")
     public ResponseEntity<String> deleteAccount(@RequestHeader("Authorization") String authHeader) {
         String idToken = authHeader.replace("Bearer ", "");
 

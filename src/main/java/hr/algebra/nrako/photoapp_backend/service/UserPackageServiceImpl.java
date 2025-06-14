@@ -1,7 +1,7 @@
 package hr.algebra.nrako.photoapp_backend.service;
 
 import hr.algebra.nrako.photoapp_backend.domain.UserPackage;
-import hr.algebra.nrako.photoapp_backend.domain.UserPackageData;
+import hr.algebra.nrako.photoapp_backend.domain.UserPackageData; // Morat ćeš dodati nova polja ovdje!
 import hr.algebra.nrako.photoapp_backend.observer.PhotoUploadObserver;
 import hr.algebra.nrako.photoapp_backend.repository.UserPackageDataRepository;
 import hr.algebra.nrako.photoapp_backend.service.context.PackageContext;
@@ -12,9 +12,18 @@ import org.springframework.stereotype.Service;
 
 import javax.annotation.PostConstruct;
 import java.time.LocalDateTime;
-import java.util.Map;
-import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.ConcurrentHashMap;
+// Ukloni import za java.util.Map i java.util.concurrent.ConcurrentHashMap ako ti više ne trebaju za dailyUploadCounts
+// import java.util.Map;
+// import java.util.concurrent.ConcurrentHashMap;
+
+// Dodatni importi potrebni za rad s Timestampom i datumima
+import com.google.cloud.Timestamp;
+import java.time.LocalDate;
+import java.time.ZoneId;
+import java.util.Date; // Potrebno za pretvorbu Timestamp u Date pa u Instant
+
+import java.util.concurrent.CompletableFuture; // Potrebno za CompletableFuture
+
 
 @Service
 @RequiredArgsConstructor
@@ -24,8 +33,8 @@ public class UserPackageServiceImpl implements UserPackageService, PhotoUploadOb
     private final UserPackageDataRepository userPackageDataRepository;
     private final PhotoService photoService; // Inject PhotoService za registraciju
 
-    // Držimo broj dnevnih uploadova po korisniku u memoriji (može biti i u bazi)
-    private final Map<String, Integer> dailyUploadCounts = new ConcurrentHashMap<>();
+    // Ukloni ovu liniju, više ti ne treba mapa u memoriji:
+    // private final Map<String, Integer> dailyUploadCounts = new ConcurrentHashMap<>();
 
     @PostConstruct
     public void subscribeToPhotoUploads() {
@@ -34,9 +43,40 @@ public class UserPackageServiceImpl implements UserPackageService, PhotoUploadOb
 
     @Override
     public void onPhotoUploaded(String userId) {
-        dailyUploadCounts.compute(userId, (key, count) -> (count == null) ? 1 : count + 1);
-        System.out.println("User " + userId + " uploaded a photo. Current count: " + dailyUploadCounts.get(userId));
-        // Ovdje možete implementirati logiku za provjeru limita i potencijalno ažuriranje statusa korisnika
+        // Logika brojača sada dohvaća i sprema podatke u bazu
+        getUserPackageData(userId)
+                .thenAccept(packageData -> {
+                    LocalDate today = LocalDate.now(ZoneId.systemDefault());
+                    LocalDate lastUpload = null;
+
+                    // Pretvaramo Google Cloud Timestamp u LocalDate
+                    if (packageData.getLastUploadDate() != null) {
+                        lastUpload = packageData.getLastUploadDate().toDate().toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+                    }
+
+                    // Ako je zadnji upload bio neki drugi dan ili nikad, resetiraj brojač
+                    if (lastUpload == null || !lastUpload.isEqual(today)) {
+                        packageData.setCurrentDailyUploadCount(1); // Počinjemo s 1 za danas
+                        packageData.setLastUploadDate(Timestamp.now()); // Postavi trenutni Timestamp
+                    } else {
+                        // Ako je isti dan, samo inkrementiraj
+                        packageData.setCurrentDailyUploadCount(packageData.getCurrentDailyUploadCount() + 1);
+                    }
+
+                    // Spremi ažurirane podatke u bazu
+                    userPackageDataRepository.save(packageData)
+                            .thenAccept(savedData -> {
+                                System.out.println("User " + userId + " uploaded a photo. Current count in DB: " + savedData.getCurrentDailyUploadCount());
+                            })
+                            .exceptionally(ex -> {
+                                System.err.println("Error saving user package data for " + userId + ": " + ex.getMessage());
+                                return null;
+                            });
+                })
+                .exceptionally(ex -> {
+                    System.err.println("Error fetching user package data for " + userId + ": " + ex.getMessage());
+                    return null;
+                });
     }
 
     @Override
@@ -45,7 +85,23 @@ public class UserPackageServiceImpl implements UserPackageService, PhotoUploadOb
         return getUserPackageData(firebaseUid)
                 .thenApply(packageData -> {
                     int limit = PackageFactory.create(packageData.getUserPackageEnum()).getDailyUploadLimit();
-                    int uploadedToday = dailyUploadCounts.getOrDefault(firebaseUid, 0);
+
+                    LocalDate today = LocalDate.now(ZoneId.systemDefault());
+                    LocalDate lastUpload = null;
+
+                    // Pretvaramo Google Cloud Timestamp u LocalDate za provjeru datuma
+                    if (packageData.getLastUploadDate() != null) {
+                        lastUpload = packageData.getLastUploadDate().toDate().toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+                    }
+
+                    int uploadedToday;
+                    // Ako je novi dan ili nikad nije uploadano, brojač je 0 za danas
+                    if (lastUpload == null || !lastUpload.isEqual(today)) {
+                        uploadedToday = 0;
+                    } else {
+                        uploadedToday = packageData.getCurrentDailyUploadCount();
+                    }
+
                     return limit - uploadedToday;
                 });
     }
@@ -79,7 +135,7 @@ public class UserPackageServiceImpl implements UserPackageService, PhotoUploadOb
 
                     data.setUserPackage(newUserPackage.name());
 
-                    //stavi neki drugi timestamp ako ovaj modul ne radi
+                    // Postojeća logika za promjenu paketa (Timestamp je već korišten)
                     LocalDateTime now = LocalDateTime.now();
                     com.google.cloud.Timestamp timestampNow = com.google.cloud.Timestamp.of(java.util.Date
                             .from(now.atZone(java.time.ZoneId.systemDefault()).toInstant()));
@@ -87,7 +143,8 @@ public class UserPackageServiceImpl implements UserPackageService, PhotoUploadOb
                     data.setNextEligibleChangeDateTime(com.google.cloud.Timestamp.ofTimeSecondsAndNanos(
                             timestampNow.getSeconds() + 86400, timestampNow.getNanos()));
 
-                    return userPackageDataRepository.save(data);
+                    // Ovdje je promjena: pretvaramo CompletableFuture<UserPackageData> u CompletableFuture<Void>
+                    return userPackageDataRepository.save(data).thenApply(savedData -> null);
                 });
     }
 
@@ -107,10 +164,14 @@ public class UserPackageServiceImpl implements UserPackageService, PhotoUploadOb
 
     @Override
     @Async("taskExecutor")
-    public CompletableFuture<Void> createUserPackageData(String firebaseUid, UserPackage initialPackage) {
+    public CompletableFuture<UserPackageData> createUserPackageData(String firebaseUid, UserPackage initialPackage) {
         UserPackageData newUserPackageData = new UserPackageData();
         newUserPackageData.setFirebaseUid(firebaseUid);
         newUserPackageData.setUserPackage(initialPackage.name());
+        // Inicijaliziraj nova polja za brojač
+        newUserPackageData.setCurrentDailyUploadCount(0);
+        newUserPackageData.setLastUploadDate(null); // Ili Timestamp.now() ako želiš inicijalizirati na trenutni datum
+
         // ... (ostatak implementacije createUserPackageData) ...
         return userPackageDataRepository.save(newUserPackageData);
     }

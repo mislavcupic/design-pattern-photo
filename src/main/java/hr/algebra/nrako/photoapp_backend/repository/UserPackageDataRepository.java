@@ -3,6 +3,7 @@ package hr.algebra.nrako.photoapp_backend.repository;
 import com.google.api.core.ApiFuture;
 import com.google.cloud.firestore.DocumentSnapshot;
 import com.google.cloud.firestore.Firestore;
+import com.google.cloud.firestore.WriteResult; // Dodaj ovaj import
 import com.google.firebase.cloud.FirestoreClient;
 import hr.algebra.nrako.photoapp_backend.domain.UserPackageData;
 import org.springframework.stereotype.Repository;
@@ -15,44 +16,70 @@ import java.util.concurrent.ExecutionException;
 public class UserPackageDataRepository {
 
     private final Firestore db = FirestoreClient.getFirestore();
+    public static final String COLLECTION_NAME = "user_package_data"; // Dobro je imati konstantu
 
+    /**
+     * Pronalazi UserPackageData za dani Firebase UID.
+     * Vraća CompletableFuture<Optional<UserPackageData>>.
+     */
     public CompletableFuture<Optional<UserPackageData>> findByFirebaseUid(String firebaseUid) {
-        ApiFuture<DocumentSnapshot> future = db.collection("user_package_data").document(firebaseUid).get();
+        ApiFuture<DocumentSnapshot> future = db.collection(COLLECTION_NAME).document(firebaseUid).get();
         return CompletableFuture.supplyAsync(() -> {
             try {
                 DocumentSnapshot document = future.get();
                 if (document.exists()) {
-                    // Firestore automatski deserializira podatke u UserPackageData
                     UserPackageData data = document.toObject(UserPackageData.class);
+                    // Ako je ID dokumenta isti kao Firebase UID, ne moraš ga eksplicitno postavljati.
+                    // Ako ti treba u objektu, onda: if (data != null && data.getId() == null) data.setId(document.getId());
                     return Optional.ofNullable(data);
                 } else {
                     return Optional.empty();
                 }
+            } catch (InterruptedException e) {
+                Thread.currentThread().interrupt(); // Prekini nit ako je prekinuta
+                throw new RuntimeException("Firestore operation interrupted", e);
+            } catch (ExecutionException e) {
+                // Uhvati stvarni uzrok iz ExecutionException
+                throw new RuntimeException("Error fetching user package data for UID: " + firebaseUid, e.getCause());
             } catch (Exception e) {
-                e.printStackTrace(); // Ili zamijeni s logiranjem
+                // Općenita greška (npr. deserializacija)
+                System.err.println("Unexpected error in findByFirebaseUid for UID " + firebaseUid + ": " + e.getMessage());
+                e.printStackTrace();
                 return Optional.empty();
             }
         });
     }
 
-    public CompletableFuture<Void> save(UserPackageData data) {
-        db.collection("user_package_data").document(data.getFirebaseUid()).set(data);
-        return CompletableFuture.completedFuture(null);
-    }
+    /**
+     * Sprema ili ažurira UserPackageData objekt u Firestoreu.
+     * Vraća CompletableFuture<UserPackageData> kako bi se mogao koristiti u lancu poziva
+     * i potvrdilo da je objekt uspješno spremljen.
+     */
+    public CompletableFuture<UserPackageData> save(UserPackageData data) {
+        if (data.getFirebaseUid() == null || data.getFirebaseUid().isEmpty()) {
+            return CompletableFuture.failedFuture(new IllegalArgumentException("Firebase UID must not be null or empty for saving UserPackageData."));
+        }
 
-    public CompletableFuture<UserPackageData> getUserPackageData(String uid) {
-        ApiFuture<DocumentSnapshot> future = db.collection("user_package_data").document(uid).get();
+        // Postavi ID dokumenta u Firestoreu da bude Firebase UID
+        ApiFuture<WriteResult> future = db.collection(COLLECTION_NAME).document(data.getFirebaseUid()).set(data);
+
         return CompletableFuture.supplyAsync(() -> {
             try {
-                DocumentSnapshot doc = future.get();
-                if (doc.exists()) {
-                    return doc.toObject(UserPackageData.class);
-                } else {
-                    return null;
-                }
+                future.get(); // Čekaj da se operacija spremanja završi
+                return data; // Vrati objekt koji je upravo spremljen
+            } catch (InterruptedException e) {
+                Thread.currentThread().interrupt();
+                throw new RuntimeException("Firestore save operation interrupted", e);
+            } catch (ExecutionException e) {
+                throw new RuntimeException("Error saving user package data for UID: " + data.getFirebaseUid(), e.getCause());
             } catch (Exception e) {
-                throw new RuntimeException("Error fetching data", e);
+                System.err.println("Unexpected error in save for UID " + data.getFirebaseUid() + ": " + e.getMessage());
+                e.printStackTrace();
+                throw new RuntimeException("Failed to save user package data.", e);
             }
         });
     }
+
+    // Ukloni ovu metodu jer je findByFirebaseUid dostatna
+    // public CompletableFuture<UserPackageData> getUserPackageData(String uid) { ... }
 }

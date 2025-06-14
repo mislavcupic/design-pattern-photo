@@ -40,6 +40,19 @@ public class PhotoController {
         this.storageService = storageService;
         this.photoService = photoService;
     }
+    @GetMapping("/public") // Ovaj endpoint će vraćati samo javne fotografije
+    public CompletableFuture<ResponseEntity<List<PhotoDto>>> getAllPublicPhotos() {
+        // photoService.getAllPhotos() već sadrži logiku za filtriranje samo javnih fotografija
+        // i vraća CompletableFuture<List<Photo>>.
+        return photoService.getAllPhotos()
+                .thenApply(photos -> ResponseEntity.ok(photos.stream()
+                        .map(this::mapToDto)
+                        .collect(Collectors.toList())))
+                .exceptionally(ex -> {
+                    logger.error("Error retrieving all public photos: {}", ex.getMessage(), ex);
+                    return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
+                });
+    }
 
     @PostMapping("/upload")
     @PreAuthorize("hasRole('REGISTERED') or hasRole('ADMIN')")
@@ -60,14 +73,21 @@ public class PhotoController {
     }
 
     @GetMapping("/user")
-    @PreAuthorize("hasRole('REGISTERED')or hasRole('ADMIN')")
-    public List<PhotoDto> getPhotosForCurrentUser(HttpServletRequest request) throws ExecutionException, InterruptedException {
-        String uid = firebaseTokenUtils.extractUidFromRequest(request);
-        List<Photo> photos = asyncHelperPhoto.getPhotosByUser(uid);
+    @PreAuthorize("hasRole('REGISTERED') or hasRole('ADMIN')")
+    public List<PhotoDto> getPhotosForCurrentUser() throws ExecutionException, InterruptedException {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String authenticatedUid = (String) authentication.getPrincipal(); // UID trenutno ulogiranog korisnika
+        boolean isAdmin = authentication.getAuthorities().stream().anyMatch(a -> a.getAuthority().equals("ROLE_ADMIN"));
+
+        logger.info("Dohvaćanje fotografija za CURRENT korisnika (UID: {}). Je li admin: {}", authenticatedUid, isAdmin);
+
+        // KLJUČNA PROMJENA: Pozivamo NOVU metodu u AsyncHelperPhoto
+        List<Photo> photos = asyncHelperPhoto.getPhotosByUser(authenticatedUid, authenticatedUid, isAdmin);
         return photos.stream()
                 .map(this::mapToDto)
                 .collect(Collectors.toList());
     }
+
 
     @GetMapping("/{id}")
     public ResponseEntity<PhotoDto> getPhotoDetails(@PathVariable Long id) throws ExecutionException, InterruptedException {
@@ -109,7 +129,14 @@ public class PhotoController {
     @GetMapping("/user/{uid}")
     @PreAuthorize("hasRole('ADMIN') or hasRole('REGISTERED')")
     public List<PhotoDto> getPhotosByUser(@PathVariable String uid) throws ExecutionException, InterruptedException {
-        List<Photo> photos = asyncHelperPhoto.getPhotosByUser(uid);
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String authenticatedUid = (String) authentication.getPrincipal();
+        // KLJUČNA PROMJENA: Deklaracija i inicijalizacija isAdmin
+        boolean isAdmin = authentication.getAuthorities().stream().anyMatch(a -> a.getAuthority().equals("ROLE_ADMIN"));
+
+        logger.info("Pokušaj dohvata fotografija za korisnika {}. Autentificirani UID: {}. Je li admin: {}", uid, authenticatedUid, isAdmin);
+
+        List<Photo> photos = asyncHelperPhoto.getPhotosByUser(uid, authenticatedUid, isAdmin);
         return photos.stream()
                 .map(this::mapToDto)
                 .collect(Collectors.toList());

@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { auth } from './Firebase'; // Koristimo tvoju Firebase auth instancu
+import { auth } from './Firebase';
 import {
     Button,
     Container,
@@ -7,66 +7,70 @@ import {
     Col,
     Form,
     Spinner,
-    Image as BootstrapImage, // Alias za Image komponentu iz Bootstrapa
+    Image as BootstrapImage,
     Card,
     ListGroup,
     Badge,
     InputGroup,
     FormControl,
-    Alert // Za prikaz grešaka i loadinga
+    Alert,
+    Modal
 } from 'react-bootstrap';
-import { FaStar, FaRegStar } from 'react-icons/fa'; // Importiramo ikone zvjezdica (ako ih koristiš za privatnost)
-import './css/ProfilePage.css'; // Dodatni CSS za specifične stilove
+import {
+    FaStar, FaRegStar, FaDownload, FaTrashAlt, FaLock, FaGlobe,
+    FaImage, FaCloudUploadAlt, FaExchangeAlt, FaUserCircle, FaInfoCircle
+} from 'react-icons/fa';
+import './css/ProfilePage.css';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 const BASE_URL = 'http://localhost:8080';
 
 const ProfilePage = () => {
-    // Stanja iz originalne komponente za korisnika i paket
     const [user, setUser] = useState(null);
     const [userPackage, setUserPackage] = useState(null);
     const [uploadsLeft, setUploadsLeft] = useState(0);
     const [nextEligibleChange, setNextEligibleChange] = useState(null);
     const [photos, setPhotos] = useState([]);
-    const [isLoading, setIsLoading] = useState(true); // Glavni loading za cijelu stranicu
+    const [isLoading, setIsLoading] = useState(true);
 
-    // Nova stanja za upload fotografija (integrirana iz prethodnih verzija)
-    const [file, setFile] = useState(null); // Ime je promijenjeno iz newPhoto u file radi jasnoće
+    const [file, setFile] = useState(null);
     const [description, setDescription] = useState('');
     const [hashtags, setHashtags] = useState('');
-    const [isPrivate, setIsPrivate] = useState(false); // Checkbox za privatnost
+    const [isPrivate, setIsPrivate] = useState(false);
 
-    // Stanja za opcije obrade slike
     const [isResizingEnabled, setIsResizingEnabled] = useState(false);
     const [maxWidth, setMaxWidth] = useState('');
     const [maxHeight, setMaxHeight] = useState('');
     const [outputFormat, setOutputFormat] = useState('');
 
-    // Stanja za loading/error poruke UPLOADA (različito od glavnog isLoading)
     const [uploading, setUploading] = useState(false);
     const [uploadError, setUploadError] = useState(null);
 
-    // Stanja za greške kod promjene paketa
     const [packageChangeError, setPackageChangeError] = useState(null);
     const [changingPackage, setChangingPackage] = useState(false);
+    const [selectedPackage, setSelectedPackage] = useState('');
 
+    const [showDownloadModal, setShowDownloadModal] = useState(false);
+    const [selectedPhotoForDownload, setSelectedPhotoForDownload] = useState(null);
+    const [downloadMaxWidth, setDownloadMaxWidth] = useState('');
+    const [downloadMaxHeight, setDownloadMaxHeight] = useState('');
+    const [downloadOutputFormat, setDownloadOutputFormat] = useState('');
+    const [downloadApplySepia, setDownloadApplySepia] = useState(false);
+    const [downloadApplyBlur, setDownloadApplyBlur] = useState(false);
+    const [downloading, setDownloading] = useState(false);
+    const [downloadError, setDownloadError] = useState(null);
 
-    const [selectedPackage, setSelectedPackage] = useState(''); // Za drop-down izbor paketa
-
-
-    // Tvoja fetchWithAuth funkcija, prilagođena za opće potrebe
     const fetchWithAuth = async (url, options = {}) => {
         try {
             let currentUser = auth.currentUser;
-
             if (!currentUser) {
-                // Ako korisnik nije autentificiran, baci grešku ili preusmjeri
-                // window.location.href = '/login'; // Opcionalno preusmjeravanje
+                toast.error("Korisnik nije autentificiran. Molimo prijavite se.", { autoClose: 3000 });
                 throw new Error("Korisnik nije autentificiran. Molimo prijavite se.");
             }
-
-            const idToken = await currentUser.getIdToken(true); // Dohvati najnoviji ID token
-
+            const idToken = await currentUser.getIdToken(true);
             if (!idToken) {
+                toast.error("Neispravan ID token. Molimo pokušajte ponovo.", { autoClose: 3000 });
                 throw new Error("Neispravan ID token. Molimo pokušajte ponovo.");
             }
 
@@ -78,125 +82,187 @@ const ProfilePage = () => {
                 },
             });
 
-            // Handle non-OK responses (4xx, 5xx)
             if (!response.ok) {
                 const errorText = await response.text();
-                // Pokušaj parsirati JSON ako je odgovor JSON
                 try {
                     const errorJson = JSON.parse(errorText);
                     throw new Error(errorJson.message || `Greška: ${response.status} - ${errorText}`);
                 } catch (e) {
-                    // Ako nije JSON, vrati običan tekst
                     throw new Error(`Greška: ${response.status} - ${errorText}`);
                 }
             }
-
             return response;
         } catch (error) {
             console.error("fetchWithAuth error:", error);
-            throw error; // Ponovno baci grešku da je gornji sloj uhvati
+            if (!error.message.includes("Niste prijavljeni") && !error.message.includes("Neispravan ID token")) {
+                toast.error(`Došlo je do greške: ${error.message}`, { autoClose: 5000 });
+            }
+            throw error;
         }
     };
 
-    // Glavna funkcija za dohvaćanje svih podataka
+    const downloadPhoto = async (
+        photoId,
+        options = {
+            maxWidth: null,
+            maxHeight: null,
+            outputFormat: null,
+            applySepia: false,
+            applyBlur: false
+        }
+    ) => {
+        try {
+            let currentUser = auth.currentUser;
+            if (!currentUser) {
+                toast.error("Korisnik nije autentificiran za preuzimanje fotografije.", { autoClose: 3000 });
+                throw new Error("Korisnik nije autentificiran za preuzimanje fotografije. Molimo prijavite se.");
+            }
+            const idToken = await currentUser.getIdToken(true);
+            if (!idToken) {
+                toast.error("Neispravan ID token za preuzimanje.", { autoClose: 3000 });
+                throw new Error("Neispravan ID token za preuzimanje. Molimo pokušajte ponovo.");
+            }
+
+            const headers = { Authorization: `Bearer ${idToken}` };
+            const params = new URLSearchParams();
+            if (options.maxWidth) params.append('maxWidth', options.maxWidth);
+            if (options.maxHeight) params.append('maxHeight', options.maxHeight);
+            if (options.outputFormat) params.append('outputFormat', options.outputFormat);
+            if (options.applySepia) params.append('applySepia', options.applySepia);
+            if (options.applyBlur) params.append('applyBlur', options.applyBlur);
+
+            const response = await fetch(`${BASE_URL}/api/photos/${photoId}/download?${params.toString()}`, {
+                method: 'GET',
+                headers: headers,
+            });
+
+            if (!response.ok) {
+                const errorText = await response.text();
+                throw new Error(`HTTP error! status: ${response.status} - ${errorText}`);
+            }
+
+            const contentDisposition = response.headers.get('Content-Disposition');
+            let filename = `processed_photo.jpeg`;
+            if (contentDisposition) {
+                const filenameMatch = contentDisposition.match(/filename\*?=(?:UTF-8'')?([^;]+)/);
+                if (filenameMatch && filenameMatch[1]) {
+                    try {
+                        filename = decodeURIComponent(filenameMatch[1].replace(/%([0-9A-Fa-f]{2})/g, '%$1'));
+                        filename = filename.replace(/^"|"$/g, '');
+                    } catch (e) {
+                        console.warn("Could not decode filename from Content-Disposition, using default.", e);
+                    }
+                }
+            }
+
+            const blob = await response.blob();
+            const url = window.URL.createObjectURL(blob);
+            const link = document.createElement('a');
+            link.href = url;
+            link.setAttribute('download', filename);
+            document.body.appendChild(link);
+            link.click();
+            link.parentNode.removeChild(link);
+            window.URL.revokeObjectURL(url);
+
+            toast.success("Fotografija uspješno preuzeta!", { autoClose: 2000 });
+            return true;
+        } catch (error) {
+            console.error('Error downloading photo:', error);
+            toast.error(`Greška pri preuzimanju fotografije: ${error.message}`, { autoClose: 5000 });
+            throw error;
+        }
+    };
+
     const fetchDataAndUserStatus = async () => {
         try {
             setIsLoading(true);
             const currentUser = auth.currentUser;
-            setUser(currentUser); // Postavi Firebase User objekt
+            setUser(currentUser);
 
             if (!currentUser) {
-                // Ako nema currentUsera, zaustavi učitavanje i prikaži poruku
                 setIsLoading(false);
                 return;
             }
 
-            // Dohvati podatke o paketu
-            const userPackageRes = await fetchWithAuth(`${BASE_URL}/user-package/user-package`);
+            const [userPackageRes, remainingUploadsRes, photosRes, nextChangeRes] = await Promise.all([
+                fetchWithAuth(`${BASE_URL}/user-package/user-package`),
+                fetchWithAuth(`${BASE_URL}/user-package/remaining-uploads`),
+                fetchWithAuth(`${BASE_URL}/api/photos/user/${currentUser.uid}`),
+                fetchWithAuth(`${BASE_URL}/user-package/next-eligible-change`)
+            ]);
+
             const userPackageData = await userPackageRes.json();
             setUserPackage(userPackageData);
 
-            // Dohvati preostale uploadove
-            const remainingUploadsRes = await fetchWithAuth(`${BASE_URL}/user-package/remaining-uploads`);
             const remainingUploadsData = await remainingUploadsRes.json();
             setUploadsLeft(remainingUploadsData);
 
-            // Dohvati fotografije trenutnog korisnika (sada koristi currentUser.uid)
-            const photosRes = await fetchWithAuth(`${BASE_URL}/api/photos/user/${currentUser.uid}`);
             const photosData = await photosRes.json();
             setPhotos(photosData);
 
-            // Dohvati vrijeme sljedeće promjene paketa
-            const nextChangeRes = await fetchWithAuth(`${BASE_URL}/user-package/next-eligible-change`);
             const nextChangeData = await nextChangeRes.json();
             setNextEligibleChange(nextChangeData ? new Date(nextChangeData) : null);
 
         } catch (error) {
             console.error('Greška pri dohvaćanju podataka profila:', error);
-            // Postavi grešku za cijelu stranicu ako je problem pri inicijalnom dohvatu
             setUploadError(`Greška pri učitavanju profila: ${error.message}`);
+            toast.error(`Greška pri učitavanju profila: ${error.message}`, { autoClose: 5000 });
         } finally {
             setIsLoading(false);
         }
     };
 
-    // useEffect za inicijalno dohvaćanje podataka i postavljanje listenera za autentikaciju
     useEffect(() => {
-        // Firebase Auth Listener
         const unsubscribe = auth.onAuthStateChanged(user => {
             if (user) {
                 setUser(user);
-                fetchDataAndUserStatus(); // Dohvati podatke kada se korisnik prijavi
+                fetchDataAndUserStatus();
             } else {
                 setUser(null);
-                setIsLoading(false); // Ako nema korisnika, završi loading
-                //setUploadError("Niste prijavljeni. Molimo prijavite se za pregled profila.");
+                setIsLoading(false);
             }
         });
-
-        // Cleanup function za listener
         return () => unsubscribe();
-    }, []); // Prazan array znači da se pokreće samo jednom pri montiranju komponente
+    }, []);
 
-
-    // Funkcija za promjenu paketa (iz originala)
     const handleChangePackage = async () => {
         if (!selectedPackage) {
             setPackageChangeError("Molimo odaberite paket.");
+            toast.warn("Molimo odaberite paket.", { autoClose: 2000 });
             return;
         }
         setPackageChangeError(null);
-        setChangingPackage(true); // Aktiviraj loading za promjenu paketa
+        setChangingPackage(true);
 
         try {
-            console.log("Mijenjam paket u:", selectedPackage);
             await fetchWithAuth(`${BASE_URL}/user-package/change-package`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(selectedPackage), // Šalji samo odabrani string paketa
+                body: JSON.stringify(selectedPackage),
             });
 
-            alert(`Paket uspješno promijenjen u ${selectedPackage}!`);
-            // Ponovno dohvati sve podatke nakon uspješne promjene
+            toast.success(`Paket uspješno promijenjen u ${selectedPackage}!`, { autoClose: 2000 });
             await fetchDataAndUserStatus();
-            setSelectedPackage(''); // Resetiraj odabrani paket u drop-downu
+            setSelectedPackage('');
 
         } catch (error) {
             console.error("Greška prilikom promjene paketa:", error);
             setPackageChangeError(`Greška prilikom promjene paketa: ${error.message}`);
+            toast.error(`Greška prilikom promjene paketa: ${error.message}`, { autoClose: 5000 });
         } finally {
-            setChangingPackage(false); // Deaktiviraj loading
+            setChangingPackage(false);
         }
     };
 
-    // Funkcija za upload fotografije (integrirana nova logika)
-    const handleUploadPhoto = async (e) => { // Proslijedi event
-        e.preventDefault(); // Spriječi defaultno ponašanje forme
-        setUploadError(null); // Resetiraj error za upload
+    const handleUploadPhoto = async (e) => {
+        e.preventDefault();
+        setUploadError(null);
         setUploading(true);
 
         if (!file) {
             setUploadError('Molimo odaberite datoteku.');
+            toast.warn('Molimo odaberite datoteku.', { autoClose: 2000 });
             setUploading(false);
             return;
         }
@@ -210,6 +276,7 @@ const ProfilePage = () => {
                 (maxHeight && (isNaN(parsedMaxHeight) || parsedMaxHeight <= 0))
             ) {
                 setUploadError('Maksimalna širina i visina moraju biti pozitivni brojevi.');
+                toast.error('Maksimalna širina i visina moraju biti pozitivni brojevi.', { autoClose: 3000 });
                 setUploading(false);
                 return;
             }
@@ -219,7 +286,7 @@ const ProfilePage = () => {
         formData.append('file', file);
         formData.append('description', description);
         formData.append('hashtags', hashtags);
-        formData.append('uid', user.uid); // Firebase UID je ključan
+        formData.append('uid', user.uid);
         formData.append('isPrivate', isPrivate);
 
         if (isResizingEnabled) {
@@ -233,14 +300,12 @@ const ProfilePage = () => {
         try {
             await fetchWithAuth(`${BASE_URL}/api/photos/upload`, {
                 method: 'POST',
-                body: formData, // fetch automatski postavlja Content-Type za FormData
+                body: formData,
             });
 
-            alert('Fotografija uspješno učitana!');
-            // Osvježi sve podatke nakon uploada
+            toast.success('Fotografija uspješno učitana!', { autoClose: 2000 });
             await fetchDataAndUserStatus();
 
-            // Resetiraj formu za upload
             setFile(null);
             setDescription('');
             setHashtags('');
@@ -250,19 +315,15 @@ const ProfilePage = () => {
             setMaxHeight('');
             setOutputFormat('');
 
-            // Resetiraj input type="file" element, ako je potrebno
-            // const fileInput = document.getElementById('formFile'); // Koristi ID iz forme
-            // if (fileInput) fileInput.value = '';
-
         } catch (error) {
             console.error('Upload error:', error);
             setUploadError(`Greška kod uploada: ${error.message}`);
+            toast.error(`Greška kod uploada: ${error.message}`, { autoClose: 5000 });
         } finally {
             setUploading(false);
         }
     };
 
-    // Funkcija za brisanje fotografije (iz originala)
     const handleDeletePhoto = async (photoId) => {
         if (!window.confirm("Jeste li sigurni da želite obrisati ovu fotografiju?")) {
             return;
@@ -271,28 +332,24 @@ const ProfilePage = () => {
             await fetchWithAuth(`${BASE_URL}/api/photos/${photoId}`, {
                 method: 'DELETE',
             });
-            alert('Fotografija uspješno obrisana!');
-            // Osvježi sve podatke nakon brisanja
+            toast.success('Fotografija uspješno obrisana!', { autoClose: 2000 });
             await fetchDataAndUserStatus();
         } catch (error) {
             console.error('Greška prilikom brisanja fotografije:', error);
-            alert(`Greška prilikom brisanja fotografije: ${error.message}`);
+            toast.error(`Greška prilikom brisanja fotografije: ${error.message}`, { autoClose: 5000 });
         }
     };
 
-    // Funkcija za prebacivanje statusa privatnosti fotografije (iz originala)
     const handleTogglePrivacy = async (photoId, currentIsPrivate) => {
         try {
-            // PUT zahtjev na backend endpoint za promjenu privatnosti
             await fetchWithAuth(`${BASE_URL}/api/photos/${photoId}/toggle-privacy`, {
                 method: 'PUT',
             });
-            alert(`Fotografija je sada ${currentIsPrivate ? 'javna' : 'privatna'}!`);
-            // Ako je uspješno, osvježi listu fotografija
-            await fetchDataAndUserStatus(); // Ponovno dohvati fotografije
+            toast.info(`Fotografija je sada ${currentIsPrivate ? 'javna' : 'privatna'}!`, { autoClose: 2000 });
+            await fetchDataAndUserStatus();
         } catch (error) {
             console.error('Greška prilikom promjene privatnosti fotografije:', error);
-            alert(`Greška: ${error.message}`);
+            toast.error(`Greška: ${error.message}`, { autoClose: 5000 });
         }
     };
 
@@ -300,141 +357,195 @@ const ProfilePage = () => {
         return user?.displayName || "Anonimni Korisnik";
     };
 
-    // Glavni loading spinner za cijelu stranicu
+    const handleDownloadClick = (photo) => {
+        setSelectedPhotoForDownload(photo);
+        setDownloadMaxWidth('');
+        setDownloadMaxHeight('');
+        setDownloadOutputFormat('');
+        setDownloadApplySepia(false);
+        setDownloadApplyBlur(false);
+        setDownloadError(null);
+        setShowDownloadModal(true);
+    };
+
+    const handleDownloadConfirm = async () => {
+        if (!selectedPhotoForDownload) return;
+
+        setDownloading(true);
+        setDownloadError(null);
+
+        const options = {
+            maxWidth: downloadMaxWidth ? parseInt(downloadMaxWidth) : null,
+            maxHeight: downloadMaxHeight ? parseInt(downloadMaxHeight) : null,
+            outputFormat: downloadOutputFormat || null,
+            applySepia: downloadApplySepia,
+            applyBlur: downloadApplyBlur
+        };
+
+        try {
+            await downloadPhoto(selectedPhotoForDownload.id, options);
+            setShowDownloadModal(false);
+        } catch (error) {
+            console.error('Greška pri iniciranju preuzimanja:', error);
+            setDownloadError(`Greška pri preuzimanja: ${error.message}`);
+        } finally {
+            setDownloading(false);
+        }
+    };
+
+    const handleCloseDownloadModal = () => {
+        setShowDownloadModal(false);
+        setSelectedPhotoForDownload(null);
+    };
+
     if (isLoading) {
         return (
-            <Container className="my-5 text-center">
-                <Spinner animation="border" role="status">
-                    <span className="visually-hidden">Učitavanje...</span>
-                </Spinner>
-                <p className="mt-3">Učitavanje korisničkih podataka...</p>
+            <Container className="my-5 text-center loading-container">
+                <Spinner animation="border" role="status" className="loading-spinner" />
+                <p className="mt-3 loading-text">Učitavanje korisničkih podataka...</p>
             </Container>
         );
     }
 
-    // Poruka ako korisnik nije prijavljen (nakon što je isLoading završio)
     if (!user) {
         return (
-            <Container className="my-5">
-                <Alert variant="info" className="text-center">
-                    <Alert.Heading>Niste prijavljeni!</Alert.Heading>
+            <Container className="my-5 not-logged-in-container">
+                <Alert variant="info" className="text-center shadow-sm">
+                    <Alert.Heading className="alert-heading-custom"><FaInfoCircle className="me-2" />Niste prijavljeni!</Alert.Heading>
                     <p className="mb-0">Molimo prijavite se za pristup svom profilu i funkcionalnostima.</p>
                 </Alert>
             </Container>
         );
     }
 
-
     return (
         <Container className="profile-container my-5">
-            <Row className="justify-content-md-center">
-                <Col md={8}>
+            <Row className="justify-content-center">
+                <Col md={10} lg={8}>
                     {/* Sekcija korisničkog profila i paketa */}
-                    <Card className="user-card shadow-sm mb-4">
-                        <Card.Body className="p-4">
-                            <div className="d-flex align-items-center mb-3">
-                                <div className="profile-icon rounded-circle bg-primary text-white d-flex align-items-center justify-content-center me-3">
-                                    {getUserName().charAt(0).toUpperCase()}
+                    <Card className="user-card shadow-lg mb-5 border-0">
+                        <Card.Body className="p-4 p-md-5">
+                            <div className="d-flex align-items-center mb-4">
+                                <div className="profile-icon-large rounded-circle text-white d-flex align-items-center justify-content-center me-4">
+                                    <FaUserCircle className="profile-icon-svg" />
                                 </div>
                                 <div>
-                                    <Card.Title className="mb-1 profile-name-text">{getUserName()}</Card.Title>
+                                    <Card.Title className="mb-1 profile-name-text fw-bold">{getUserName()}</Card.Title>
                                     <Card.Subtitle className="text-muted profile-subtitle-text">{user?.email || 'Nema emaila'}</Card.Subtitle>
                                 </div>
                             </div>
-                            <ListGroup variant="flush">
-                                <ListGroup.Item className="package-info-item">
-                                    Paket: <Badge pill bg={userPackage === 'FREE' ? 'secondary' : (userPackage === 'PRO' ? 'success' : 'info')} className="package-badge">{userPackage}</Badge>
+                            <ListGroup variant="flush" className="mb-4">
+                                <ListGroup.Item className="package-info-item d-flex justify-content-between align-items-center">
+                                    <span>Paket:</span>
+                                    <Badge pill className="package-badge px-3 py-2">
+                                        {userPackage}
+                                    </Badge>
                                 </ListGroup.Item>
-                                <ListGroup.Item className="upload-info-item">
-                                    Preostali uploadovi: <Badge pill bg="info" className="uploads-badge">{uploadsLeft}</Badge>
+                                <ListGroup.Item className="upload-info-item d-flex justify-content-between align-items-center">
+                                    <span>Preostali uploadovi:</span>
+                                    <Badge pill className="uploads-badge px-3 py-2">{uploadsLeft}</Badge>
                                 </ListGroup.Item>
                                 {nextEligibleChange && (
-                                    <ListGroup.Item className="change-date-item">
-                                        Možete ponovno promijeniti paket: <Badge pill bg="warning" className="change-date-badge">{nextEligibleChange.toLocaleString()}</Badge>
+                                    <ListGroup.Item className="change-date-item d-flex justify-content-between align-items-center">
+                                        <span>Možete ponovno promijeniti paket:</span>
+                                        <Badge pill className="change-date-badge px-3 py-2">{nextEligibleChange.toLocaleString()}</Badge>
                                     </ListGroup.Item>
                                 )}
                             </ListGroup>
-                            <Form.Group className="mt-3">
-                                <Form.Label className="form-label-custom">Odaberite novi paket</Form.Label>
+                            <Form.Group className="mt-4">
+                                <Form.Label className="form-label-custom fw-semibold mb-2">
+                                    <FaExchangeAlt className="me-2 text-primary" /> Odaberite novi paket
+                                </Form.Label>
                                 <Form.Select
                                     value={selectedPackage}
                                     onChange={(e) => setSelectedPackage(e.target.value)}
                                     className="form-select-custom"
-                                    disabled={changingPackage}
+                                    disabled={changingPackage || (nextEligibleChange && new Date() < new Date(nextEligibleChange))}
                                 >
                                     <option value="">-- Odaberite --</option>
                                     {['FREE', 'PRO', 'GOLD'].filter(pkg => pkg !== userPackage).map(pkg => (
                                         <option key={pkg} value={pkg}>{pkg}</option>
                                     ))}
                                 </Form.Select>
-                                {packageChangeError && <Alert variant="danger" className="mt-2">{packageChangeError}</Alert>}
+                                {packageChangeError && <Alert variant="danger" className="mt-3 shake-animation">{packageChangeError}</Alert>}
                                 <Button
-                                    variant="outline-secondary"
-                                    className="mt-2 w-100 package-change-btn"
+                                    variant="outline-primary"
+                                    className="mt-3 w-100 package-change-btn"
                                     disabled={!selectedPackage || changingPackage || (nextEligibleChange && new Date() < new Date(nextEligibleChange))}
-                                    onClick={handleChangePackage} // Poziva handleChangePackage bez argumenta
+                                    onClick={handleChangePackage}
                                 >
                                     {changingPackage ? (
                                         <>
                                             <Spinner as="span" animation="border" size="sm" role="status" aria-hidden="true" className="me-2" />
                                             Mijenjam paket...
                                         </>
-                                    ) : 'Promijeni paket'}
+                                    ) : (
+                                        <>
+                                            <FaExchangeAlt className="me-2" /> Promijeni paket
+                                        </>
+                                    )}
                                 </Button>
                             </Form.Group>
                         </Card.Body>
                     </Card>
 
                     {/* Sekcija za upload nove fotografije */}
-                    <Card className="upload-card shadow-sm mb-4">
-                        <Card.Body>
-                            <Card.Title className="mb-3 upload-card-title text-center">Učitaj Novu Fotografiju</Card.Title>
-                            <Form onSubmit={handleUploadPhoto}> {/* Sada je onSubmit na Form elementu */}
-                                {uploadError && <Alert variant="danger">{uploadError}</Alert>}
+                    <Card className="upload-card shadow-lg mb-5 border-0">
+                        <Card.Body className="p-4 p-md-5">
+                            <Card.Title className="mb-4 upload-card-title text-center fw-bold">
+                                <FaCloudUploadAlt className="me-2 text-primary" /> Učitaj Novu Fotografiju
+                            </Card.Title>
+                            <Form onSubmit={handleUploadPhoto}>
+                                {uploadError && <Alert variant="danger" className="shake-animation">{uploadError}</Alert>}
                                 {uploading && (
-                                    <Alert variant="info" className="d-flex align-items-center">
+                                    <Alert variant="info" className="d-flex align-items-center justify-content-center upload-progress-alert">
                                         <Spinner animation="border" size="sm" className="me-2" />
                                         Učitavam fotografiju...
                                     </Alert>
                                 )}
 
                                 <Form.Group controlId="formFile" className="mb-3">
-                                    <Form.Label className="form-label-custom">Odaberite fotografiju</Form.Label>
+                                    <Form.Label className="form-label-custom fw-semibold">Odaberite fotografiju <span className="text-danger">*</span></Form.Label>
                                     <Form.Control
                                         type="file"
                                         onChange={(e) => setFile(e.target.files[0])}
-                                        required // Obavezno polje
+                                        required
                                         disabled={uploading}
+                                        className="form-control-file"
                                     />
                                 </Form.Group>
 
                                 <Form.Group controlId="formDescription" className="mb-3">
-                                    <Form.Label className="form-label-custom">Opis</Form.Label>
+                                    <Form.Label className="form-label-custom fw-semibold">Opis</Form.Label>
                                     <Form.Control
                                         type="text"
                                         value={description}
                                         onChange={(e) => setDescription(e.target.value)}
-                                        placeholder="Dodajte opis fotografije"
+                                        placeholder="Dodajte opis fotografije (npr. 'Prekrasan zalazak sunca')"
                                         disabled={uploading}
                                     />
                                 </Form.Group>
 
                                 <Form.Group controlId="formHashtags" className="mb-3">
-                                    <Form.Label className="form-label-custom">Hashtags</Form.Label>
+                                    <Form.Label className="form-label-custom fw-semibold">Hashtagovi</Form.Label>
                                     <Form.Control
                                         type="text"
                                         value={hashtags}
                                         onChange={(e) => setHashtags(e.target.value)}
-                                        placeholder="Unesite hashtagove (odvojene zarezom)"
+                                        placeholder="Unesite hashtagove (odvojene zarezom, npr. #zalazaksunca, #priroda)"
                                         disabled={uploading}
                                     />
                                 </Form.Group>
 
-                                {/* Dodana kontrola za privatnost */}
-                                <Form.Group className="mb-3">
+                                <Form.Group className="mb-4">
                                     <Form.Check
                                         type="checkbox"
-                                        label="Privatna fotografija (vidljiva samo vama)"
+                                        label={
+                                            <>
+                                                {isPrivate ? <FaLock className="me-1 text-danger" /> : <FaGlobe className="me-1 text-primary" />}
+                                                Privatna fotografija (vidljiva samo vama)
+                                            </>
+                                        }
                                         checked={isPrivate}
                                         onChange={(e) => setIsPrivate(e.target.checked)}
                                         className="private-checkbox"
@@ -442,8 +553,7 @@ const ProfilePage = () => {
                                     />
                                 </Form.Group>
 
-                                {/* OPCIJE OBRADE SLIKE (iz PhotoUploadForm) */}
-                                <h4 className="mt-4 mb-3 text-center">Opcije obrade slike (prije uploada):</h4>
+                                <h4 className="mt-4 mb-3 text-center section-subtitle">Opcije obrade slike (prije uploada)</h4>
 
                                 <Form.Group controlId="formResize" className="mb-3">
                                     <Form.Check
@@ -456,9 +566,9 @@ const ProfilePage = () => {
                                 </Form.Group>
 
                                 {isResizingEnabled && (
-                                    <Row className="mb-3">
+                                    <Row className="mb-3 g-2">
                                         <Col md={6}>
-                                            <InputGroup className="mb-2">
+                                            <InputGroup className="mb-2 mb-md-0">
                                                 <InputGroup.Text>Maks. Širina (px)</InputGroup.Text>
                                                 <FormControl
                                                     type="number"
@@ -471,7 +581,7 @@ const ProfilePage = () => {
                                             </InputGroup>
                                         </Col>
                                         <Col md={6}>
-                                            <InputGroup className="mb-2">
+                                            <InputGroup>
                                                 <InputGroup.Text>Maks. Visina (px)</InputGroup.Text>
                                                 <FormControl
                                                     type="number"
@@ -487,7 +597,7 @@ const ProfilePage = () => {
                                 )}
 
                                 <Form.Group controlId="formOutputFormat" className="mb-4">
-                                    <Form.Label>Izlazni format:</Form.Label>
+                                    <Form.Label className="fw-semibold">Izlazni format:</Form.Label>
                                     <Form.Select
                                         value={outputFormat}
                                         onChange={(e) => setOutputFormat(e.target.value)}
@@ -500,69 +610,89 @@ const ProfilePage = () => {
                                     </Form.Select>
                                 </Form.Group>
 
-                                <Button variant="primary" type="submit" disabled={!file || uploading || uploadsLeft <= 0} className="w-100 upload-btn">
+                                <Button variant="outline-primary" type="submit" disabled={!file || uploading || uploadsLeft <= 0} className="w-100 upload-btn">
                                     {uploading ? (
                                         <>
-                                            <Spinner as="span" animation="grow" size="sm" role="status" aria-hidden="true" />
+                                            <Spinner as="span" animation="grow" size="sm" role="status" aria-hidden="true" className="me-2" />
                                             Učitavam...
                                         </>
-                                    ) : (uploadsLeft <= 0 ? 'Nema preostalih uploadova' : 'Upload')}
+                                    ) : (uploadsLeft <= 0 ? 'Nema preostalih uploadova' : (<><FaCloudUploadAlt className="me-2" /> Upload fotografije</>))}
                                 </Button>
-                                {uploadsLeft <= 0 && <Alert variant="warning" className="mt-2 text-center">Nadogradite paket za više uploadova!</Alert>}
+                                {uploadsLeft <= 0 && <Alert variant="warning" className="mt-3 text-center small-alert">Nadogradite paket za više uploadova!</Alert>}
 
                             </Form>
                         </Card.Body>
                     </Card>
 
                     {/* Sekcija za prikaz korisničkih fotografija */}
-                    <Card className="gallery-card shadow-sm mb-4">
-                        <Card.Body>
-                            <Card.Title className="mb-3 gallery-card-title text-center">Vaše fotografije</Card.Title>
-                            <Row xs={1} md={2} lg={3} className="g-3">
+                    <Card className="gallery-card shadow-lg mb-5 border-0">
+                        <Card.Body className="p-4 p-md-5">
+                            <Card.Title className="mb-4 gallery-card-title text-center fw-bold">
+                                <FaImage className="me-2 text-primary" /> Vaše fotografije
+                            </Card.Title>
+                            <Row xs={1} md={2} lg={3} className="g-4">
                                 {photos.length === 0 ? (
-                                    <Col xs={12}><p className="text-muted text-center">Još nema uploadanih fotografija. Budite prvi!</p></Col>
+                                    <Col xs={12}><p className="text-muted text-center py-4 fs-5">Još nema uploadanih fotografija. Budite prvi!</p></Col>
                                 ) : (
                                     photos.map((photoData) => (
                                         <Col key={photoData.id}>
-                                            <Card className="photo-item h-100">
+                                            <Card className="photo-item h-100 overflow-hidden shadow-sm">
                                                 {photoData.fileUrl ? (
-                                                    <BootstrapImage
-                                                        src={photoData.fileUrl}
-                                                        alt={photoData.description}
-                                                        className="card-img-top"
-                                                        style={{ objectFit: 'cover', height: '150px' }}
-                                                    />
+                                                    <div className="photo-thumbnail-wrapper">
+                                                        <BootstrapImage
+                                                            src={photoData.fileUrl}
+                                                            alt={photoData.description}
+                                                            className="card-img-top photo-thumbnail"
+                                                        />
+                                                        {photoData.isPrivate && (
+                                                            <span className="private-overlay"><FaLock /> Privatno</span>
+                                                        )}
+                                                    </div>
                                                 ) : (
-                                                    <div className="d-flex align-items-center justify-content-center bg-light" style={{ height: '150px' }}>
-                                                        <p className="text-muted m-0">URL nedostupan</p>
+                                                    <div className="photo-placeholder d-flex align-items-center justify-content-center bg-light text-muted">
+                                                        <FaImage size={48} />
+                                                        <p className="m-0 ms-2">URL nedostupan</p>
                                                     </div>
                                                 )}
-                                                <Card.Body className="d-flex flex-column justify-content-between">
+                                                <Card.Body className="d-flex flex-column justify-content-between p-3">
                                                     <div>
-                                                        <Card.Text className="small text-muted mb-1">{photoData.description}</Card.Text>
-                                                        {photoData.hashtags && (
-                                                            <div className="mb-2">
+                                                        <Card.Text className="small text-muted mb-2 photo-description">{photoData.description || 'Bez opisa'}</Card.Text>
+                                                        {photoData.hashtags && photoData.hashtags.split(',').filter(tag => tag.trim() !== '').length > 0 && (
+                                                            <div className="mb-2 hashtags-container">
                                                                 {photoData.hashtags.split(',').map((tag, index) => (
-                                                                    <Badge key={index} pill bg="light" text="dark" className="me-1 mb-1">#{tag.trim()}</Badge>
+                                                                    <Badge key={index} pill className="hashtag-badge">#{tag.trim()}</Badge>
                                                                 ))}
                                                             </div>
                                                         )}
                                                     </div>
-                                                    <div className="d-flex justify-content-between align-items-center mt-auto">
+                                                    <div className="d-flex justify-content-around align-items-center mt-3 photo-actions">
                                                         <Button
                                                             variant="link"
-                                                            className="p-0"
+                                                            className="action-icon-button"
                                                             onClick={() => handleTogglePrivacy(photoData.id, photoData.isPrivate)}
                                                             title={photoData.isPrivate ? 'Privatna (klikni za javno)' : 'Javna (klikni za privatno)'}
                                                         >
                                                             {photoData.isPrivate ? (
-                                                                <FaRegStar className="text-warning" size={20} /> // Prazna zvjezdica za privatno
+                                                                <FaLock className="text-danger" size={22} />
                                                             ) : (
-                                                                <FaStar className="text-warning" size={20} /> // Puna zvjezdica za javno
+                                                                <FaGlobe className="text-primary" size={22} />
                                                             )}
                                                         </Button>
-                                                        <Button variant="outline-danger" size="sm" onClick={() => handleDeletePhoto(photoData.id)}>
-                                                            Obriši
+                                                        <Button
+                                                            variant="link"
+                                                            className="action-icon-button"
+                                                            onClick={() => handleDownloadClick(photoData)}
+                                                            title="Preuzmi fotografiju"
+                                                        >
+                                                            <FaDownload className="text-primary" size={22} />
+                                                        </Button>
+                                                        <Button
+                                                            variant="link"
+                                                            className="action-icon-button"
+                                                            onClick={() => handleDeletePhoto(photoData.id)}
+                                                            title="Obriši fotografiju"
+                                                        >
+                                                            <FaTrashAlt className="text-danger" size={22} />
                                                         </Button>
                                                     </div>
                                                 </Card.Body>
@@ -573,8 +703,101 @@ const ProfilePage = () => {
                             </Row>
                         </Card.Body>
                     </Card>
+
+                    {/* MODAL ZA OPCIJE PREUZIMANJA */}
+                    <Modal show={showDownloadModal} onHide={handleCloseDownloadModal} centered contentClassName="modal-custom">
+                        <Modal.Header closeButton className="modal-header-custom">
+                            <Modal.Title className="fw-bold">Preuzmi fotografiju: <span className="text-primary">{selectedPhotoForDownload?.description || 'Bez opisa'}</span></Modal.Title>
+                        </Modal.Header>
+                        <Modal.Body className="p-4">
+                            {downloadError && <Alert variant="danger" className="shake-animation">{downloadError}</Alert>}
+                            <Form>
+                                <Form.Group controlId="downloadOutputFormat" className="mb-3">
+                                    <Form.Label className="fw-semibold">Izlazni format:</Form.Label>
+                                    <Form.Select
+                                        value={downloadOutputFormat}
+                                        onChange={(e) => setDownloadOutputFormat(e.target.value)}
+                                        disabled={downloading}
+                                    >
+                                        <option value="">Original</option>
+                                        <option value="png">PNG</option>
+                                        <option value="jpeg">JPG</option>
+                                        <option value="bmp">BMP</option>
+                                        <option value="gif">GIF</option>
+                                    </Form.Select>
+                                </Form.Group>
+
+                                <Row className="mb-3 g-2">
+                                    <Col>
+                                        <InputGroup>
+                                            <InputGroup.Text>Maks. Širina (px)</InputGroup.Text>
+                                            <FormControl
+                                                type="number"
+                                                value={downloadMaxWidth}
+                                                onChange={(e) => setDownloadMaxWidth(e.target.value)}
+                                                min="1"
+                                                placeholder="npr. 800"
+                                                disabled={downloading}
+                                            />
+                                        </InputGroup>
+                                    </Col>
+                                    <Col>
+                                        <InputGroup>
+                                            <InputGroup.Text>Maks. Visina (px)</InputGroup.Text>
+                                            <FormControl
+                                                type="number"
+                                                value={downloadMaxHeight}
+                                                onChange={(e) => setDownloadMaxHeight(e.target.value)}
+                                                min="1"
+                                                placeholder="npr. 600"
+                                                disabled={downloading}
+                                            />
+                                        </InputGroup>
+                                    </Col>
+                                </Row>
+
+                                <Form.Group className="mb-2">
+                                    <Form.Check
+                                        type="checkbox"
+                                        label="Primijeni Sepia filter"
+                                        checked={downloadApplySepia}
+                                        onChange={(e) => setDownloadApplySepia(e.target.checked)}
+                                        disabled={downloading}
+                                    />
+                                </Form.Group>
+                                <Form.Group className="mb-3">
+                                    <Form.Check
+                                        type="checkbox"
+                                        label="Primijeni Blur filter"
+                                        checked={downloadApplyBlur}
+                                        onChange={(e) => setDownloadApplyBlur(e.target.checked)}
+                                        disabled={downloading}
+                                    />
+                                </Form.Group>
+                            </Form>
+                        </Modal.Body>
+                        <Modal.Footer className="modal-footer-custom">
+                            <Button variant="outline-secondary" onClick={handleCloseDownloadModal} disabled={downloading}>
+                                Odustani
+                            </Button>
+                            <Button variant="outline-primary" onClick={handleDownloadConfirm} disabled={downloading}>
+                                {downloading ? (
+                                    <>
+                                        <Spinner as="span" animation="border" size="sm" role="status" aria-hidden="true" className="me-2" />
+                                        Preuzimam...
+                                    </>
+                                ) : (
+                                    <>
+                                        <FaDownload className="me-2" /> Preuzmi
+                                    </>
+                                )}
+                            </Button>
+                        </Modal.Footer>
+                    </Modal>
+
                 </Col>
             </Row>
+            <ToastContainer position="bottom-right" autoClose={5000} hideProgressBar={false} newestOnTop={false} closeOnClick rtl={false} pauseOnFocusLoss draggable pauseOnHover />
         </Container>
     );
 };

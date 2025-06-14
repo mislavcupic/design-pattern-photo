@@ -12,7 +12,7 @@ public interface UserPackageService {
     CompletableFuture<Void> changeUserPackage(String firebaseUid, UserPackage newUserPackage);
     CompletableFuture<LocalDateTime> getNextEligibleChange(String firebaseUid);
     CompletableFuture<UserPackage> getUserPackage(String firebaseUid);
-    CompletableFuture<Void> createUserPackageData(String firebaseUid, UserPackage initialPackage);
+    CompletableFuture<UserPackageData> createUserPackageData(String firebaseUid, UserPackage initialPackage);
     CompletableFuture<Integer> getRemainingUploads(String firebaseUid);
 
 }
