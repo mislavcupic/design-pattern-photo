@@ -1,0 +1,189 @@
+/* ... (Sav prethodni CSS kod koji si već imao, uključujući ono iz mog zadnjeg rješenja) ... */
+
+/* --- NOVE I MODIFICIRANE SEKCIJE ZA POBOLJŠANU VIDLJIVOST --- */
+
+/* Wrapper za sliku i hover efekte - ovo je ključno za pozicioniranje */
+.photo-image-wrapper {
+    position: relative;
+    overflow: hidden;
+    height: 180px; /* Visina wrappera za sliku, prilagodi po potrebi */
+    /* Dodaj blagi blur na hover da se akcije više istaknu */
+    transition: filter 0.3s ease-in-out;
+}
+
+.photo-item:hover .photo-image-wrapper .photo-image {
+    transform: scale(1.08); /* Jači zoom na hover */
+    /* filter: brightness(0.7); */ /* Ovo je alternativa prozirnoj pozadini, smanjuje svjetlinu slike */
+}
+
+/* Akcije na slici (gumbi i ikone) */
+.photo-actions {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    /* Promjena pozadine: Potpuno neprozirna tamna pozadina */
+    background: rgba(0, 0, 0, 0.85); /* Gotovo crna, visoko neprozirna */
+    color: #fff; /* Bijeli tekst/ikone */
+    padding: 0.75rem 0.5rem; /* Prilagođen padding */
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    /* Uklanjamo transform: translateY(100%) za odmah vidljivost na hover */
+    /* Ostavljamo transform: translateY(100%) ako i dalje želiš fade-in/slide-up */
+    transform: translateY(100%); /* Zadrži animaciju ako ti se sviđa */
+    transition: transform 0.3s ease-in-out; /* Samo za animaciju ulaska */
+    pointer-events: none; /* Omogući klikanje kroz div kad je skriven */
+    z-index: 2; /* Osiguraj da je iznad slike */
+}
+
+/* Prikaz photo-actions na hover */
+.photo-item:hover .photo-actions {
+    transform: translateY(0); /* Potpuno vidljivo */
+    pointer-events: auto; /* Omogući klikanje kada je vidljiv */
+}
+
+/* Stil za pojedine gumbe/ikone unutar photo-actions */
+.photo-action-btn {
+    background: none !important;
+    border: none !important;
+    color: #fff !important; /* Bijele ikone */
+    font-size: 1.6rem !important; /* Još veće ikone */
+    cursor: pointer;
+    padding: 0.5rem !important;
+    transition: color 0.2s ease-in-out, transform 0.2s ease-in-out;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-decoration: none; /* Ukloni podcrtavanje ako je gumb link */
+}
+
+.photo-action-btn:hover {
+    transform: scale(1.2) !important; /* Još veći zoom na hover */
+}
+
+/* Specifične boje za zvjezdicu */
+.star-icon {
+    color: #fff; /* Defaultno bijela (za praznu zvjezdicu) */
+    transition: color 0.2s ease-in-out;
+}
+
+.star-icon.filled {
+    color: #ffd700; /* Zlatna kad je ispunjena (privatna) */
+}
+
+.privacy-toggle-btn:hover .star-icon {
+    color: #ffeb3b !important; /* Svjetlija zlatna na hover */
+}
+
+/* Boja za brisanje */
+.delete-btn {
+    color: #fff !important; /* Bijela */
+    font-weight: bold; /* Za tekst "Obriši" ako je to gumb */
+    font-size: 1.1rem !important; /* Podesi veličinu teksta ako je gumb */
+}
+.delete-btn:hover {
+    color: #dc3545 !important; /* Crvena na hover */
+}
+
+/* Stil za ime korisnika koji je uploadovao sliku */
+.photo-uploader-name {
+    font-weight: bold; /* Istakni ime */
+    color: #007bff; /* Plava boja za ime korisnika */
+    text-decoration: none; /* Ukloni podcrtavanje ako je link */
+}
+/* Ako želite da bude klikabilno kao link: */
+.photo-uploader-name:hover {
+    text-decoration: underline;
+    cursor: pointer;
+}
+
+
+/* MODIFIKACIJE ZA HASHTAGOVE (iz prošlog rješenja, možda treba prilagoditi) */
+.hashtag-badge {
+    display: inline-block;
+    background-color: #e9ecef; /* Svijetlo siva pozadina */
+    color: #007bff; /* Plavi tekst za hashtagove */
+    padding: 0.2em 0.5em; /* Padding oko teksta */
+    margin: 0.2em; /* Mali razmak između hashtagova */
+    border-radius: 0.25rem; /* Zaobljeni rubovi */
+    font-size: 0.85rem;
+    font-weight: 500;
+    border: 1px solid #ced4da; /* **Tanka bordura za dodatnu definiciju** */
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05); /* Vrlo blaga sjena */
+    text-transform: lowercase;
+    white-space: nowrap; /* Spriječi prelamanje unutar badge-a */
+}
+.hashtag-badge:hover {
+    background-color: #007bff;
+    color: #fff;
+    border-color: #0056b3;
+}
+
+
+/* MODIFIKACIJE ZA BOJE TEKSTA OKO PAKETA I PROFILNE IKONE */
+
+/* Tekst unutar user-card */
+.profile-name-text {
+    font-size: 1.6rem;
+    font-weight: bold;
+    color: #343a40; /* Tamnija boja */
+}
+.profile-subtitle-text {
+    font-size: 0.9rem;
+    color: #6c757d; /* Standardna siva */
+}
+
+/* ListGroup.Item tekstualne labele (npr. "Paket:") */
+.list-group-item {
+    font-weight: 500;
+    color: #495057; /* Tamnija boja za tekst "Paket:", "Preostali uploadovi:" */
+    background-color: transparent !important;
+    border-color: #e9ecef; /* Svijetlija granica između stavki */
+    display: flex; /* Koristi flexbox za poravnanje */
+    justify-content: space-between; /* Razmakni labelu i badge */
+    align-items: center;
+}
+
+/* Boja profilnog kruga */
+.profile-icon {
+    background-color: #007bff !important; /* Plava boja, koristi !important */
+    color: #fff !important;
+    width: 60px;
+    height: 60px;
+    font-size: 2rem;
+    border-radius: 50% !important;
+}
+
+/* Stil za Badgeve paketa - osiguraj da imaju jasnu boju i kontrast */
+.package-badge {
+    /* Ovdje odabireš boju koja će se koristiti za sve pakete */
+    background-color: #007bff !important; /* Neka bude ista plava kao profilni krug */
+    color: #fff !important;
+    padding: 0.35em 0.65em;
+    border-radius: 0.3rem;
+    font-weight: bold;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+/* Ako želiš da GOLD bude zlatna, PRO zelena, FREE siva, onda koristi ove klase: */
+/* .package-badge.bg-secondary { background-color: #6c757d !important; } */
+/* .package-badge.bg-success { background-color: #28a745 !important; } */
+/* .package-badge.bg-info { background-color: #17a2b8 !important; } */
+/* .package-badge.bg-warning { background-color: #ffc107 !important; } */
+/* I osiguraj da tvoj React kod šalje pravu bg klasu */
+/* <Badge pill bg={userPackage === 'FREE' ? 'secondary' : (userPackage === 'PRO' ? 'success' : 'primary')} className="package-badge">{userPackage}</Badge> */
+
+/* Tekstualne boje unutar upload i gallery kartica */
+.upload-card-title, .gallery-card-title {
+    color: #343a40; /* Tamna boja za naslove */
+    font-weight: bold;
+}
+.form-label-custom {
+    color: #343a40;
+}
+.photo-description {
+    color: #343a40;
+}
+.no-photos-text {
+    color: #6c757d;
+}

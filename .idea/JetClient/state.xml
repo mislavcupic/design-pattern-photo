@@ -1,0 +1,143 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="JetClientState">
+    <option name="draftsState">
+      <draftsState>
+        <option name="requests">
+          <list>
+            <requestState>
+              <option name="auth">
+                <authState>
+                  <option name="type" value="BEARER" />
+                </authState>
+              </option>
+              <option name="body">
+                <bodyState>
+                  <option name="raw" value="{&#10;  &quot;email&quot;: &quot;mislav.cupic1@skole.hr&quot;,&#10;  &quot;password&quot;: &quot;tajna123&quot;,&#10;  &quot;displayName&quot;: &quot;Testni korisnik 2&quot;,&#10;  &quot;idToken&quot;: &quot;eyJhbGciOiJSUzI1NiIsImtpZCI6IjNmOWEwNTBkYzRhZTgyOGMyODcxYzMyNTYzYzk5ZDUwMjc3ODRiZTUiLCJ0eXAiOiJKV1QifQ.eyJuYW1lIjoiVGVzdG5pIGtvcmlzbmlrIDIiLCJpc3MiOiJodHRwczovL3NlY3VyZXRva2VuLmdvb2dsZS5jb20vcGhvdG9hcHAtYzE5NWQiLCJhdWQiOiJwaG90b2FwcC1jMTk1ZCIsImF1dGhfdGltZSI6MTc0NjQ3NTU5MCwidXNlcl9pZCI6IkwxNzJnMlo5ZTJUQTNBV2hKSmlQSk50dmFVSDIiLCJzdWIiOiJMMTcyZzJaOWUyVEEzQVdoSkppUEpOdHZhVUgyIiwiaWF0IjoxNzQ2NDc1NTkwLCJleHAiOjE3NDY0NzkxOTAsImVtYWlsIjoibWlzbGF2LmN1cGljMUBza29sZS5ociIsImVtYWlsX3ZlcmlmaWVkIjpmYWxzZSwiZmlyZWJhc2UiOnsiaWRlbnRpdGllcyI6eyJlbWFpbCI6WyJtaXNsYXYuY3VwaWMxQHNrb2xlLmhyIl19LCJzaWduX2luX3Byb3ZpZGVyIjoicGFzc3dvcmQifX0.UwDm2_KFnAMyCFsRCBONvTVtJUR7V5kSwBGgOR9AAiIhuIzg_1Wc7DJDqW1ICH2z33h7Z_VCee7QX5HHx0VnlH8uW1L6Iz8d-SiORVG5lH_lKkxXvVslHo9nrd6b0cMnLo95PBFW9h7tBDuJNbOm6gvdi-gHE1FjrrS6Zxe2PIu3DnyeqnsJ5Hrrr1GUoFTEIfSzM0h3M0l27F7eGOH2YCwIt2pK5kzsfZxPNeo7jaMfBQ26eyVWWkYVI_eN0WK-_iOAJz6eoQHi5KOKPdlInR-E8-R4j0iJ29whkm1hwhqcjjK5MkNc0vEnBIVbUVtv0AE6RysGE4aZwwN-OHHk3A&quot;&#10;}" />
+                  <option name="type" value="JSON" />
+                </bodyState>
+              </option>
+              <option name="id" value="563ad1be-a7ec-4a70-bb60-3073d3fa73af" />
+              <option name="method" value="POST" />
+              <option name="name" value="Draft" />
+              <option name="url" value="http://localhost:8080/auth/login" />
+            </requestState>
+            <requestState>
+              <option name="body">
+                <bodyState>
+                  <option name="raw" value="{&#10;  &quot;email&quot;: &quot;mislav.cupic1@skole.hr&quot;,&#10;  &quot;password&quot;: &quot;Test12345!&quot;,&#10;  &quot;returnSecureToken&quot;: true&#10;}" />
+                  <option name="type" value="JSON" />
+                </bodyState>
+              </option>
+              <option name="id" value="d6f6d3e3-6df3-4393-a49d-135be9ec753b" />
+              <option name="method" value="POST" />
+              <option name="name" value="Draft (1)" />
+              <option name="queryParams">
+                <list>
+                  <queryParamState>
+                    <option name="key" value="key" />
+                    <option name="value" value="AIzaSyA_6XtbsDR4CT2ocwlBAnJdZJNiUE8x_IU" />
+                  </queryParamState>
+                </list>
+              </option>
+              <option name="url" value="https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=AIzaSyA_6XtbsDR4CT2ocwlBAnJdZJNiUE8x_IU" />
+            </requestState>
+            <requestState>
+              <option name="id" value="1aca9ae3-9619-4855-8ed0-7f37e4ac10df" />
+              <option name="method" value="GET" />
+              <option name="name" value="Draft (2)" />
+            </requestState>
+            <requestState>
+              <option name="body">
+                <bodyState>
+                  <option name="type" value="JSON" />
+                </bodyState>
+              </option>
+              <option name="id" value="3e7e9000-53b5-46a3-88f9-d5ab81fba87b" />
+              <option name="method" value="POST" />
+              <option name="name" value="Draft (3)" />
+              <option name="url" value="http://localhost:8080/auth/login" />
+            </requestState>
+            <requestState>
+              <option name="body">
+                <bodyState>
+                  <option name="raw" value="{&#10;  &quot;userType&quot;: &quot;ADMIN&quot;,&#10;  &quot;userPackage&quot;: &quot;PRO&quot;,&#10;}" />
+                  <option name="type" value="JSON" />
+                </bodyState>
+              </option>
+              <option name="headers">
+                <list>
+                  <headerState>
+                    <option name="key" value="Authorization" />
+                    <option name="value" value="Bearer eyJhbGciOiJSUzI1NiIsImtpZCI6IjNmOWEwNTBkYzRhZTgyOGMyODcxYzMyNTYzYzk5ZDUwMjc3ODRiZTUiLCJ0eXAiOiJKV1QifQ.eyJuYW1lIjoiVGVzdCBVc2VyIiwiaXNzIjoiaHR0cHM6Ly9zZWN1cmV0b2tlbi5nb29nbGUuY29tL3Bob3RvYXBwLWMxOTVkIiwiYXVkIjoicGhvdG9hcHAtYzE5NWQiLCJhdXRoX3RpbWUiOjE3NDY0NzEzMjYsInVzZXJfaWQiOiJuVjM5VTRmSkpHWUJudjFtSnlmeWk3TDNxNTUzIiwic3ViIjoiblYzOVU0ZkpKR1lCbnYxbUp5ZnlpN0wzcTU1MyIsImlhdCI6MTc0NjQ3MTMyNiwiZXhwIjoxNzQ2NDc0OTI2LCJlbWFpbCI6Im1pc2xhdi5jdXBpY0BnbWFpbC5jb20iLCJlbWFpbF92ZXJpZmllZCI6ZmFsc2UsImZpcmViYXNlIjp7ImlkZW50aXRpZXMiOnsiZW1haWwiOlsibWlzbGF2LmN1cGljQGdtYWlsLmNvbSJdfSwic2lnbl9pbl9wcm92aWRlciI6InBhc3N3b3JkIn19.L6FlK74sji91jQQqiJTqGnjawj0QfIKimeAFL3OxugFb8KyoXmvmJUD9ImADw6Y6ko70n76Bs-cSuw3Ta80eBqpIsWlgko1CcOhm6W1tS63z9dWeCsC0OFSGJp5OTHF_H7Rr_LXhie24kD3ZFOS13SU3GPQzX7qeCduI72LCXryxkuEXeYRMSyFxu2aqUoFCP_zcQLSH4gdsNlEfLWCMZFooEjZUbYbxx8WcTXcjV5glxVCm0pPkcINRzvaDVnJWEVjMKysH8pW-MlFjfQSlD3eVBPhQUHirHME4QalsGKjc1mcttSWB5YrkYHDMee099ull9JqUvAhdyiDczxbNWQ" />
+                  </headerState>
+                </list>
+              </option>
+              <option name="id" value="8f4810ac-ed97-492f-be0f-9fe8c105d47f" />
+              <option name="method" value="PUT" />
+              <option name="name" value="Draft (4)" />
+              <option name="url" value="http://localhost:8080/auth/update" />
+            </requestState>
+            <requestState>
+              <option name="body">
+                <bodyState>
+                  <option name="type" value="JSON" />
+                </bodyState>
+              </option>
+              <option name="id" value="e940d756-ee12-433e-9c68-1a7954ad6c15" />
+              <option name="method" value="POST" />
+              <option name="name" value="Draft (5)" />
+              <option name="url" value="http://localhost:8080/auth/register" />
+            </requestState>
+            <requestState>
+              <option name="body">
+                <bodyState>
+                  <option name="type" value="FORM_DATA" />
+                </bodyState>
+              </option>
+              <option name="id" value="f7664f38-c9a0-4890-abb4-ea29d054b328" />
+              <option name="method" value="POST" />
+              <option name="name" value="Draft (6)" />
+              <option name="url" value="http://localhost:8080/api/photos/upload" />
+            </requestState>
+            <requestState>
+              <option name="auth">
+                <authState>
+                  <option name="type" value="BEARER" />
+                </authState>
+              </option>
+              <option name="id" value="68c4e6f8-6b18-463a-ad97-7df6e9bf1b75" />
+              <option name="method" value="GET" />
+              <option name="name" value="Draft (7)" />
+              <option name="url" value="http://localhost:8080/user-package/user-package" />
+            </requestState>
+            <requestState>
+              <option name="auth">
+                <authState>
+                  <option name="bearer">
+                    <pw>
+                      <option name="token" value="eyJhbGciOiJSUzI1NiIsImtpZCI6ImE0YTEwZGVjZTk4MzY2ZDZmNjNlMTY3Mjg2YWU5YjYxMWQyYmFhMjciLCJ0eXAiOiJKV1QifQ.eyJuYW1lIjoiTWlzbGF2IMSMdXBpxIciLCJ1c2VyVHlwZSI6IkFETUlOIiwiaXNzIjoiaHR0cHM6Ly9zZWN1cmV0b2tlbi5nb29nbGUuY29tL3Bob3RvYXBwLWMxOTVkIiwiYXVkIjoicGhvdG9hcHAtYzE5NWQiLCJhdXRoX3RpbWUiOjE3NDk2NjIyMTQsInVzZXJfaWQiOiJGZThoaUtjTWNUVGE0OFVpMFJCbmo1Z0dUWFAyIiwic3ViIjoiRmU4aGlLY01jVFRhNDhVaTBSQm5qNWdHVFhQMiIsImlhdCI6MTc0OTY2MjIxNCwiZXhwIjoxNzQ5NjY1ODE0LCJlbWFpbCI6ImFkbWluQGFkbWluLmhyIiwiZW1haWxfdmVyaWZpZWQiOmZhbHNlLCJmaXJlYmFzZSI6eyJpZGVudGl0aWVzIjp7ImVtYWlsIjpbImFkbWluQGFkbWluLmhyIl19LCJzaWduX2luX3Byb3ZpZGVyIjoicGFzc3dvcmQifX0.DCBtclkQ3iz9UaY6pL4kkPK55Q1Nlk15Kmypv8f6VXOOI_H1Tl_JIYInfKsIicyF5YNafGGI1z0HJwT5ZYDn0xh6sahyCDjkHw1YC8ptCWwBTTGahtGdVvZ4HwK-OtWHQLYDblljGo2B0vAXZoBfi5SegEmm-oV1na5OYXodOhE8GPKoqEp16Csni2tK9XVDSMWgIRX6aCZ2sJKqNcCTp5ydz8QyNu5GRutzMl_3xyGk5rLblbSWLFaCYdWe68ba_-xbYqXBNIjUCp0xBMismxu2Y0wBQ9W3EqL0abbNv1mluQFRMfujbwKs1GGZ_WNPiWGopx6nrXQ6XBsZ0gRXYg" />
+                    </pw>
+                  </option>
+                  <option name="type" value="BEARER" />
+                </authState>
+              </option>
+              <option name="body">
+                <bodyState>
+                  <option name="raw" value="{&quot;username&quot;: &quot;admin@admin.hr&quot;,&#10;&quot;password&quot;: &quot;admin12345!&quot;}" />
+                  <option name="type" value="JSON" />
+                </bodyState>
+              </option>
+              <option name="id" value="f18c47f2-7190-470f-ae10-f1c4f5a7b8cc" />
+              <option name="method" value="POST" />
+              <option name="name" value="Draft (8)" />
+              <option name="url" value="http://localhost:8080/users/all" />
+            </requestState>
+          </list>
+        </option>
+      </draftsState>
+    </option>
+    <option name="id" value="327a5964-6016-4f71-8e56-0ab1494bd684" />
+    <option name="version" value="6" />
+  </component>
+</project>

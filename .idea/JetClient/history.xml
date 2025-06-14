@@ -1,0 +1,2733 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="History">
+    <option name="requestHistoryStates">
+      <list>
+        <requestHistoryState>
+          <option name="dateTime" value="1746435915548" />
+          <option name="id" value="545b0348-1e88-450c-98ea-da438b1d5d59" />
+          <option name="request">
+            <requestState>
+              <option name="body">
+                <bodyState>
+                  <option name="raw" value="{&#10;  &quot;email&quot;: &quot;mislav.cupic1@skole.hr&quot;,&#10;  &quot;password&quot;: &quot;Test12345!&quot;,&#10;  &quot;returnSecureToken&quot;: true&#10;}" />
+                  <option name="type" value="JSON" />
+                </bodyState>
+              </option>
+              <option name="id" value="d6f6d3e3-6df3-4393-a49d-135be9ec753b" />
+              <option name="method" value="POST" />
+              <option name="name" value="Draft (1)" />
+              <option name="queryParams">
+                <list>
+                  <queryParamState>
+                    <option name="key" value="key" />
+                    <option name="value" value="AIzaSyA_6XtbsDR4CT2ocwlBAnJdZJNiUE8x_IU" />
+                  </queryParamState>
+                </list>
+              </option>
+              <option name="url" value="https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=AIzaSyA_6XtbsDR4CT2ocwlBAnJdZJNiUE8x_IU" />
+            </requestState>
+          </option>
+          <option name="response">
+            <responseState>
+              <option name="bodyBytesBase64" value="PCFET0NUWVBFIGh0bWw+CjxodG1sIGxhbmc9ZW4+CiAgPG1ldGEgY2hhcnNldD11dGYtOD4KICA8bWV0YSBuYW1lPXZpZXdwb3J0IGNvbnRlbnQ9ImluaXRpYWwtc2NhbGU9MSwgbWluaW11bS1zY2FsZT0xLCB3aWR0aD1kZXZpY2Utd2lkdGgiPgogIDx0aXRsZT5FcnJvciA0MDQgKE5vdCBGb3VuZCkhITE8L3RpdGxlPgogIDxzdHlsZT4KICAgICp7bWFyZ2luOjA7cGFkZGluZzowfWh0bWwsY29kZXtmb250OjE1cHgvMjJweCBhcmlhbCxzYW5zLXNlcmlmfWh0bWx7YmFja2dyb3VuZDojZmZmO2NvbG9yOiMyMjI7cGFkZGluZzoxNXB4fWJvZHl7bWFyZ2luOjclIGF1dG8gMDttYXgtd2lkdGg6MzkwcHg7bWluLWhlaWdodDoxODBweDtwYWRkaW5nOjMwcHggMCAxNXB4fSogPiBib2R5e2JhY2tncm91bmQ6dXJsKC8vd3d3Lmdvb2dsZS5jb20vaW1hZ2VzL2Vycm9ycy9yb2JvdC5wbmcpIDEwMCUgNXB4IG5vLXJlcGVhdDtwYWRkaW5nLXJpZ2h0OjIwNXB4fXB7bWFyZ2luOjExcHggMCAyMnB4O292ZXJmbG93OmhpZGRlbn1pbnN7Y29sb3I6Izc3Nzt0ZXh0LWRlY29yYXRpb246bm9uZX1hIGltZ3tib3JkZXI6MH1AbWVkaWEgc2NyZWVuIGFuZCAobWF4LXdpZHRoOjc3MnB4KXtib2R5e2JhY2tncm91bmQ6bm9uZTttYXJnaW4tdG9wOjA7bWF4LXdpZHRoOm5vbmU7cGFkZGluZy1yaWdodDowfX0jbG9nb3tiYWNrZ3JvdW5kOnVybCgvL3d3dy5nb29nbGUuY29tL2ltYWdlcy9icmFuZGluZy9nb29nbGVsb2dvLzF4L2dvb2dsZWxvZ29fY29sb3JfMTUweDU0ZHAucG5nKSBuby1yZXBlYXQ7bWFyZ2luLWxlZnQ6LTVweH1AbWVkaWEgb25seSBzY3JlZW4gYW5kIChtaW4tcmVzb2x1dGlvbjoxOTJkcGkpeyNsb2dve2JhY2tncm91bmQ6dXJsKC8vd3d3Lmdvb2dsZS5jb20vaW1hZ2VzL2JyYW5kaW5nL2dvb2dsZWxvZ28vMngvZ29vZ2xlbG9nb19jb2xvcl8xNTB4NTRkcC5wbmcpIG5vLXJlcGVhdCAwJSAwJS8xMDAlIDEwMCU7LW1vei1ib3JkZXItaW1hZ2U6dXJsKC8vd3d3Lmdvb2dsZS5jb20vaW1hZ2VzL2JyYW5kaW5nL2dvb2dsZWxvZ28vMngvZ29vZ2xlbG9nb19jb2xvcl8xNTB4NTRkcC5wbmcpIDB9fUBtZWRpYSBvbmx5IHNjcmVlbiBhbmQgKC13ZWJraXQtbWluLWRldmljZS1waXhlbC1yYXRpbzoyKXsjbG9nb3tiYWNrZ3JvdW5kOnVybCgvL3d3dy5nb29nbGUuY29tL2ltYWdlcy9icmFuZGluZy9nb29nbGVsb2dvLzJ4L2dvb2dsZWxvZ29fY29sb3JfMTUweDU0ZHAucG5nKSBuby1yZXBlYXQ7LXdlYmtpdC1iYWNrZ3JvdW5kLXNpemU6MTAwJSAxMDAlfX0jbG9nb3tkaXNwbGF5OmlubGluZS1ibG9jaztoZWlnaHQ6NTRweDt3aWR0aDoxNTBweH0KICA8L3N0eWxlPgogIDxhIGhyZWY9Ly93d3cuZ29vZ2xlLmNvbS8+PHNwYW4gaWQ9bG9nbyBhcmlhLWxhYmVsPUdvb2dsZT48L3NwYW4+PC9hPgogIDxwPjxiPjQwNC48L2I+IDxpbnM+VGhhdOKAmXMgYW4gZXJyb3IuPC9pbnM+CiAgPHA+VGhlIHJlcXVlc3RlZCBVUkwgPGNvZGU+L3YxL2FjY291bnRzJTNBc2lnbkluV2l0aFBhc3N3b3JkP2tleT1BSXphU3lBXzZYdGJzRFI0Q1Qyb2N3bEJBbkpkWkpOaVVFOHhfSVU8L2NvZGU+IHdhcyBub3QgZm91bmQgb24gdGhpcyBzZXJ2ZXIuICA8aW5zPlRoYXTigJlzIGFsbCB3ZSBrbm93LjwvaW5zPgo=" />
+              <option name="bodyString" value="&lt;!DOCTYPE html&gt;&#10;&lt;html lang=en&gt;&#10;  &lt;meta charset=utf-8&gt;&#10;  &lt;meta name=viewport content=&quot;initial-scale=1, minimum-scale=1, width=device-width&quot;&gt;&#10;  &lt;title&gt;Error 404 (Not Found)!!1&lt;/title&gt;&#10;  &lt;style&gt;&#10;    *{margin:0;padding:0}html,code{font:15px/22px arial,sans-serif}html{background:#fff;color:#222;padding:15px}body{margin:7% auto 0;max-width:390px;min-height:180px;padding:30px 0 15px}* &gt; body{background:url(//www.google.com/images/errors/robot.png) 100% 5px no-repeat;padding-right:205px}p{margin:11px 0 22px;overflow:hidden}ins{color:#777;text-decoration:none}a img{border:0}@media screen and (max-width:772px){body{background:none;margin-top:0;max-width:none;padding-right:0}}#logo{background:url(//www.google.com/images/branding/googlelogo/1x/googlelogo_color_150x54dp.png) no-repeat;margin-left:-5px}@media only screen and (min-resolution:192dpi){#logo{background:url(//www.google.com/images/branding/googlelogo/2x/googlelogo_color_150x54dp.png) no-repeat 0% 0%/100% 100%;-moz-border-image:url(//www.google.com/images/branding/googlelogo/2x/googlelogo_color_150x54dp.png) 0}}@media only screen and (-webkit-min-device-pixel-ratio:2){#logo{background:url(//www.google.com/images/branding/googlelogo/2x/googlelogo_color_150x54dp.png) no-repeat;-webkit-background-size:100% 100%}}#logo{display:inline-block;height:54px;width:150px}&#10;  &lt;/style&gt;&#10;  &lt;a href=//www.google.com/&gt;&lt;span id=logo aria-label=Google&gt;&lt;/span&gt;&lt;/a&gt;&#10;  &lt;p&gt;&lt;b&gt;404.&lt;/b&gt; &lt;ins&gt;That’s an error.&lt;/ins&gt;&#10;  &lt;p&gt;The requested URL &lt;code&gt;/v1/accounts%3AsignInWithPassword?key=AIzaSyA_6XtbsDR4CT2ocwlBAnJdZJNiUE8x_IU&lt;/code&gt; was not found on this server.  &lt;ins&gt;That’s all we know.&lt;/ins&gt;&#10;" />
+              <option name="code" value="404" />
+              <option name="connectionEstablishingTime" value="103" />
+              <option name="contentType" value="text/html; charset=UTF-8" />
+              <option name="headers">
+                <list>
+                  <headerState>
+                    <option name="key" value="Date" />
+                    <option name="value" value="Mon, 05 May 2025 09:05:15 GMT" />
+                  </headerState>
+                  <headerState>
+                    <option name="key" value="Content-Type" />
+                    <option name="value" value="text/html; charset=UTF-8" />
+                  </headerState>
+                  <headerState>
+                    <option name="key" value="Server" />
+                    <option name="value" value="ESF" />
+                  </headerState>
+                  <headerState>
+                    <option name="key" value="Content-Length" />
+                    <option name="value" value="1637" />
+                  </headerState>
+                  <headerState>
+                    <option name="key" value="X-XSS-Protection" />
+                    <option name="value" value="0" />
+                  </headerState>
+                  <headerState>
+                    <option name="key" value="X-Frame-Options" />
+                    <option name="value" value="SAMEORIGIN" />
+                  </headerState>
+                  <headerState>
+                    <option name="key" value="X-Content-Type-Options" />
+                    <option name="value" value="nosniff" />
+                  </headerState>
+                  <headerState>
+                    <option name="key" value="Alt-Svc" />
+                    <option name="value" value="h3=&quot;:443&quot;; ma=2592000,h3-29=&quot;:443&quot;; ma=2592000" />
+                  </headerState>
+                </list>
+              </option>
+              <option name="id" value="545b0348-1e88-450c-98ea-da438b1d5d59" />
+              <option name="message" value="Not Found" />
+              <option name="prettyResponseType" value="HTML" />
+              <option name="previewType" value="HTML" />
+              <option name="rawBodyString" value="&lt;!DOCTYPE html&gt;&#10;&lt;html lang=en&gt;&#10;  &lt;meta charset=utf-8&gt;&#10;  &lt;meta name=viewport content=&quot;initial-scale=1, minimum-scale=1, width=device-width&quot;&gt;&#10;  &lt;title&gt;Error 404 (Not Found)!!1&lt;/title&gt;&#10;  &lt;style&gt;&#10;    *{margin:0;padding:0}html,code{font:15px/22px arial,sans-serif}html{background:#fff;color:#222;padding:15px}body{margin:7% auto 0;max-width:390px;min-height:180px;padding:30px 0 15px}* &gt; body{background:url(//www.google.com/images/errors/robot.png) 100% 5px no-repeat;padding-right:205px}p{margin:11px 0 22px;overflow:hidden}ins{color:#777;text-decoration:none}a img{border:0}@media screen and (max-width:772px){body{background:none;margin-top:0;max-width:none;padding-right:0}}#logo{background:url(//www.google.com/images/branding/googlelogo/1x/googlelogo_color_150x54dp.png) no-repeat;margin-left:-5px}@media only screen and (min-resolution:192dpi){#logo{background:url(//www.google.com/images/branding/googlelogo/2x/googlelogo_color_150x54dp.png) no-repeat 0% 0%/100% 100%;-moz-border-image:url(//www.google.com/images/branding/googlelogo/2x/googlelogo_color_150x54dp.png) 0}}@media only screen and (-webkit-min-device-pixel-ratio:2){#logo{background:url(//www.google.com/images/branding/googlelogo/2x/googlelogo_color_150x54dp.png) no-repeat;-webkit-background-size:100% 100%}}#logo{display:inline-block;height:54px;width:150px}&#10;  &lt;/style&gt;&#10;  &lt;a href=//www.google.com/&gt;&lt;span id=logo aria-label=Google&gt;&lt;/span&gt;&lt;/a&gt;&#10;  &lt;p&gt;&lt;b&gt;404.&lt;/b&gt; &lt;ins&gt;That’s an error.&lt;/ins&gt;&#10;  &lt;p&gt;The requested URL &lt;code&gt;/v1/accounts%3AsignInWithPassword?key=AIzaSyA_6XtbsDR4CT2ocwlBAnJdZJNiUE8x_IU&lt;/code&gt; was not found on this server.  &lt;ins&gt;That’s all we know.&lt;/ins&gt;&#10;" />
+              <option name="size" value="1637" />
+              <option name="time" value="270" />
+            </responseState>
+          </option>
+          <option name="workspaceId" value="drafts" />
+        </requestHistoryState>
+        <requestHistoryState>
+          <option name="dateTime" value="1746436007440" />
+          <option name="id" value="36d1dd32-0ade-4e1f-ae21-4013f3958b8a" />
+          <option name="request">
+            <requestState>
+              <option name="body">
+                <bodyState>
+                  <option name="raw" value="{&#10;  &quot;email&quot;: &quot;mislav.cupic1@skole.hr&quot;,&#10;  &quot;password&quot;: &quot;Test12345!&quot;,&#10;  &quot;returnSecureToken&quot;: true&#10;}" />
+                  <option name="type" value="JSON" />
+                </bodyState>
+              </option>
+              <option name="id" value="d6f6d3e3-6df3-4393-a49d-135be9ec753b" />
+              <option name="method" value="POST" />
+              <option name="name" value="Draft (1)" />
+              <option name="queryParams">
+                <list>
+                  <queryParamState>
+                    <option name="key" value="key" />
+                    <option name="value" value="AIzaSyA_6XtbsDR4CT2ocwlBAnJdZJNiUE8x_IU" />
+                  </queryParamState>
+                </list>
+              </option>
+              <option name="url" value="https://identitytoolkit.googleapis.com/v1/accounts/signInWithPassword?key=AIzaSyA_6XtbsDR4CT2ocwlBAnJdZJNiUE8x_IU" />
+            </requestState>
+          </option>
+          <option name="response">
+            <responseState>
+              <option name="bodyBytesBase64" value="PCFET0NUWVBFIGh0bWw+CjxodG1sIGxhbmc9ZW4+CiAgPG1ldGEgY2hhcnNldD11dGYtOD4KICA8bWV0YSBuYW1lPXZpZXdwb3J0IGNvbnRlbnQ9ImluaXRpYWwtc2NhbGU9MSwgbWluaW11bS1zY2FsZT0xLCB3aWR0aD1kZXZpY2Utd2lkdGgiPgogIDx0aXRsZT5FcnJvciA0MDQgKE5vdCBGb3VuZCkhITE8L3RpdGxlPgogIDxzdHlsZT4KICAgICp7bWFyZ2luOjA7cGFkZGluZzowfWh0bWwsY29kZXtmb250OjE1cHgvMjJweCBhcmlhbCxzYW5zLXNlcmlmfWh0bWx7YmFja2dyb3VuZDojZmZmO2NvbG9yOiMyMjI7cGFkZGluZzoxNXB4fWJvZHl7bWFyZ2luOjclIGF1dG8gMDttYXgtd2lkdGg6MzkwcHg7bWluLWhlaWdodDoxODBweDtwYWRkaW5nOjMwcHggMCAxNXB4fSogPiBib2R5e2JhY2tncm91bmQ6dXJsKC8vd3d3Lmdvb2dsZS5jb20vaW1hZ2VzL2Vycm9ycy9yb2JvdC5wbmcpIDEwMCUgNXB4IG5vLXJlcGVhdDtwYWRkaW5nLXJpZ2h0OjIwNXB4fXB7bWFyZ2luOjExcHggMCAyMnB4O292ZXJmbG93OmhpZGRlbn1pbnN7Y29sb3I6Izc3Nzt0ZXh0LWRlY29yYXRpb246bm9uZX1hIGltZ3tib3JkZXI6MH1AbWVkaWEgc2NyZWVuIGFuZCAobWF4LXdpZHRoOjc3MnB4KXtib2R5e2JhY2tncm91bmQ6bm9uZTttYXJnaW4tdG9wOjA7bWF4LXdpZHRoOm5vbmU7cGFkZGluZy1yaWdodDowfX0jbG9nb3tiYWNrZ3JvdW5kOnVybCgvL3d3dy5nb29nbGUuY29tL2ltYWdlcy9icmFuZGluZy9nb29nbGVsb2dvLzF4L2dvb2dsZWxvZ29fY29sb3JfMTUweDU0ZHAucG5nKSBuby1yZXBlYXQ7bWFyZ2luLWxlZnQ6LTVweH1AbWVkaWEgb25seSBzY3JlZW4gYW5kIChtaW4tcmVzb2x1dGlvbjoxOTJkcGkpeyNsb2dve2JhY2tncm91bmQ6dXJsKC8vd3d3Lmdvb2dsZS5jb20vaW1hZ2VzL2JyYW5kaW5nL2dvb2dsZWxvZ28vMngvZ29vZ2xlbG9nb19jb2xvcl8xNTB4NTRkcC5wbmcpIG5vLXJlcGVhdCAwJSAwJS8xMDAlIDEwMCU7LW1vei1ib3JkZXItaW1hZ2U6dXJsKC8vd3d3Lmdvb2dsZS5jb20vaW1hZ2VzL2JyYW5kaW5nL2dvb2dsZWxvZ28vMngvZ29vZ2xlbG9nb19jb2xvcl8xNTB4NTRkcC5wbmcpIDB9fUBtZWRpYSBvbmx5IHNjcmVlbiBhbmQgKC13ZWJraXQtbWluLWRldmljZS1waXhlbC1yYXRpbzoyKXsjbG9nb3tiYWNrZ3JvdW5kOnVybCgvL3d3dy5nb29nbGUuY29tL2ltYWdlcy9icmFuZGluZy9nb29nbGVsb2dvLzJ4L2dvb2dsZWxvZ29fY29sb3JfMTUweDU0ZHAucG5nKSBuby1yZXBlYXQ7LXdlYmtpdC1iYWNrZ3JvdW5kLXNpemU6MTAwJSAxMDAlfX0jbG9nb3tkaXNwbGF5OmlubGluZS1ibG9jaztoZWlnaHQ6NTRweDt3aWR0aDoxNTBweH0KICA8L3N0eWxlPgogIDxhIGhyZWY9Ly93d3cuZ29vZ2xlLmNvbS8+PHNwYW4gaWQ9bG9nbyBhcmlhLWxhYmVsPUdvb2dsZT48L3NwYW4+PC9hPgogIDxwPjxiPjQwNC48L2I+IDxpbnM+VGhhdOKAmXMgYW4gZXJyb3IuPC9pbnM+CiAgPHA+VGhlIHJlcXVlc3RlZCBVUkwgPGNvZGU+L3YxL2FjY291bnRzL3NpZ25JbldpdGhQYXNzd29yZD9rZXk9QUl6YVN5QV82WHRic0RSNENUMm9jd2xCQW5KZFpKTmlVRTh4X0lVPC9jb2RlPiB3YXMgbm90IGZvdW5kIG9uIHRoaXMgc2VydmVyLiAgPGlucz5UaGF04oCZcyBhbGwgd2Uga25vdy48L2lucz4K" />
+              <option name="bodyString" value="&lt;!DOCTYPE html&gt;&#10;&lt;html lang=en&gt;&#10;  &lt;meta charset=utf-8&gt;&#10;  &lt;meta name=viewport content=&quot;initial-scale=1, minimum-scale=1, width=device-width&quot;&gt;&#10;  &lt;title&gt;Error 404 (Not Found)!!1&lt;/title&gt;&#10;  &lt;style&gt;&#10;    *{margin:0;padding:0}html,code{font:15px/22px arial,sans-serif}html{background:#fff;color:#222;padding:15px}body{margin:7% auto 0;max-width:390px;min-height:180px;padding:30px 0 15px}* &gt; body{background:url(//www.google.com/images/errors/robot.png) 100% 5px no-repeat;padding-right:205px}p{margin:11px 0 22px;overflow:hidden}ins{color:#777;text-decoration:none}a img{border:0}@media screen and (max-width:772px){body{background:none;margin-top:0;max-width:none;padding-right:0}}#logo{background:url(//www.google.com/images/branding/googlelogo/1x/googlelogo_color_150x54dp.png) no-repeat;margin-left:-5px}@media only screen and (min-resolution:192dpi){#logo{background:url(//www.google.com/images/branding/googlelogo/2x/googlelogo_color_150x54dp.png) no-repeat 0% 0%/100% 100%;-moz-border-image:url(//www.google.com/images/branding/googlelogo/2x/googlelogo_color_150x54dp.png) 0}}@media only screen and (-webkit-min-device-pixel-ratio:2){#logo{background:url(//www.google.com/images/branding/googlelogo/2x/googlelogo_color_150x54dp.png) no-repeat;-webkit-background-size:100% 100%}}#logo{display:inline-block;height:54px;width:150px}&#10;  &lt;/style&gt;&#10;  &lt;a href=//www.google.com/&gt;&lt;span id=logo aria-label=Google&gt;&lt;/span&gt;&lt;/a&gt;&#10;  &lt;p&gt;&lt;b&gt;404.&lt;/b&gt; &lt;ins&gt;That’s an error.&lt;/ins&gt;&#10;  &lt;p&gt;The requested URL &lt;code&gt;/v1/accounts/signInWithPassword?key=AIzaSyA_6XtbsDR4CT2ocwlBAnJdZJNiUE8x_IU&lt;/code&gt; was not found on this server.  &lt;ins&gt;That’s all we know.&lt;/ins&gt;&#10;" />
+              <option name="code" value="404" />
+              <option name="connectionEstablishingTime" value="1" />
+              <option name="contentType" value="text/html; charset=UTF-8" />
+              <option name="headers">
+                <list>
+                  <headerState>
+                    <option name="key" value="Date" />
+                    <option name="value" value="Mon, 05 May 2025 09:06:47 GMT" />
+                  </headerState>
+                  <headerState>
+                    <option name="key" value="Content-Type" />
+                    <option name="value" value="text/html; charset=UTF-8" />
+                  </headerState>
+                  <headerState>
+                    <option name="key" value="Server" />
+                    <option name="value" value="ESF" />
+                  </headerState>
+                  <headerState>
+                    <option name="key" value="Content-Length" />
+                    <option name="value" value="1635" />
+                  </headerState>
+                  <headerState>
+                    <option name="key" value="X-XSS-Protection" />
+                    <option name="value" value="0" />
+                  </headerState>
+                  <headerState>
+                    <option name="key" value="X-Frame-Options" />
+                    <option name="value" value="SAMEORIGIN" />
+                  </headerState>
+                  <headerState>
+                    <option name="key" value="X-Content-Type-Options" />
+                    <option name="value" value="nosniff" />
+                  </headerState>
+                  <headerState>
+                    <option name="key" value="Alt-Svc" />
+                    <option name="value" value="h3=&quot;:443&quot;; ma=2592000,h3-29=&quot;:443&quot;; ma=2592000" />
+                  </headerState>
+                </list>
+              </option>
+              <option name="id" value="36d1dd32-0ade-4e1f-ae21-4013f3958b8a" />
+              <option name="message" value="Not Found" />
+              <option name="prettyResponseType" value="HTML" />
+              <option name="previewType" value="HTML" />
+              <option name="rawBodyString" value="&lt;!DOCTYPE html&gt;&#10;&lt;html lang=en&gt;&#10;  &lt;meta charset=utf-8&gt;&#10;  &lt;meta name=viewport content=&quot;initial-scale=1, minimum-scale=1, width=device-width&quot;&gt;&#10;  &lt;title&gt;Error 404 (Not Found)!!1&lt;/title&gt;&#10;  &lt;style&gt;&#10;    *{margin:0;padding:0}html,code{font:15px/22px arial,sans-serif}html{background:#fff;color:#222;padding:15px}body{margin:7% auto 0;max-width:390px;min-height:180px;padding:30px 0 15px}* &gt; body{background:url(//www.google.com/images/errors/robot.png) 100% 5px no-repeat;padding-right:205px}p{margin:11px 0 22px;overflow:hidden}ins{color:#777;text-decoration:none}a img{border:0}@media screen and (max-width:772px){body{background:none;margin-top:0;max-width:none;padding-right:0}}#logo{background:url(//www.google.com/images/branding/googlelogo/1x/googlelogo_color_150x54dp.png) no-repeat;margin-left:-5px}@media only screen and (min-resolution:192dpi){#logo{background:url(//www.google.com/images/branding/googlelogo/2x/googlelogo_color_150x54dp.png) no-repeat 0% 0%/100% 100%;-moz-border-image:url(//www.google.com/images/branding/googlelogo/2x/googlelogo_color_150x54dp.png) 0}}@media only screen and (-webkit-min-device-pixel-ratio:2){#logo{background:url(//www.google.com/images/branding/googlelogo/2x/googlelogo_color_150x54dp.png) no-repeat;-webkit-background-size:100% 100%}}#logo{display:inline-block;height:54px;width:150px}&#10;  &lt;/style&gt;&#10;  &lt;a href=//www.google.com/&gt;&lt;span id=logo aria-label=Google&gt;&lt;/span&gt;&lt;/a&gt;&#10;  &lt;p&gt;&lt;b&gt;404.&lt;/b&gt; &lt;ins&gt;That’s an error.&lt;/ins&gt;&#10;  &lt;p&gt;The requested URL &lt;code&gt;/v1/accounts/signInWithPassword?key=AIzaSyA_6XtbsDR4CT2ocwlBAnJdZJNiUE8x_IU&lt;/code&gt; was not found on this server.  &lt;ins&gt;That’s all we know.&lt;/ins&gt;&#10;" />
+              <option name="size" value="1635" />
+              <option name="time" value="165" />
+            </responseState>
+          </option>
+          <option name="workspaceId" value="drafts" />
+        </requestHistoryState>
+        <requestHistoryState>
+          <option name="dateTime" value="1746436074571" />
+          <option name="id" value="5da928e4-9723-498d-8f71-04dc33ceec9d" />
+          <option name="request">
+            <requestState>
+              <option name="body">
+                <bodyState>
+                  <option name="raw" value="{&#10;  &quot;email&quot;: &quot;mislav.cupic1@skole.hr&quot;,&#10;  &quot;password&quot;: &quot;Test12345!&quot;,&#10;  &quot;returnSecureToken&quot;: true&#10;}" />
+                  <option name="type" value="JSON" />
+                </bodyState>
+              </option>
+              <option name="id" value="d6f6d3e3-6df3-4393-a49d-135be9ec753b" />
+              <option name="method" value="POST" />
+              <option name="name" value="Draft (1)" />
+              <option name="queryParams">
+                <list>
+                  <queryParamState>
+                    <option name="key" value="key" />
+                    <option name="value" value="AIzaSyA_6XtbsDR4CT2ocwlBAnJdZJNiUE8x_IU" />
+                  </queryParamState>
+                </list>
+              </option>
+              <option name="url" value="https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=AIzaSyA_6XtbsDR4CT2ocwlBAnJdZJNiUE8x_IU" />
+            </requestState>
+          </option>
+          <option name="response">
+            <responseState>
+              <option name="bodyBytesBase64" value="PCFET0NUWVBFIGh0bWw+CjxodG1sIGxhbmc9ZW4+CiAgPG1ldGEgY2hhcnNldD11dGYtOD4KICA8bWV0YSBuYW1lPXZpZXdwb3J0IGNvbnRlbnQ9ImluaXRpYWwtc2NhbGU9MSwgbWluaW11bS1zY2FsZT0xLCB3aWR0aD1kZXZpY2Utd2lkdGgiPgogIDx0aXRsZT5FcnJvciA0MDQgKE5vdCBGb3VuZCkhITE8L3RpdGxlPgogIDxzdHlsZT4KICAgICp7bWFyZ2luOjA7cGFkZGluZzowfWh0bWwsY29kZXtmb250OjE1cHgvMjJweCBhcmlhbCxzYW5zLXNlcmlmfWh0bWx7YmFja2dyb3VuZDojZmZmO2NvbG9yOiMyMjI7cGFkZGluZzoxNXB4fWJvZHl7bWFyZ2luOjclIGF1dG8gMDttYXgtd2lkdGg6MzkwcHg7bWluLWhlaWdodDoxODBweDtwYWRkaW5nOjMwcHggMCAxNXB4fSogPiBib2R5e2JhY2tncm91bmQ6dXJsKC8vd3d3Lmdvb2dsZS5jb20vaW1hZ2VzL2Vycm9ycy9yb2JvdC5wbmcpIDEwMCUgNXB4IG5vLXJlcGVhdDtwYWRkaW5nLXJpZ2h0OjIwNXB4fXB7bWFyZ2luOjExcHggMCAyMnB4O292ZXJmbG93OmhpZGRlbn1pbnN7Y29sb3I6Izc3Nzt0ZXh0LWRlY29yYXRpb246bm9uZX1hIGltZ3tib3JkZXI6MH1AbWVkaWEgc2NyZWVuIGFuZCAobWF4LXdpZHRoOjc3MnB4KXtib2R5e2JhY2tncm91bmQ6bm9uZTttYXJnaW4tdG9wOjA7bWF4LXdpZHRoOm5vbmU7cGFkZGluZy1yaWdodDowfX0jbG9nb3tiYWNrZ3JvdW5kOnVybCgvL3d3dy5nb29nbGUuY29tL2ltYWdlcy9icmFuZGluZy9nb29nbGVsb2dvLzF4L2dvb2dsZWxvZ29fY29sb3JfMTUweDU0ZHAucG5nKSBuby1yZXBlYXQ7bWFyZ2luLWxlZnQ6LTVweH1AbWVkaWEgb25seSBzY3JlZW4gYW5kIChtaW4tcmVzb2x1dGlvbjoxOTJkcGkpeyNsb2dve2JhY2tncm91bmQ6dXJsKC8vd3d3Lmdvb2dsZS5jb20vaW1hZ2VzL2JyYW5kaW5nL2dvb2dsZWxvZ28vMngvZ29vZ2xlbG9nb19jb2xvcl8xNTB4NTRkcC5wbmcpIG5vLXJlcGVhdCAwJSAwJS8xMDAlIDEwMCU7LW1vei1ib3JkZXItaW1hZ2U6dXJsKC8vd3d3Lmdvb2dsZS5jb20vaW1hZ2VzL2JyYW5kaW5nL2dvb2dsZWxvZ28vMngvZ29vZ2xlbG9nb19jb2xvcl8xNTB4NTRkcC5wbmcpIDB9fUBtZWRpYSBvbmx5IHNjcmVlbiBhbmQgKC13ZWJraXQtbWluLWRldmljZS1waXhlbC1yYXRpbzoyKXsjbG9nb3tiYWNrZ3JvdW5kOnVybCgvL3d3dy5nb29nbGUuY29tL2ltYWdlcy9icmFuZGluZy9nb29nbGVsb2dvLzJ4L2dvb2dsZWxvZ29fY29sb3JfMTUweDU0ZHAucG5nKSBuby1yZXBlYXQ7LXdlYmtpdC1iYWNrZ3JvdW5kLXNpemU6MTAwJSAxMDAlfX0jbG9nb3tkaXNwbGF5OmlubGluZS1ibG9jaztoZWlnaHQ6NTRweDt3aWR0aDoxNTBweH0KICA8L3N0eWxlPgogIDxhIGhyZWY9Ly93d3cuZ29vZ2xlLmNvbS8+PHNwYW4gaWQ9bG9nbyBhcmlhLWxhYmVsPUdvb2dsZT48L3NwYW4+PC9hPgogIDxwPjxiPjQwNC48L2I+IDxpbnM+VGhhdOKAmXMgYW4gZXJyb3IuPC9pbnM+CiAgPHA+VGhlIHJlcXVlc3RlZCBVUkwgPGNvZGU+L3YxL2FjY291bnRzJTNBc2lnbkluV2l0aFBhc3N3b3JkP2tleT1BSXphU3lBXzZYdGJzRFI0Q1Qyb2N3bEJBbkpkWkpOaVVFOHhfSVU8L2NvZGU+IHdhcyBub3QgZm91bmQgb24gdGhpcyBzZXJ2ZXIuICA8aW5zPlRoYXTigJlzIGFsbCB3ZSBrbm93LjwvaW5zPgo=" />
+              <option name="bodyString" value="&lt;!DOCTYPE html&gt;&#10;&lt;html lang=en&gt;&#10;  &lt;meta charset=utf-8&gt;&#10;  &lt;meta name=viewport content=&quot;initial-scale=1, minimum-scale=1, width=device-width&quot;&gt;&#10;  &lt;title&gt;Error 404 (Not Found)!!1&lt;/title&gt;&#10;  &lt;style&gt;&#10;    *{margin:0;padding:0}html,code{font:15px/22px arial,sans-serif}html{background:#fff;color:#222;padding:15px}body{margin:7% auto 0;max-width:390px;min-height:180px;padding:30px 0 15px}* &gt; body{background:url(//www.google.com/images/errors/robot.png) 100% 5px no-repeat;padding-right:205px}p{margin:11px 0 22px;overflow:hidden}ins{color:#777;text-decoration:none}a img{border:0}@media screen and (max-width:772px){body{background:none;margin-top:0;max-width:none;padding-right:0}}#logo{background:url(//www.google.com/images/branding/googlelogo/1x/googlelogo_color_150x54dp.png) no-repeat;margin-left:-5px}@media only screen and (min-resolution:192dpi){#logo{background:url(//www.google.com/images/branding/googlelogo/2x/googlelogo_color_150x54dp.png) no-repeat 0% 0%/100% 100%;-moz-border-image:url(//www.google.com/images/branding/googlelogo/2x/googlelogo_color_150x54dp.png) 0}}@media only screen and (-webkit-min-device-pixel-ratio:2){#logo{background:url(//www.google.com/images/branding/googlelogo/2x/googlelogo_color_150x54dp.png) no-repeat;-webkit-background-size:100% 100%}}#logo{display:inline-block;height:54px;width:150px}&#10;  &lt;/style&gt;&#10;  &lt;a href=//www.google.com/&gt;&lt;span id=logo aria-label=Google&gt;&lt;/span&gt;&lt;/a&gt;&#10;  &lt;p&gt;&lt;b&gt;404.&lt;/b&gt; &lt;ins&gt;That’s an error.&lt;/ins&gt;&#10;  &lt;p&gt;The requested URL &lt;code&gt;/v1/accounts%3AsignInWithPassword?key=AIzaSyA_6XtbsDR4CT2ocwlBAnJdZJNiUE8x_IU&lt;/code&gt; was not found on this server.  &lt;ins&gt;That’s all we know.&lt;/ins&gt;&#10;" />
+              <option name="code" value="404" />
+              <option name="connectionEstablishingTime" value="1" />
+              <option name="contentType" value="text/html; charset=UTF-8" />
+              <option name="headers">
+                <list>
+                  <headerState>
+                    <option name="key" value="Date" />
+                    <option name="value" value="Mon, 05 May 2025 09:07:54 GMT" />
+                  </headerState>
+                  <headerState>
+                    <option name="key" value="Content-Type" />
+                    <option name="value" value="text/html; charset=UTF-8" />
+                  </headerState>
+                  <headerState>
+                    <option name="key" value="Server" />
+                    <option name="value" value="ESF" />
+                  </headerState>
+                  <headerState>
+                    <option name="key" value="Content-Length" />
+                    <option name="value" value="1637" />
+                  </headerState>
+                  <headerState>
+                    <option name="key" value="X-XSS-Protection" />
+                    <option name="value" value="0" />
+                  </headerState>
+                  <headerState>
+                    <option name="key" value="X-Frame-Options" />
+                    <option name="value" value="SAMEORIGIN" />
+                  </headerState>
+                  <headerState>
+                    <option name="key" value="X-Content-Type-Options" />
+                    <option name="value" value="nosniff" />
+                  </headerState>
+                  <headerState>
+                    <option name="key" value="Alt-Svc" />
+                    <option name="value" value="h3=&quot;:443&quot;; ma=2592000,h3-29=&quot;:443&quot;; ma=2592000" />
+                  </headerState>
+                </list>
+              </option>
+              <option name="id" value="5da928e4-9723-498d-8f71-04dc33ceec9d" />
+              <option name="message" value="Not Found" />
+              <option name="prettyResponseType" value="HTML" />
+              <option name="previewType" value="HTML" />
+              <option name="rawBodyString" value="&lt;!DOCTYPE html&gt;&#10;&lt;html lang=en&gt;&#10;  &lt;meta charset=utf-8&gt;&#10;  &lt;meta name=viewport content=&quot;initial-scale=1, minimum-scale=1, width=device-width&quot;&gt;&#10;  &lt;title&gt;Error 404 (Not Found)!!1&lt;/title&gt;&#10;  &lt;style&gt;&#10;    *{margin:0;padding:0}html,code{font:15px/22px arial,sans-serif}html{background:#fff;color:#222;padding:15px}body{margin:7% auto 0;max-width:390px;min-height:180px;padding:30px 0 15px}* &gt; body{background:url(//www.google.com/images/errors/robot.png) 100% 5px no-repeat;padding-right:205px}p{margin:11px 0 22px;overflow:hidden}ins{color:#777;text-decoration:none}a img{border:0}@media screen and (max-width:772px){body{background:none;margin-top:0;max-width:none;padding-right:0}}#logo{background:url(//www.google.com/images/branding/googlelogo/1x/googlelogo_color_150x54dp.png) no-repeat;margin-left:-5px}@media only screen and (min-resolution:192dpi){#logo{background:url(//www.google.com/images/branding/googlelogo/2x/googlelogo_color_150x54dp.png) no-repeat 0% 0%/100% 100%;-moz-border-image:url(//www.google.com/images/branding/googlelogo/2x/googlelogo_color_150x54dp.png) 0}}@media only screen and (-webkit-min-device-pixel-ratio:2){#logo{background:url(//www.google.com/images/branding/googlelogo/2x/googlelogo_color_150x54dp.png) no-repeat;-webkit-background-size:100% 100%}}#logo{display:inline-block;height:54px;width:150px}&#10;  &lt;/style&gt;&#10;  &lt;a href=//www.google.com/&gt;&lt;span id=logo aria-label=Google&gt;&lt;/span&gt;&lt;/a&gt;&#10;  &lt;p&gt;&lt;b&gt;404.&lt;/b&gt; &lt;ins&gt;That’s an error.&lt;/ins&gt;&#10;  &lt;p&gt;The requested URL &lt;code&gt;/v1/accounts%3AsignInWithPassword?key=AIzaSyA_6XtbsDR4CT2ocwlBAnJdZJNiUE8x_IU&lt;/code&gt; was not found on this server.  &lt;ins&gt;That’s all we know.&lt;/ins&gt;&#10;" />
+              <option name="size" value="1637" />
+              <option name="time" value="163" />
+            </responseState>
+          </option>
+          <option name="workspaceId" value="drafts" />
+        </requestHistoryState>
+        <requestHistoryState>
+          <option name="dateTime" value="1746462536443" />
+          <option name="id" value="1f998a76-b1b4-4eb6-9696-64e517618a19" />
+          <option name="request">
+            <requestState>
+              <option name="body">
+                <bodyState>
+                  <option name="type" value="JSON" />
+                </bodyState>
+              </option>
+              <option name="id" value="3e7e9000-53b5-46a3-88f9-d5ab81fba87b" />
+              <option name="method" value="POST" />
+              <option name="name" value="Draft (3)" />
+              <option name="url" value="http://localhost:8080/auth/refresh-token" />
+            </requestState>
+          </option>
+          <option name="response">
+            <responseState>
+              <option name="code" value="403" />
+              <option name="connectionEstablishingTime" value="3" />
+              <option name="contentType" value="application/octet-stream" />
+              <option name="headers">
+                <list>
+                  <headerState>
+                    <option name="key" value="X-Content-Type-Options" />
+                    <option name="value" value="nosniff" />
+                  </headerState>
+                  <headerState>
+                    <option name="key" value="X-XSS-Protection" />
+                    <option name="value" value="0" />
+                  </headerState>
+                  <headerState>
+                    <option name="key" value="Cache-Control" />
+                    <option name="value" value="no-cache, no-store, max-age=0, must-revalidate" />
+                  </headerState>
+                  <headerState>
+                    <option name="key" value="Pragma" />
+                    <option name="value" value="no-cache" />
+                  </headerState>
+                  <headerState>
+                    <option name="key" value="Expires" />
+                    <option name="value" value="0" />
+                  </headerState>
+                  <headerState>
+                    <option name="key" value="X-Frame-Options" />
+                    <option name="value" value="DENY" />
+                  </headerState>
+                  <headerState>
+                    <option name="key" value="Content-Length" />
+                    <option name="value" value="0" />
+                  </headerState>
+                  <headerState>
+                    <option name="key" value="Date" />
+                    <option name="value" value="Mon, 05 May 2025 16:28:56 GMT" />
+                  </headerState>
+                  <headerState>
+                    <option name="key" value="Keep-Alive" />
+                    <option name="value" value="timeout=60" />
+                  </headerState>
+                  <headerState>
+                    <option name="key" value="Connection" />
+                    <option name="value" value="keep-alive" />
+                  </headerState>
+                </list>
+              </option>
+              <option name="id" value="1f998a76-b1b4-4eb6-9696-64e517618a19" />
+              <option name="message" value="Forbidden" />
+              <option name="time" value="98" />
+            </responseState>
+          </option>
+          <option name="workspaceId" value="drafts" />
+        </requestHistoryState>
+        <requestHistoryState>
+          <option name="dateTime" value="1746470206849" />
+          <option name="id" value="62d0ae80-f131-4b8e-88f9-99f92c380fa7" />
+          <option name="request">
+            <requestState>
+              <option name="body">
+                <bodyState>
+                  <option name="raw" value="{&#10;  &quot;userType&quot;: &quot;ADMIN&quot;,&#10;  &quot;userPackage&quot;: &quot;PRO&quot;,&#10;}" />
+                  <option name="type" value="JSON" />
+                </bodyState>
+              </option>
+              <option name="id" value="8f4810ac-ed97-492f-be0f-9fe8c105d47f" />
+              <option name="method" value="PUT" />
+              <option name="name" value="Draft (4)" />
+              <option name="url" value="http://localhost:8080/auth/update" />
+            </requestState>
+          </option>
+          <option name="response">
+            <responseState>
+              <option name="code" value="403" />
+              <option name="connectionEstablishingTime" value="4" />
+              <option name="contentType" value="application/octet-stream" />
+              <option name="headers">
+                <list>
+                  <headerState>
+                    <option name="key" value="X-Content-Type-Options" />
+                    <option name="value" value="nosniff" />
+                  </headerState>
+                  <headerState>
+                    <option name="key" value="X-XSS-Protection" />
+                    <option name="value" value="0" />
+                  </headerState>
+                  <headerState>
+                    <option name="key" value="Cache-Control" />
+                    <option name="value" value="no-cache, no-store, max-age=0, must-revalidate" />
+                  </headerState>
+                  <headerState>
+                    <option name="key" value="Pragma" />
+                    <option name="value" value="no-cache" />
+                  </headerState>
+                  <headerState>
+                    <option name="key" value="Expires" />
+                    <option name="value" value="0" />
+                  </headerState>
+                  <headerState>
+                    <option name="key" value="X-Frame-Options" />
+                    <option name="value" value="DENY" />
+                  </headerState>
+                  <headerState>
+                    <option name="key" value="Content-Length" />
+                    <option name="value" value="0" />
+                  </headerState>
+                  <headerState>
+                    <option name="key" value="Date" />
+                    <option name="value" value="Mon, 05 May 2025 18:36:46 GMT" />
+                  </headerState>
+                  <headerState>
+                    <option name="key" value="Keep-Alive" />
+                    <option name="value" value="timeout=60" />
+                  </headerState>
+                  <headerState>
+                    <option name="key" value="Connection" />
+                    <option name="value" value="keep-alive" />
+                  </headerState>
+                </list>
+              </option>
+              <option name="id" value="62d0ae80-f131-4b8e-88f9-99f92c380fa7" />
+              <option name="message" value="Forbidden" />
+              <option name="time" value="69" />
+            </responseState>
+          </option>
+          <option name="workspaceId" value="drafts" />
+        </requestHistoryState>
+        <requestHistoryState>
+          <option name="dateTime" value="1746470556685" />
+          <option name="id" value="6906103d-71a4-41f9-912f-f049d3e07ee1" />
+          <option name="request">
+            <requestState>
+              <option name="body">
+                <bodyState>
+                  <option name="raw" value="{&#10;  &quot;userType&quot;: &quot;ADMIN&quot;,&#10;  &quot;userPackage&quot;: &quot;PRO&quot;,&#10;}" />
+                  <option name="type" value="JSON" />
+                </bodyState>
+              </option>
+              <option name="headers">
+                <list>
+                  <headerState>
+                    <option name="key" value="Authorization" />
+                    <option name="value" value="eyJhbGciOiJSUzI1NiIsImtpZCI6IjNmOWEwNTBkYzRhZTgyOGMyODcxYzMyNTYzYzk5ZDUwMjc3ODRiZTUiLCJ0eXAiOiJKV1QifQ" />
+                  </headerState>
+                </list>
+              </option>
+              <option name="id" value="8f4810ac-ed97-492f-be0f-9fe8c105d47f" />
+              <option name="method" value="PUT" />
+              <option name="name" value="Draft (4)" />
+              <option name="url" value="http://localhost:8080/auth/update" />
+            </requestState>
+          </option>
+          <option name="response">
+            <responseState>
+              <option name="code" value="403" />
+              <option name="connectionEstablishingTime" value="4" />
+              <option name="contentType" value="application/octet-stream" />
+              <option name="headers">
+                <list>
+                  <headerState>
+                    <option name="key" value="X-Content-Type-Options" />
+                    <option name="value" value="nosniff" />
+                  </headerState>
+                  <headerState>
+                    <option name="key" value="X-XSS-Protection" />
+                    <option name="value" value="0" />
+                  </headerState>
+                  <headerState>
+                    <option name="key" value="Cache-Control" />
+                    <option name="value" value="no-cache, no-store, max-age=0, must-revalidate" />
+                  </headerState>
+                  <headerState>
+                    <option name="key" value="Pragma" />
+                    <option name="value" value="no-cache" />
+                  </headerState>
+                  <headerState>
+                    <option name="key" value="Expires" />
+                    <option name="value" value="0" />
+                  </headerState>
+                  <headerState>
+                    <option name="key" value="X-Frame-Options" />
+                    <option name="value" value="DENY" />
+                  </headerState>
+                  <headerState>
+                    <option name="key" value="Content-Length" />
+                    <option name="value" value="0" />
+                  </headerState>
+                  <headerState>
+                    <option name="key" value="Date" />
+                    <option name="value" value="Mon, 05 May 2025 18:42:36 GMT" />
+                  </headerState>
+                  <headerState>
+                    <option name="key" value="Keep-Alive" />
+                    <option name="value" value="timeout=60" />
+                  </headerState>
+                  <headerState>
+                    <option name="key" value="Connection" />
+                    <option name="value" value="keep-alive" />
+                  </headerState>
+                </list>
+              </option>
+              <option name="id" value="6906103d-71a4-41f9-912f-f049d3e07ee1" />
+              <option name="message" value="Forbidden" />
+              <option name="time" value="8" />
+            </responseState>
+          </option>
+          <option name="workspaceId" value="drafts" />
+        </requestHistoryState>
+        <requestHistoryState>
+          <option name="dateTime" value="1746470584754" />
+          <option name="id" value="6708dc65-3723-4550-8210-456829943360" />
+          <option name="request">
+            <requestState>
+              <option name="body">
+                <bodyState>
+                  <option name="raw" value="{&#10;  &quot;userType&quot;: &quot;ADMIN&quot;,&#10;  &quot;userPackage&quot;: &quot;PRO&quot;,&#10;}" />
+                  <option name="type" value="JSON" />
+                </bodyState>
+              </option>
+              <option name="headers">
+                <list>
+                  <headerState>
+                    <option name="key" value="Authorization" />
+                    <option name="value" value="Bearer&lt;eyJhbGciOiJSUzI1NiIsImtpZCI6IjNmOWEwNTBkYzRhZTgyOGMyODcxYzMyNTYzYzk5ZDUwMjc3ODRiZTUiLCJ0eXAiOiJKV1QifQ&gt;" />
+                  </headerState>
+                </list>
+              </option>
+              <option name="id" value="8f4810ac-ed97-492f-be0f-9fe8c105d47f" />
+              <option name="method" value="PUT" />
+              <option name="name" value="Draft (4)" />
+              <option name="url" value="http://localhost:8080/auth/update" />
+            </requestState>
+          </option>
+          <option name="response">
+            <responseState>
+              <option name="code" value="403" />
+              <option name="connectionEstablishingTime" value="1" />
+              <option name="contentType" value="application/octet-stream" />
+              <option name="headers">
+                <list>
+                  <headerState>
+                    <option name="key" value="X-Content-Type-Options" />
+                    <option name="value" value="nosniff" />
+                  </headerState>
+                  <headerState>
+                    <option name="key" value="X-XSS-Protection" />
+                    <option name="value" value="0" />
+                  </headerState>
+                  <headerState>
+                    <option name="key" value="Cache-Control" />
+                    <option name="value" value="no-cache, no-store, max-age=0, must-revalidate" />
+                  </headerState>
+                  <headerState>
+                    <option name="key" value="Pragma" />
+                    <option name="value" value="no-cache" />
+                  </headerState>
+                  <headerState>
+                    <option name="key" value="Expires" />
+                    <option name="value" value="0" />
+                  </headerState>
+                  <headerState>
+                    <option name="key" value="X-Frame-Options" />
+                    <option name="value" value="DENY" />
+                  </headerState>
+                  <headerState>
+                    <option name="key" value="Content-Length" />
+                    <option name="value" value="0" />
+                  </headerState>
+                  <headerState>
+                    <option name="key" value="Date" />
+                    <option name="value" value="Mon, 05 May 2025 18:43:04 GMT" />
+                  </headerState>
+                  <headerState>
+                    <option name="key" value="Keep-Alive" />
+                    <option name="value" value="timeout=60" />
+                  </headerState>
+                  <headerState>
+                    <option name="key" value="Connection" />
+                    <option name="value" value="keep-alive" />
+                  </headerState>
+                </list>
+              </option>
+              <option name="id" value="6708dc65-3723-4550-8210-456829943360" />
+              <option name="message" value="Forbidden" />
+              <option name="time" value="6" />
+            </responseState>
+          </option>
+          <option name="workspaceId" value="drafts" />
+        </requestHistoryState>
+        <requestHistoryState>
+          <option name="dateTime" value="1746470610847" />
+          <option name="id" value="f881ca7a-d011-4cad-a29a-d420213b0ab6" />
+          <option name="request">
+            <requestState>
+              <option name="body">
+                <bodyState>
+                  <option name="raw" value="{&#10;  &quot;userType&quot;: &quot;ADMIN&quot;,&#10;  &quot;userPackage&quot;: &quot;PRO&quot;,&#10;}" />
+                  <option name="type" value="JSON" />
+                </bodyState>
+              </option>
+              <option name="headers">
+                <list>
+                  <headerState>
+                    <option name="key" value="Authorization" />
+                    <option name="value" value="Bearer eyJhbGciOiJSUzI1NiIsImtpZCI6IjNmOWEwNTBkYzRhZTgyOGMyODcxYzMyNTYzYzk5ZDUwMjc3ODRiZTUiLCJ0eXAiOiJKV1QifQ" />
+                  </headerState>
+                </list>
+              </option>
+              <option name="id" value="8f4810ac-ed97-492f-be0f-9fe8c105d47f" />
+              <option name="method" value="PUT" />
+              <option name="name" value="Draft (4)" />
+              <option name="url" value="http://localhost:8080/auth/update" />
+            </requestState>
+          </option>
+          <option name="response">
+            <responseState>
+              <option name="code" value="403" />
+              <option name="connectionEstablishingTime" value="2" />
+              <option name="contentType" value="application/octet-stream" />
+              <option name="headers">
+                <list>
+                  <headerState>
+                    <option name="key" value="X-Content-Type-Options" />
+                    <option name="value" value="nosniff" />
+                  </headerState>
+                  <headerState>
+                    <option name="key" value="X-XSS-Protection" />
+                    <option name="value" value="0" />
+                  </headerState>
+                  <headerState>
+                    <option name="key" value="Cache-Control" />
+                    <option name="value" value="no-cache, no-store, max-age=0, must-revalidate" />
+                  </headerState>
+                  <headerState>
+                    <option name="key" value="Pragma" />
+                    <option name="value" value="no-cache" />
+                  </headerState>
+                  <headerState>
+                    <option name="key" value="Expires" />
+                    <option name="value" value="0" />
+                  </headerState>
+                  <headerState>
+                    <option name="key" value="X-Frame-Options" />
+                    <option name="value" value="DENY" />
+                  </headerState>
+                  <headerState>
+                    <option name="key" value="Content-Length" />
+                    <option name="value" value="0" />
+                  </headerState>
+                  <headerState>
+                    <option name="key" value="Date" />
+                    <option name="value" value="Mon, 05 May 2025 18:43:30 GMT" />
+                  </headerState>
+                  <headerState>
+                    <option name="key" value="Keep-Alive" />
+                    <option name="value" value="timeout=60" />
+                  </headerState>
+                  <headerState>
+                    <option name="key" value="Connection" />
+                    <option name="value" value="keep-alive" />
+                  </headerState>
+                </list>
+              </option>
+              <option name="id" value="f881ca7a-d011-4cad-a29a-d420213b0ab6" />
+              <option name="message" value="Forbidden" />
+              <option name="time" value="6" />
+            </responseState>
+          </option>
+          <option name="workspaceId" value="drafts" />
+        </requestHistoryState>
+        <requestHistoryState>
+          <option name="dateTime" value="1746471168762" />
+          <option name="id" value="36cadef8-35f8-4b99-8975-771a8fca1f8b" />
+          <option name="request">
+            <requestState>
+              <option name="body">
+                <bodyState>
+                  <option name="raw" value="{&#10;  &quot;userType&quot;: &quot;ADMIN&quot;,&#10;  &quot;userPackage&quot;: &quot;PRO&quot;,&#10;}" />
+                  <option name="type" value="JSON" />
+                </bodyState>
+              </option>
+              <option name="headers">
+                <list>
+                  <headerState>
+                    <option name="key" value="Authorization" />
+                    <option name="value" value="Bearer eyJhbGciOiJSUzI1NiIsImtpZCI6IjNmOWEwNTBkYzRhZTgyOGMyODcxYzMyNTYzYzk5ZDUwMjc3ODRiZTUiLCJ0eXAiOiJKV1QifQ" />
+                  </headerState>
+                </list>
+              </option>
+              <option name="id" value="8f4810ac-ed97-492f-be0f-9fe8c105d47f" />
+              <option name="method" value="PUT" />
+              <option name="name" value="Draft (4)" />
+              <option name="url" value="http://localhost:8080/auth/update" />
+            </requestState>
+          </option>
+          <option name="response">
+            <responseState>
+              <option name="code" value="403" />
+              <option name="connectionEstablishingTime" value="1" />
+              <option name="contentType" value="application/octet-stream" />
+              <option name="headers">
+                <list>
+                  <headerState>
+                    <option name="key" value="X-Content-Type-Options" />
+                    <option name="value" value="nosniff" />
+                  </headerState>
+                  <headerState>
+                    <option name="key" value="X-XSS-Protection" />
+                    <option name="value" value="0" />
+                  </headerState>
+                  <headerState>
+                    <option name="key" value="Cache-Control" />
+                    <option name="value" value="no-cache, no-store, max-age=0, must-revalidate" />
+                  </headerState>
+                  <headerState>
+                    <option name="key" value="Pragma" />
+                    <option name="value" value="no-cache" />
+                  </headerState>
+                  <headerState>
+                    <option name="key" value="Expires" />
+                    <option name="value" value="0" />
+                  </headerState>
+                  <headerState>
+                    <option name="key" value="X-Frame-Options" />
+                    <option name="value" value="DENY" />
+                  </headerState>
+                  <headerState>
+                    <option name="key" value="Content-Length" />
+                    <option name="value" value="0" />
+                  </headerState>
+                  <headerState>
+                    <option name="key" value="Date" />
+                    <option name="value" value="Mon, 05 May 2025 18:52:48 GMT" />
+                  </headerState>
+                  <headerState>
+                    <option name="key" value="Keep-Alive" />
+                    <option name="value" value="timeout=60" />
+                  </headerState>
+                  <headerState>
+                    <option name="key" value="Connection" />
+                    <option name="value" value="keep-alive" />
+                  </headerState>
+                </list>
+              </option>
+              <option name="id" value="36cadef8-35f8-4b99-8975-771a8fca1f8b" />
+              <option name="message" value="Forbidden" />
+              <option name="time" value="11" />
+            </responseState>
+          </option>
+          <option name="workspaceId" value="drafts" />
+        </requestHistoryState>
+        <requestHistoryState>
+          <option name="dateTime" value="1746471207486" />
+          <option name="id" value="50be966c-1334-4ea4-af5b-ed0b9506a2ee" />
+          <option name="request">
+            <requestState>
+              <option name="body">
+                <bodyState>
+                  <option name="raw" value="{&#10;  &quot;userType&quot;: &quot;ADMIN&quot;,&#10;  &quot;userPackage&quot;: &quot;PRO&quot;,&#10;}" />
+                  <option name="type" value="JSON" />
+                </bodyState>
+              </option>
+              <option name="headers">
+                <list>
+                  <headerState>
+                    <option name="key" value="Authorization" />
+                    <option name="value" value="Bearer eyJhbGciOiJSUzI1NiIsImtpZCI6IjNmOWEwNTBkYzRhZTgyOGMyODcxYzMyNTYzYzk5ZDUwMjc3ODRiZTUiLCJ0eXAiOiJKV1QifQ" />
+                  </headerState>
+                </list>
+              </option>
+              <option name="id" value="8f4810ac-ed97-492f-be0f-9fe8c105d47f" />
+              <option name="method" value="PUT" />
+              <option name="name" value="Draft (4)" />
+              <option name="url" value="http://localhost:8080/auth/update" />
+            </requestState>
+          </option>
+          <option name="response">
+            <responseState>
+              <option name="code" value="403" />
+              <option name="connectionEstablishingTime" value="2" />
+              <option name="contentType" value="application/octet-stream" />
+              <option name="headers">
+                <list>
+                  <headerState>
+                    <option name="key" value="X-Content-Type-Options" />
+                    <option name="value" value="nosniff" />
+                  </headerState>
+                  <headerState>
+                    <option name="key" value="X-XSS-Protection" />
+                    <option name="value" value="0" />
+                  </headerState>
+                  <headerState>
+                    <option name="key" value="Cache-Control" />
+                    <option name="value" value="no-cache, no-store, max-age=0, must-revalidate" />
+                  </headerState>
+                  <headerState>
+                    <option name="key" value="Pragma" />
+                    <option name="value" value="no-cache" />
+                  </headerState>
+                  <headerState>
+                    <option name="key" value="Expires" />
+                    <option name="value" value="0" />
+                  </headerState>
+                  <headerState>
+                    <option name="key" value="X-Frame-Options" />
+                    <option name="value" value="DENY" />
+                  </headerState>
+                  <headerState>
+                    <option name="key" value="Content-Length" />
+                    <option name="value" value="0" />
+                  </headerState>
+                  <headerState>
+                    <option name="key" value="Date" />
+                    <option name="value" value="Mon, 05 May 2025 18:53:27 GMT" />
+                  </headerState>
+                  <headerState>
+                    <option name="key" value="Keep-Alive" />
+                    <option name="value" value="timeout=60" />
+                  </headerState>
+                  <headerState>
+                    <option name="key" value="Connection" />
+                    <option name="value" value="keep-alive" />
+                  </headerState>
+                </list>
+              </option>
+              <option name="id" value="50be966c-1334-4ea4-af5b-ed0b9506a2ee" />
+              <option name="message" value="Forbidden" />
+              <option name="time" value="6" />
+            </responseState>
+          </option>
+          <option name="workspaceId" value="drafts" />
+        </requestHistoryState>
+        <requestHistoryState>
+          <option name="dateTime" value="1746471421928" />
+          <option name="id" value="30100801-a9cf-4518-a10c-e5e376ea8b38" />
+          <option name="request">
+            <requestState>
+              <option name="body">
+                <bodyState>
+                  <option name="raw" value="{&#10;  &quot;userType&quot;: &quot;ADMIN&quot;,&#10;  &quot;userPackage&quot;: &quot;PRO&quot;,&#10;}" />
+                  <option name="type" value="JSON" />
+                </bodyState>
+              </option>
+              <option name="headers">
+                <list>
+                  <headerState>
+                    <option name="key" value="Authorization" />
+                    <option name="value" value="Bearer eyJhbGciOiJSUzI1NiIsImtpZCI6IjNmOWEwNTBkYzRhZTgyOGMyODcxYzMyNTYzYzk5ZDUwMjc3ODRiZTUiLCJ0eXAiOiJKV1QifQ.eyJuYW1lIjoiVGVzdCBVc2VyIiwiaXNzIjoiaHR0cHM6Ly9zZWN1cmV0b2tlbi5nb29nbGUuY29tL3Bob3RvYXBwLWMxOTVkIiwiYXVkIjoicGhvdG9hcHAtYzE5NWQiLCJhdXRoX3RpbWUiOjE3NDY0NzEzMjYsInVzZXJfaWQiOiJuVjM5VTRmSkpHWUJudjFtSnlmeWk3TDNxNTUzIiwic3ViIjoiblYzOVU0ZkpKR1lCbnYxbUp5ZnlpN0wzcTU1MyIsImlhdCI6MTc0NjQ3MTMyNiwiZXhwIjoxNzQ2NDc0OTI2LCJlbWFpbCI6Im1pc2xhdi5jdXBpY0BnbWFpbC5jb20iLCJlbWFpbF92ZXJpZmllZCI6ZmFsc2UsImZpcmViYXNlIjp7ImlkZW50aXRpZXMiOnsiZW1haWwiOlsibWlzbGF2LmN1cGljQGdtYWlsLmNvbSJdfSwic2lnbl9pbl9wcm92aWRlciI6InBhc3N3b3JkIn19.L6FlK74sji91jQQqiJTqGnjawj0QfIKimeAFL3OxugFb8KyoXmvmJUD9ImADw6Y6ko70n76Bs-cSuw3Ta80eBqpIsWlgko1CcOhm6W1tS63z9dWeCsC0OFSGJp5OTHF_H7Rr_LXhie24kD3ZFOS13SU3GPQzX7qeCduI72LCXryxkuEXeYRMSyFxu2aqUoFCP_zcQLSH4gdsNlEfLWCMZFooEjZUbYbxx8WcTXcjV5glxVCm0pPkcINRzvaDVnJWEVjMKysH8pW-MlFjfQSlD3eVBPhQUHirHME4QalsGKjc1mcttSWB5YrkYHDMee099ull9JqUvAhdyiDczxbNWQ" />
+                  </headerState>
+                </list>
+              </option>
+              <option name="id" value="8f4810ac-ed97-492f-be0f-9fe8c105d47f" />
+              <option name="method" value="PUT" />
+              <option name="name" value="Draft (4)" />
+              <option name="url" value="http://localhost:8080/auth/update" />
+            </requestState>
+          </option>
+          <option name="response">
+            <responseState>
+              <option name="code" value="403" />
+              <option name="connectionEstablishingTime" value="1" />
+              <option name="contentType" value="application/octet-stream" />
+              <option name="headers">
+                <list>
+                  <headerState>
+                    <option name="key" value="X-Content-Type-Options" />
+                    <option name="value" value="nosniff" />
+                  </headerState>
+                  <headerState>
+                    <option name="key" value="X-XSS-Protection" />
+                    <option name="value" value="0" />
+                  </headerState>
+                  <headerState>
+                    <option name="key" value="Cache-Control" />
+                    <option name="value" value="no-cache, no-store, max-age=0, must-revalidate" />
+                  </headerState>
+                  <headerState>
+                    <option name="key" value="Pragma" />
+                    <option name="value" value="no-cache" />
+                  </headerState>
+                  <headerState>
+                    <option name="key" value="Expires" />
+                    <option name="value" value="0" />
+                  </headerState>
+                  <headerState>
+                    <option name="key" value="X-Frame-Options" />
+                    <option name="value" value="DENY" />
+                  </headerState>
+                  <headerState>
+                    <option name="key" value="Content-Length" />
+                    <option name="value" value="0" />
+                  </headerState>
+                  <headerState>
+                    <option name="key" value="Date" />
+                    <option name="value" value="Mon, 05 May 2025 18:57:01 GMT" />
+                  </headerState>
+                  <headerState>
+                    <option name="key" value="Keep-Alive" />
+                    <option name="value" value="timeout=60" />
+                  </headerState>
+                  <headerState>
+                    <option name="key" value="Connection" />
+                    <option name="value" value="keep-alive" />
+                  </headerState>
+                </list>
+              </option>
+              <option name="id" value="30100801-a9cf-4518-a10c-e5e376ea8b38" />
+              <option name="message" value="Forbidden" />
+              <option name="time" value="10" />
+            </responseState>
+          </option>
+          <option name="workspaceId" value="drafts" />
+        </requestHistoryState>
+        <requestHistoryState>
+          <option name="dateTime" value="1746471479454" />
+          <option name="id" value="c789b527-4eb7-46f4-ab60-fb4a65a1a892" />
+          <option name="request">
+            <requestState>
+              <option name="body">
+                <bodyState>
+                  <option name="raw" value="{&#10;  &quot;userType&quot;: &quot;ADMIN&quot;,&#10;  &quot;userPackage&quot;: &quot;PRO&quot;,&#10;}" />
+                  <option name="type" value="JSON" />
+                </bodyState>
+              </option>
+              <option name="headers">
+                <list>
+                  <headerState>
+                    <option name="key" value="Authorization" />
+                    <option name="value" value="Bearer eyJhbGciOiJSUzI1NiIsImtpZCI6IjNmOWEwNTBkYzRhZTgyOGMyODcxYzMyNTYzYzk5ZDUwMjc3ODRiZTUiLCJ0eXAiOiJKV1QifQ.eyJuYW1lIjoiVGVzdCBVc2VyIiwiaXNzIjoiaHR0cHM6Ly9zZWN1cmV0b2tlbi5nb29nbGUuY29tL3Bob3RvYXBwLWMxOTVkIiwiYXVkIjoicGhvdG9hcHAtYzE5NWQiLCJhdXRoX3RpbWUiOjE3NDY0NzEzMjYsInVzZXJfaWQiOiJuVjM5VTRmSkpHWUJudjFtSnlmeWk3TDNxNTUzIiwic3ViIjoiblYzOVU0ZkpKR1lCbnYxbUp5ZnlpN0wzcTU1MyIsImlhdCI6MTc0NjQ3MTMyNiwiZXhwIjoxNzQ2NDc0OTI2LCJlbWFpbCI6Im1pc2xhdi5jdXBpY0BnbWFpbC5jb20iLCJlbWFpbF92ZXJpZmllZCI6ZmFsc2UsImZpcmViYXNlIjp7ImlkZW50aXRpZXMiOnsiZW1haWwiOlsibWlzbGF2LmN1cGljQGdtYWlsLmNvbSJdfSwic2lnbl9pbl9wcm92aWRlciI6InBhc3N3b3JkIn19.L6FlK74sji91jQQqiJTqGnjawj0QfIKimeAFL3OxugFb8KyoXmvmJUD9ImADw6Y6ko70n76Bs-cSuw3Ta80eBqpIsWlgko1CcOhm6W1tS63z9dWeCsC0OFSGJp5OTHF_H7Rr_LXhie24kD3ZFOS13SU3GPQzX7qeCduI72LCXryxkuEXeYRMSyFxu2aqUoFCP_zcQLSH4gdsNlEfLWCMZFooEjZUbYbxx8WcTXcjV5glxVCm0pPkcINRzvaDVnJWEVjMKysH8pW-MlFjfQSlD3eVBPhQUHirHME4QalsGKjc1mcttSWB5YrkYHDMee099ull9JqUvAhdyiDczxbNWQ" />
+                  </headerState>
+                </list>
+              </option>
+              <option name="id" value="8f4810ac-ed97-492f-be0f-9fe8c105d47f" />
+              <option name="method" value="PUT" />
+              <option name="name" value="Draft (4)" />
+              <option name="url" value="http://localhost:8080/auth/update" />
+            </requestState>
+          </option>
+          <option name="response">
+            <responseState>
+              <option name="code" value="403" />
+              <option name="connectionEstablishingTime" value="1" />
+              <option name="contentType" value="application/octet-stream" />
+              <option name="headers">
+                <list>
+                  <headerState>
+                    <option name="key" value="X-Content-Type-Options" />
+                    <option name="value" value="nosniff" />
+                  </headerState>
+                  <headerState>
+                    <option name="key" value="X-XSS-Protection" />
+                    <option name="value" value="0" />
+                  </headerState>
+                  <headerState>
+                    <option name="key" value="Cache-Control" />
+                    <option name="value" value="no-cache, no-store, max-age=0, must-revalidate" />
+                  </headerState>
+                  <headerState>
+                    <option name="key" value="Pragma" />
+                    <option name="value" value="no-cache" />
+                  </headerState>
+                  <headerState>
+                    <option name="key" value="Expires" />
+                    <option name="value" value="0" />
+                  </headerState>
+                  <headerState>
+                    <option name="key" value="X-Frame-Options" />
+                    <option name="value" value="DENY" />
+                  </headerState>
+                  <headerState>
+                    <option name="key" value="Content-Length" />
+                    <option name="value" value="0" />
+                  </headerState>
+                  <headerState>
+                    <option name="key" value="Date" />
+                    <option name="value" value="Mon, 05 May 2025 18:57:59 GMT" />
+                  </headerState>
+                  <headerState>
+                    <option name="key" value="Keep-Alive" />
+                    <option name="value" value="timeout=60" />
+                  </headerState>
+                  <headerState>
+                    <option name="key" value="Connection" />
+                    <option name="value" value="keep-alive" />
+                  </headerState>
+                </list>
+              </option>
+              <option name="id" value="c789b527-4eb7-46f4-ab60-fb4a65a1a892" />
+              <option name="message" value="Forbidden" />
+              <option name="time" value="7" />
+            </responseState>
+          </option>
+          <option name="workspaceId" value="drafts" />
+        </requestHistoryState>
+        <requestHistoryState>
+          <option name="dateTime" value="1746472723083" />
+          <option name="id" value="765b4358-a0bf-49d7-b6bd-fa53fa194325" />
+          <option name="request">
+            <requestState>
+              <option name="body">
+                <bodyState>
+                  <option name="raw" value="{&#10;  &quot;userType&quot;: &quot;ADMIN&quot;,&#10;  &quot;userPackage&quot;: &quot;PRO&quot;,&#10;}" />
+                  <option name="type" value="JSON" />
+                </bodyState>
+              </option>
+              <option name="headers">
+                <list>
+                  <headerState>
+                    <option name="key" value="Authorization" />
+                    <option name="value" value="Bearer eyJhbGciOiJSUzI1NiIsImtpZCI6IjNmOWEwNTBkYzRhZTgyOGMyODcxYzMyNTYzYzk5ZDUwMjc3ODRiZTUiLCJ0eXAiOiJKV1QifQ.eyJuYW1lIjoiVGVzdCBVc2VyIiwiaXNzIjoiaHR0cHM6Ly9zZWN1cmV0b2tlbi5nb29nbGUuY29tL3Bob3RvYXBwLWMxOTVkIiwiYXVkIjoicGhvdG9hcHAtYzE5NWQiLCJhdXRoX3RpbWUiOjE3NDY0NzEzMjYsInVzZXJfaWQiOiJuVjM5VTRmSkpHWUJudjFtSnlmeWk3TDNxNTUzIiwic3ViIjoiblYzOVU0ZkpKR1lCbnYxbUp5ZnlpN0wzcTU1MyIsImlhdCI6MTc0NjQ3MTMyNiwiZXhwIjoxNzQ2NDc0OTI2LCJlbWFpbCI6Im1pc2xhdi5jdXBpY0BnbWFpbC5jb20iLCJlbWFpbF92ZXJpZmllZCI6ZmFsc2UsImZpcmViYXNlIjp7ImlkZW50aXRpZXMiOnsiZW1haWwiOlsibWlzbGF2LmN1cGljQGdtYWlsLmNvbSJdfSwic2lnbl9pbl9wcm92aWRlciI6InBhc3N3b3JkIn19.L6FlK74sji91jQQqiJTqGnjawj0QfIKimeAFL3OxugFb8KyoXmvmJUD9ImADw6Y6ko70n76Bs-cSuw3Ta80eBqpIsWlgko1CcOhm6W1tS63z9dWeCsC0OFSGJp5OTHF_H7Rr_LXhie24kD3ZFOS13SU3GPQzX7qeCduI72LCXryxkuEXeYRMSyFxu2aqUoFCP_zcQLSH4gdsNlEfLWCMZFooEjZUbYbxx8WcTXcjV5glxVCm0pPkcINRzvaDVnJWEVjMKysH8pW-MlFjfQSlD3eVBPhQUHirHME4QalsGKjc1mcttSWB5YrkYHDMee099ull9JqUvAhdyiDczxbNWQ" />
+                  </headerState>
+                </list>
+              </option>
+              <option name="id" value="8f4810ac-ed97-492f-be0f-9fe8c105d47f" />
+              <option name="method" value="PUT" />
+              <option name="name" value="Draft (4)" />
+              <option name="url" value="http://localhost:8080/auth/update" />
+            </requestState>
+          </option>
+          <option name="response">
+            <responseState>
+              <option name="code" value="403" />
+              <option name="connectionEstablishingTime" value="4" />
+              <option name="contentType" value="application/octet-stream" />
+              <option name="headers">
+                <list>
+                  <headerState>
+                    <option name="key" value="X-Content-Type-Options" />
+                    <option name="value" value="nosniff" />
+                  </headerState>
+                  <headerState>
+                    <option name="key" value="X-XSS-Protection" />
+                    <option name="value" value="0" />
+                  </headerState>
+                  <headerState>
+                    <option name="key" value="Cache-Control" />
+                    <option name="value" value="no-cache, no-store, max-age=0, must-revalidate" />
+                  </headerState>
+                  <headerState>
+                    <option name="key" value="Pragma" />
+                    <option name="value" value="no-cache" />
+                  </headerState>
+                  <headerState>
+                    <option name="key" value="Expires" />
+                    <option name="value" value="0" />
+                  </headerState>
+                  <headerState>
+                    <option name="key" value="X-Frame-Options" />
+                    <option name="value" value="DENY" />
+                  </headerState>
+                  <headerState>
+                    <option name="key" value="Content-Length" />
+                    <option name="value" value="0" />
+                  </headerState>
+                  <headerState>
+                    <option name="key" value="Date" />
+                    <option name="value" value="Mon, 05 May 2025 19:18:43 GMT" />
+                  </headerState>
+                  <headerState>
+                    <option name="key" value="Keep-Alive" />
+                    <option name="value" value="timeout=60" />
+                  </headerState>
+                  <headerState>
+                    <option name="key" value="Connection" />
+                    <option name="value" value="keep-alive" />
+                  </headerState>
+                </list>
+              </option>
+              <option name="id" value="765b4358-a0bf-49d7-b6bd-fa53fa194325" />
+              <option name="message" value="Forbidden" />
+              <option name="time" value="9" />
+            </responseState>
+          </option>
+          <option name="workspaceId" value="drafts" />
+        </requestHistoryState>
+        <requestHistoryState>
+          <option name="dateTime" value="1746472749152" />
+          <option name="id" value="ad5f5292-e261-4710-baa2-bcd370e4ed09" />
+          <option name="request">
+            <requestState>
+              <option name="auth">
+                <authState>
+                  <option name="type" value="BEARER" />
+                </authState>
+              </option>
+              <option name="body">
+                <bodyState>
+                  <option name="raw" value="{&#10;  &quot;email&quot;: &quot;mislav.cupic@gmail.com&quot;,&#10;  &quot;password&quot;: &quot;Test1234!&quot;,&#10;  &quot;userType&quot;: &quot;ANONYMOUS&quot;,&#10;  &quot;userPackage&quot;: &quot;FREE&quot;,&#10;  &quot;idToken&quot;:&quot;eyJhbGciOiJSUzI1NiIsImtpZCI6IjNmOWEwNTBkYzRhZTgyOGMyODcxYzMyNTYzYzk5ZDUwMjc3ODRiZTUiLCJ0eXAiOiJKV1QifQ.eyJuYW1lIjoiVGVzdCBVc2VyIiwiaXNzIjoiaHR0cHM6Ly9zZWN1cmV0b2tlbi5nb29nbGUuY29tL3Bob3RvYXBwLWMxOTVkIiwiYXVkIjoicGhvdG9hcHAtYzE5NWQiLCJhdXRoX3RpbWUiOjE3NDY0NzEzMjYsInVzZXJfaWQiOiJuVjM5VTRmSkpHWUJudjFtSnlmeWk3TDNxNTUzIiwic3ViIjoiblYzOVU0ZkpKR1lCbnYxbUp5ZnlpN0wzcTU1MyIsImlhdCI6MTc0NjQ3MTMyNiwiZXhwIjoxNzQ2NDc0OTI2LCJlbWFpbCI6Im1pc2xhdi5jdXBpY0BnbWFpbC5jb20iLCJlbWFpbF92ZXJpZmllZCI6ZmFsc2UsImZpcmViYXNlIjp7ImlkZW50aXRpZXMiOnsiZW1haWwiOlsibWlzbGF2LmN1cGljQGdtYWlsLmNvbSJdfSwic2lnbl9pbl9wcm92aWRlciI6InBhc3N3b3JkIn19.L6FlK74sji91jQQqiJTqGnjawj0QfIKimeAFL3OxugFb8KyoXmvmJUD9ImADw6Y6ko70n76Bs-cSuw3Ta80eBqpIsWlgko1CcOhm6W1tS63z9dWeCsC0OFSGJp5OTHF_H7Rr_LXhie24kD3ZFOS13SU3GPQzX7qeCduI72LCXryxkuEXeYRMSyFxu2aqUoFCP_zcQLSH4gdsNlEfLWCMZFooEjZUbYbxx8WcTXcjV5glxVCm0pPkcINRzvaDVnJWEVjMKysH8pW-MlFjfQSlD3eVBPhQUHirHME4QalsGKjc1mcttSWB5YrkYHDMee099ull9JqUvAhdyiDczxbNWQ&quot;&#10;}" />
+                  <option name="type" value="JSON" />
+                </bodyState>
+              </option>
+              <option name="id" value="563ad1be-a7ec-4a70-bb60-3073d3fa73af" />
+              <option name="method" value="POST" />
+              <option name="name" value="Draft" />
+              <option name="url" value="http://localhost:8080/auth/register" />
+            </requestState>
+          </option>
+          <option name="response">
+            <responseState>
+              <option name="code" value="403" />
+              <option name="contentType" value="application/octet-stream" />
+              <option name="headers">
+                <list>
+                  <headerState>
+                    <option name="key" value="X-Content-Type-Options" />
+                    <option name="value" value="nosniff" />
+                  </headerState>
+                  <headerState>
+                    <option name="key" value="X-XSS-Protection" />
+                    <option name="value" value="0" />
+                  </headerState>
+                  <headerState>
+                    <option name="key" value="Cache-Control" />
+                    <option name="value" value="no-cache, no-store, max-age=0, must-revalidate" />
+                  </headerState>
+                  <headerState>
+                    <option name="key" value="Pragma" />
+                    <option name="value" value="no-cache" />
+                  </headerState>
+                  <headerState>
+                    <option name="key" value="Expires" />
+                    <option name="value" value="0" />
+                  </headerState>
+                  <headerState>
+                    <option name="key" value="X-Frame-Options" />
+                    <option name="value" value="DENY" />
+                  </headerState>
+                  <headerState>
+                    <option name="key" value="Content-Length" />
+                    <option name="value" value="0" />
+                  </headerState>
+                  <headerState>
+                    <option name="key" value="Date" />
+                    <option name="value" value="Mon, 05 May 2025 19:19:09 GMT" />
+                  </headerState>
+                  <headerState>
+                    <option name="key" value="Keep-Alive" />
+                    <option name="value" value="timeout=60" />
+                  </headerState>
+                  <headerState>
+                    <option name="key" value="Connection" />
+                    <option name="value" value="keep-alive" />
+                  </headerState>
+                </list>
+              </option>
+              <option name="id" value="ad5f5292-e261-4710-baa2-bcd370e4ed09" />
+              <option name="message" value="Forbidden" />
+              <option name="time" value="6" />
+            </responseState>
+          </option>
+          <option name="workspaceId" value="drafts" />
+        </requestHistoryState>
+        <requestHistoryState>
+          <option name="dateTime" value="1746473111350" />
+          <option name="id" value="bb9f2e55-a8f1-4f4d-9163-ba8aec5b30d6" />
+          <option name="request">
+            <requestState>
+              <option name="auth">
+                <authState>
+                  <option name="type" value="BEARER" />
+                </authState>
+              </option>
+              <option name="body">
+                <bodyState>
+                  <option name="raw" value="{&#10;  &quot;email&quot;: &quot;mislav.cupic1@skole.hr&quot;,&#10;  &quot;password&quot;: &quot;tajna123&quot;,&#10;  &quot;displayName&quot;: &quot;Testni korisnik 2&quot;,&#10;  &quot;userType&quot;: &quot;USER&quot;,&#10;  &quot;userPackage&quot;: &quot;BASIC&quot;&#10;}&#10;" />
+                  <option name="type" value="JSON" />
+                </bodyState>
+              </option>
+              <option name="id" value="563ad1be-a7ec-4a70-bb60-3073d3fa73af" />
+              <option name="method" value="POST" />
+              <option name="name" value="Draft" />
+              <option name="url" value="http://localhost:8080/auth/register" />
+            </requestState>
+          </option>
+          <option name="response">
+            <responseState>
+              <option name="code" value="403" />
+              <option name="connectionEstablishingTime" value="4" />
+              <option name="contentType" value="application/octet-stream" />
+              <option name="headers">
+                <list>
+                  <headerState>
+                    <option name="key" value="X-Content-Type-Options" />
+                    <option name="value" value="nosniff" />
+                  </headerState>
+                  <headerState>
+                    <option name="key" value="X-XSS-Protection" />
+                    <option name="value" value="0" />
+                  </headerState>
+                  <headerState>
+                    <option name="key" value="Cache-Control" />
+                    <option name="value" value="no-cache, no-store, max-age=0, must-revalidate" />
+                  </headerState>
+                  <headerState>
+                    <option name="key" value="Pragma" />
+                    <option name="value" value="no-cache" />
+                  </headerState>
+                  <headerState>
+                    <option name="key" value="Expires" />
+                    <option name="value" value="0" />
+                  </headerState>
+                  <headerState>
+                    <option name="key" value="X-Frame-Options" />
+                    <option name="value" value="DENY" />
+                  </headerState>
+                  <headerState>
+                    <option name="key" value="Content-Length" />
+                    <option name="value" value="0" />
+                  </headerState>
+                  <headerState>
+                    <option name="key" value="Date" />
+                    <option name="value" value="Mon, 05 May 2025 19:25:11 GMT" />
+                  </headerState>
+                  <headerState>
+                    <option name="key" value="Keep-Alive" />
+                    <option name="value" value="timeout=60" />
+                  </headerState>
+                  <headerState>
+                    <option name="key" value="Connection" />
+                    <option name="value" value="keep-alive" />
+                  </headerState>
+                </list>
+              </option>
+              <option name="id" value="bb9f2e55-a8f1-4f4d-9163-ba8aec5b30d6" />
+              <option name="message" value="Forbidden" />
+              <option name="time" value="10" />
+            </responseState>
+          </option>
+          <option name="workspaceId" value="drafts" />
+        </requestHistoryState>
+        <requestHistoryState>
+          <option name="dateTime" value="1746473123038" />
+          <option name="id" value="d0e983de-b7ef-429a-a7af-65bed8ab1fa6" />
+          <option name="request">
+            <requestState>
+              <option name="auth">
+                <authState>
+                  <option name="type" value="BEARER" />
+                </authState>
+              </option>
+              <option name="body">
+                <bodyState>
+                  <option name="raw" value="{&#10;  &quot;email&quot;: &quot;mislav.cupic1@skole.hr&quot;,&#10;  &quot;password&quot;: &quot;tajna123&quot;,&#10;  &quot;displayName&quot;: &quot;Testni korisnik 2&quot;,&#10;  &quot;userType&quot;: &quot;USER&quot;,&#10;  &quot;userPackage&quot;: &quot;BASIC&quot;&#10;}&#10;" />
+                  <option name="type" value="JSON" />
+                </bodyState>
+              </option>
+              <option name="id" value="563ad1be-a7ec-4a70-bb60-3073d3fa73af" />
+              <option name="method" value="POST" />
+              <option name="name" value="Draft" />
+              <option name="url" value="http://localhost:8080/auth/register" />
+            </requestState>
+          </option>
+          <option name="response">
+            <responseState>
+              <option name="code" value="403" />
+              <option name="connectionEstablishingTime" value="1" />
+              <option name="contentType" value="application/octet-stream" />
+              <option name="headers">
+                <list>
+                  <headerState>
+                    <option name="key" value="X-Content-Type-Options" />
+                    <option name="value" value="nosniff" />
+                  </headerState>
+                  <headerState>
+                    <option name="key" value="X-XSS-Protection" />
+                    <option name="value" value="0" />
+                  </headerState>
+                  <headerState>
+                    <option name="key" value="Cache-Control" />
+                    <option name="value" value="no-cache, no-store, max-age=0, must-revalidate" />
+                  </headerState>
+                  <headerState>
+                    <option name="key" value="Pragma" />
+                    <option name="value" value="no-cache" />
+                  </headerState>
+                  <headerState>
+                    <option name="key" value="Expires" />
+                    <option name="value" value="0" />
+                  </headerState>
+                  <headerState>
+                    <option name="key" value="X-Frame-Options" />
+                    <option name="value" value="DENY" />
+                  </headerState>
+                  <headerState>
+                    <option name="key" value="Content-Length" />
+                    <option name="value" value="0" />
+                  </headerState>
+                  <headerState>
+                    <option name="key" value="Date" />
+                    <option name="value" value="Mon, 05 May 2025 19:25:23 GMT" />
+                  </headerState>
+                  <headerState>
+                    <option name="key" value="Keep-Alive" />
+                    <option name="value" value="timeout=60" />
+                  </headerState>
+                  <headerState>
+                    <option name="key" value="Connection" />
+                    <option name="value" value="keep-alive" />
+                  </headerState>
+                </list>
+              </option>
+              <option name="id" value="d0e983de-b7ef-429a-a7af-65bed8ab1fa6" />
+              <option name="message" value="Forbidden" />
+              <option name="time" value="6" />
+            </responseState>
+          </option>
+          <option name="workspaceId" value="drafts" />
+        </requestHistoryState>
+        <requestHistoryState>
+          <option name="dateTime" value="1746473166959" />
+          <option name="id" value="f94c2bee-6734-4924-8a32-9450d70a3ec1" />
+          <option name="request">
+            <requestState>
+              <option name="auth">
+                <authState>
+                  <option name="type" value="BEARER" />
+                </authState>
+              </option>
+              <option name="body">
+                <bodyState>
+                  <option name="raw" value="{&#10;  &quot;email&quot;: &quot;mislav.cupic1@skole.hr&quot;,&#10;  &quot;password&quot;: &quot;tajna123&quot;,&#10;  &quot;displayName&quot;: &quot;Testni korisnik 2&quot;,&#10;  &quot;userType&quot;: &quot;USER&quot;,&#10;  &quot;userPackage&quot;: &quot;BASIC&quot;&#10;}&#10;" />
+                  <option name="type" value="JSON" />
+                </bodyState>
+              </option>
+              <option name="id" value="563ad1be-a7ec-4a70-bb60-3073d3fa73af" />
+              <option name="method" value="POST" />
+              <option name="name" value="Draft" />
+              <option name="url" value="http://localhost:8080/auth/register" />
+            </requestState>
+          </option>
+          <option name="response">
+            <responseState>
+              <option name="code" value="403" />
+              <option name="connectionEstablishingTime" value="2" />
+              <option name="contentType" value="application/octet-stream" />
+              <option name="headers">
+                <list>
+                  <headerState>
+                    <option name="key" value="X-Content-Type-Options" />
+                    <option name="value" value="nosniff" />
+                  </headerState>
+                  <headerState>
+                    <option name="key" value="X-XSS-Protection" />
+                    <option name="value" value="0" />
+                  </headerState>
+                  <headerState>
+                    <option name="key" value="Cache-Control" />
+                    <option name="value" value="no-cache, no-store, max-age=0, must-revalidate" />
+                  </headerState>
+                  <headerState>
+                    <option name="key" value="Pragma" />
+                    <option name="value" value="no-cache" />
+                  </headerState>
+                  <headerState>
+                    <option name="key" value="Expires" />
+                    <option name="value" value="0" />
+                  </headerState>
+                  <headerState>
+                    <option name="key" value="X-Frame-Options" />
+                    <option name="value" value="DENY" />
+                  </headerState>
+                  <headerState>
+                    <option name="key" value="Content-Length" />
+                    <option name="value" value="0" />
+                  </headerState>
+                  <headerState>
+                    <option name="key" value="Date" />
+                    <option name="value" value="Mon, 05 May 2025 19:26:06 GMT" />
+                  </headerState>
+                  <headerState>
+                    <option name="key" value="Keep-Alive" />
+                    <option name="value" value="timeout=60" />
+                  </headerState>
+                  <headerState>
+                    <option name="key" value="Connection" />
+                    <option name="value" value="keep-alive" />
+                  </headerState>
+                </list>
+              </option>
+              <option name="id" value="f94c2bee-6734-4924-8a32-9450d70a3ec1" />
+              <option name="message" value="Forbidden" />
+              <option name="time" value="71" />
+            </responseState>
+          </option>
+          <option name="workspaceId" value="drafts" />
+        </requestHistoryState>
+        <requestHistoryState>
+          <option name="dateTime" value="1746474771839" />
+          <option name="id" value="da43d54b-5baf-4b91-bb16-3cf7ec3e61dc" />
+          <option name="request">
+            <requestState>
+              <option name="auth">
+                <authState>
+                  <option name="type" value="BEARER" />
+                </authState>
+              </option>
+              <option name="body">
+                <bodyState>
+                  <option name="raw" value="{&#10;  &quot;email&quot;: &quot;mislav.cupic1@skole.hr&quot;,&#10;  &quot;password&quot;: &quot;tajna123&quot;,&#10;  &quot;displayName&quot;: &quot;Testni korisnik 2&quot;,&#10;  &quot;userType&quot;: &quot;USER&quot;,&#10;  &quot;userPackage&quot;: &quot;BASIC&quot;&#10;}&#10;" />
+                  <option name="type" value="JSON" />
+                </bodyState>
+              </option>
+              <option name="id" value="563ad1be-a7ec-4a70-bb60-3073d3fa73af" />
+              <option name="method" value="POST" />
+              <option name="name" value="Draft" />
+              <option name="url" value="http://localhost:8080/auth/register" />
+            </requestState>
+          </option>
+          <option name="response">
+            <responseState>
+              <option name="code" value="403" />
+              <option name="connectionEstablishingTime" value="6" />
+              <option name="contentType" value="application/octet-stream" />
+              <option name="headers">
+                <list>
+                  <headerState>
+                    <option name="key" value="X-Content-Type-Options" />
+                    <option name="value" value="nosniff" />
+                  </headerState>
+                  <headerState>
+                    <option name="key" value="X-XSS-Protection" />
+                    <option name="value" value="0" />
+                  </headerState>
+                  <headerState>
+                    <option name="key" value="Cache-Control" />
+                    <option name="value" value="no-cache, no-store, max-age=0, must-revalidate" />
+                  </headerState>
+                  <headerState>
+                    <option name="key" value="Pragma" />
+                    <option name="value" value="no-cache" />
+                  </headerState>
+                  <headerState>
+                    <option name="key" value="Expires" />
+                    <option name="value" value="0" />
+                  </headerState>
+                  <headerState>
+                    <option name="key" value="X-Frame-Options" />
+                    <option name="value" value="DENY" />
+                  </headerState>
+                  <headerState>
+                    <option name="key" value="Content-Length" />
+                    <option name="value" value="0" />
+                  </headerState>
+                  <headerState>
+                    <option name="key" value="Date" />
+                    <option name="value" value="Mon, 05 May 2025 19:52:51 GMT" />
+                  </headerState>
+                  <headerState>
+                    <option name="key" value="Keep-Alive" />
+                    <option name="value" value="timeout=60" />
+                  </headerState>
+                  <headerState>
+                    <option name="key" value="Connection" />
+                    <option name="value" value="keep-alive" />
+                  </headerState>
+                </list>
+              </option>
+              <option name="id" value="da43d54b-5baf-4b91-bb16-3cf7ec3e61dc" />
+              <option name="message" value="Forbidden" />
+              <option name="time" value="13" />
+            </responseState>
+          </option>
+          <option name="workspaceId" value="drafts" />
+        </requestHistoryState>
+        <requestHistoryState>
+          <option name="dateTime" value="1746474790427" />
+          <option name="id" value="938db164-0cc4-4968-92eb-bb69c8e76caf" />
+          <option name="request">
+            <requestState>
+              <option name="auth">
+                <authState>
+                  <option name="type" value="BEARER" />
+                </authState>
+              </option>
+              <option name="body">
+                <bodyState>
+                  <option name="raw" value="{&#10;  &quot;email&quot;: &quot;mislav.cupic1@skole.hr&quot;,&#10;  &quot;password&quot;: &quot;tajna123&quot;,&#10;  &quot;displayName&quot;: &quot;Testni korisnik 2&quot;,&#10;  &quot;userType&quot;: &quot;USER&quot;,&#10;  &quot;userPackage&quot;: &quot;BASIC&quot;&#10;}&#10;" />
+                  <option name="type" value="JSON" />
+                </bodyState>
+              </option>
+              <option name="id" value="563ad1be-a7ec-4a70-bb60-3073d3fa73af" />
+              <option name="method" value="POST" />
+              <option name="name" value="Draft" />
+              <option name="url" value="http://localhost:8080/auth/register" />
+            </requestState>
+          </option>
+          <option name="response">
+            <responseState>
+              <option name="code" value="403" />
+              <option name="connectionEstablishingTime" value="4" />
+              <option name="contentType" value="application/octet-stream" />
+              <option name="headers">
+                <list>
+                  <headerState>
+                    <option name="key" value="X-Content-Type-Options" />
+                    <option name="value" value="nosniff" />
+                  </headerState>
+                  <headerState>
+                    <option name="key" value="X-XSS-Protection" />
+                    <option name="value" value="0" />
+                  </headerState>
+                  <headerState>
+                    <option name="key" value="Cache-Control" />
+                    <option name="value" value="no-cache, no-store, max-age=0, must-revalidate" />
+                  </headerState>
+                  <headerState>
+                    <option name="key" value="Pragma" />
+                    <option name="value" value="no-cache" />
+                  </headerState>
+                  <headerState>
+                    <option name="key" value="Expires" />
+                    <option name="value" value="0" />
+                  </headerState>
+                  <headerState>
+                    <option name="key" value="X-Frame-Options" />
+                    <option name="value" value="DENY" />
+                  </headerState>
+                  <headerState>
+                    <option name="key" value="Content-Length" />
+                    <option name="value" value="0" />
+                  </headerState>
+                  <headerState>
+                    <option name="key" value="Date" />
+                    <option name="value" value="Mon, 05 May 2025 19:53:10 GMT" />
+                  </headerState>
+                  <headerState>
+                    <option name="key" value="Keep-Alive" />
+                    <option name="value" value="timeout=60" />
+                  </headerState>
+                  <headerState>
+                    <option name="key" value="Connection" />
+                    <option name="value" value="keep-alive" />
+                  </headerState>
+                </list>
+              </option>
+              <option name="id" value="938db164-0cc4-4968-92eb-bb69c8e76caf" />
+              <option name="message" value="Forbidden" />
+              <option name="time" value="8" />
+            </responseState>
+          </option>
+          <option name="workspaceId" value="drafts" />
+        </requestHistoryState>
+        <requestHistoryState>
+          <option name="dateTime" value="1746474829647" />
+          <option name="id" value="a18e7e03-9b18-40dd-b9e3-b5b01ff24cb6" />
+          <option name="request">
+            <requestState>
+              <option name="auth">
+                <authState>
+                  <option name="type" value="BEARER" />
+                </authState>
+              </option>
+              <option name="body">
+                <bodyState>
+                  <option name="raw" value="{&#10;  &quot;email&quot;: &quot;mislav.cupic1@skole.hr&quot;,&#10;  &quot;password&quot;: &quot;tajna123&quot;,&#10;  &quot;displayName&quot;: &quot;Testni korisnik 2&quot;,&#10;  &quot;userType&quot;: &quot;USER&quot;,&#10;  &quot;userPackage&quot;: &quot;BASIC&quot;&#10;}&#10;" />
+                  <option name="type" value="JSON" />
+                </bodyState>
+              </option>
+              <option name="id" value="563ad1be-a7ec-4a70-bb60-3073d3fa73af" />
+              <option name="method" value="POST" />
+              <option name="name" value="Draft" />
+              <option name="url" value="http://localhost:8080/auth/register" />
+            </requestState>
+          </option>
+          <option name="response">
+            <responseState>
+              <option name="code" value="403" />
+              <option name="connectionEstablishingTime" value="2" />
+              <option name="contentType" value="application/octet-stream" />
+              <option name="headers">
+                <list>
+                  <headerState>
+                    <option name="key" value="X-Content-Type-Options" />
+                    <option name="value" value="nosniff" />
+                  </headerState>
+                  <headerState>
+                    <option name="key" value="X-XSS-Protection" />
+                    <option name="value" value="0" />
+                  </headerState>
+                  <headerState>
+                    <option name="key" value="Cache-Control" />
+                    <option name="value" value="no-cache, no-store, max-age=0, must-revalidate" />
+                  </headerState>
+                  <headerState>
+                    <option name="key" value="Pragma" />
+                    <option name="value" value="no-cache" />
+                  </headerState>
+                  <headerState>
+                    <option name="key" value="Expires" />
+                    <option name="value" value="0" />
+                  </headerState>
+                  <headerState>
+                    <option name="key" value="X-Frame-Options" />
+                    <option name="value" value="DENY" />
+                  </headerState>
+                  <headerState>
+                    <option name="key" value="Content-Length" />
+                    <option name="value" value="0" />
+                  </headerState>
+                  <headerState>
+                    <option name="key" value="Date" />
+                    <option name="value" value="Mon, 05 May 2025 19:53:49 GMT" />
+                  </headerState>
+                  <headerState>
+                    <option name="key" value="Keep-Alive" />
+                    <option name="value" value="timeout=60" />
+                  </headerState>
+                  <headerState>
+                    <option name="key" value="Connection" />
+                    <option name="value" value="keep-alive" />
+                  </headerState>
+                </list>
+              </option>
+              <option name="id" value="a18e7e03-9b18-40dd-b9e3-b5b01ff24cb6" />
+              <option name="message" value="Forbidden" />
+              <option name="time" value="8" />
+            </responseState>
+          </option>
+          <option name="workspaceId" value="drafts" />
+        </requestHistoryState>
+        <requestHistoryState>
+          <option name="dateTime" value="1746475376447" />
+          <option name="id" value="89ac8234-8ea4-48b4-8255-547acba6819d" />
+          <option name="request">
+            <requestState>
+              <option name="auth">
+                <authState>
+                  <option name="type" value="BEARER" />
+                </authState>
+              </option>
+              <option name="body">
+                <bodyState>
+                  <option name="raw" value="{&#10;  &quot;email&quot;: &quot;mislav.cupic1@skole.hr&quot;,&#10;  &quot;password&quot;: &quot;tajna123&quot;,&#10;  &quot;displayName&quot;: &quot;Testni korisnik 2&quot;,&#10;  &quot;userType&quot;: &quot;ADMIN&quot;,&#10;  &quot;userPackage&quot;: &quot;GOLD&quot;&#10;}&#10;" />
+                  <option name="type" value="JSON" />
+                </bodyState>
+              </option>
+              <option name="id" value="563ad1be-a7ec-4a70-bb60-3073d3fa73af" />
+              <option name="method" value="POST" />
+              <option name="name" value="Draft" />
+              <option name="url" value="http://localhost:8080/auth/register" />
+            </requestState>
+          </option>
+          <option name="response">
+            <responseState>
+              <option name="bodyBytesBase64" value="eyJhY2Nlc3NUb2tlbiI6ImV5SmhiR2NpT2lKU1V6STFOaUo5LmV5SmhkV1FpT2lKb2RIUndjem92TDJsa1pXNTBhWFI1ZEc5dmJHdHBkQzVuYjI5bmJHVmhjR2x6TG1OdmJTOW5iMjluYkdVdWFXUmxiblJwZEhrdWFXUmxiblJwZEhsMGIyOXNhMmwwTG5ZeExrbGtaVzUwYVhSNVZHOXZiR3RwZENJc0ltVjRjQ0k2TVRjME5qUTNPRGszTml3aWFXRjBJam94TnpRMk5EYzFNemMyTENKcGMzTWlPaUptYVhKbFltRnpaUzFoWkcxcGJuTmtheTFtWW5OMlkwQndhRzkwYjJGd2NDMWpNVGsxWkM1cFlXMHVaM05sY25acFkyVmhZMk52ZFc1MExtTnZiU0lzSW5OMVlpSTZJbVpwY21WaVlYTmxMV0ZrYldsdWMyUnJMV1ppYzNaalFIQm9iM1J2WVhCd0xXTXhPVFZrTG1saGJTNW5jMlZ5ZG1salpXRmpZMjkxYm5RdVkyOXRJaXdpZFdsa0lqb2lUREUzTW1jeVdqbGxNbFJCTTBGWGFFcEthVkJLVG5SMllWVklNaUo5LlQ3TVh4Nzk4SGppVUI2UUFmeUFodGxLbVlBS1F3RjB4WUtFaURPUTA4QzJ6NEc4TGh1dzFWczVrNG9wSU9uVk80MFo1UDZ1TUY2N0NEb0JhWlNNLTE2amVCMld1cWt3VHJIZUR0TEV2MjBVbVl6ZThrM3JGTWZOOHpRb2RvMjhUcUZhOXU2VDVTZHkxQzA0a0J4UFlaLUJaY0lPTnRxMTNzbkpPbFJDRzVYR3Jock9Sb0s1Nm5MdDUzTm9EM3ZzOUNrVk9kcHFzYUVtaGRVcjJfdmxMMW9jdWtsTWFRc1lmeEhHZmxhcG9pQXJCZERGSDhhUFlFeUVBWi1kd3RyUWNoY3RTRlVYYXpoR1ktekxrbEx0WkloektqSHY5eG15UUJreWFmNXlJd2x3dVVkeDVPXzVEdzNEZVhUampMYUVacXAtQ3BCdk0zcEdJYU45Z0taT21NZyIsInJlZnJlc2hUb2tlbiI6bnVsbCwidXNlciI6eyJpZCI6bnVsbCwiZW1haWwiOiJtaXNsYXYuY3VwaWMxQHNrb2xlLmhyIiwidXNlclR5cGUiOiJBRE1JTiIsInVzZXJQYWNrYWdlIjoiR09MRCIsImZpcmViYXNlVWlkIjoiTDE3MmcyWjllMlRBM0FXaEpKaVBKTnR2YVVIMiIsImRpc3BsYXlOYW1lIjoiVGVzdG5pIGtvcmlzbmlrIDIifX0=" />
+              <option name="bodyString" value="{&#10;  &quot;accessToken&quot;: &quot;eyJhbGciOiJSUzI1NiJ9.eyJhdWQiOiJodHRwczovL2lkZW50aXR5dG9vbGtpdC5nb29nbGVhcGlzLmNvbS9nb29nbGUuaWRlbnRpdHkuaWRlbnRpdHl0b29sa2l0LnYxLklkZW50aXR5VG9vbGtpdCIsImV4cCI6MTc0NjQ3ODk3NiwiaWF0IjoxNzQ2NDc1Mzc2LCJpc3MiOiJmaXJlYmFzZS1hZG1pbnNkay1mYnN2Y0BwaG90b2FwcC1jMTk1ZC5pYW0uZ3NlcnZpY2VhY2NvdW50LmNvbSIsInN1YiI6ImZpcmViYXNlLWFkbWluc2RrLWZic3ZjQHBob3RvYXBwLWMxOTVkLmlhbS5nc2VydmljZWFjY291bnQuY29tIiwidWlkIjoiTDE3MmcyWjllMlRBM0FXaEpKaVBKTnR2YVVIMiJ9.T7MXx798HjiUB6QAfyAhtlKmYAKQwF0xYKEiDOQ08C2z4G8Lhuw1Vs5k4opIOnVO40Z5P6uMF67CDoBaZSM-16jeB2WuqkwTrHeDtLEv20UmYze8k3rFMfN8zQodo28TqFa9u6T5Sdy1C04kBxPYZ-BZcIONtq13snJOlRCG5XGrhrORoK56nLt53NoD3vs9CkVOdpqsaEmhdUr2_vlL1ocuklMaQsYfxHGflapoiArBdDFH8aPYEyEAZ-dwtrQchctSFUXazhGY-zLklLtZIhzKjHv9xmyQBkyaf5yIwlwuUdx5O_5Dw3DeXTjjLaEZqp-CpBvM3pGIaN9gKZOmMg&quot;,&#10;  &quot;refreshToken&quot;: null,&#10;  &quot;user&quot;: {&#10;    &quot;id&quot;: null,&#10;    &quot;email&quot;: &quot;mislav.cupic1@skole.hr&quot;,&#10;    &quot;userType&quot;: &quot;ADMIN&quot;,&#10;    &quot;userPackage&quot;: &quot;GOLD&quot;,&#10;    &quot;firebaseUid&quot;: &quot;L172g2Z9e2TA3AWhJJiPJNtvaUH2&quot;,&#10;    &quot;displayName&quot;: &quot;Testni korisnik 2&quot;&#10;  }&#10;}" />
+              <option name="code" value="200" />
+              <option name="connectionEstablishingTime" value="6" />
+              <option name="contentType" value="application/json" />
+              <option name="headers">
+                <list>
+                  <headerState>
+                    <option name="key" value="Vary" />
+                    <option name="value" value="Origin" />
+                  </headerState>
+                  <headerState>
+                    <option name="key" value="Vary" />
+                    <option name="value" value="Access-Control-Request-Method" />
+                  </headerState>
+                  <headerState>
+                    <option name="key" value="Vary" />
+                    <option name="value" value="Access-Control-Request-Headers" />
+                  </headerState>
+                  <headerState>
+                    <option name="key" value="X-Content-Type-Options" />
+                    <option name="value" value="nosniff" />
+                  </headerState>
+                  <headerState>
+                    <option name="key" value="X-XSS-Protection" />
+                    <option name="value" value="0" />
+                  </headerState>
+                  <headerState>
+                    <option name="key" value="Cache-Control" />
+                    <option name="value" value="no-cache, no-store, max-age=0, must-revalidate" />
+                  </headerState>
+                  <headerState>
+                    <option name="key" value="Pragma" />
+                    <option name="value" value="no-cache" />
+                  </headerState>
+                  <headerState>
+                    <option name="key" value="Expires" />
+                    <option name="value" value="0" />
+                  </headerState>
+                  <headerState>
+                    <option name="key" value="X-Frame-Options" />
+                    <option name="value" value="DENY" />
+                  </headerState>
+                  <headerState>
+                    <option name="key" value="Content-Type" />
+                    <option name="value" value="application/json" />
+                  </headerState>
+                  <headerState>
+                    <option name="key" value="Transfer-Encoding" />
+                    <option name="value" value="chunked" />
+                  </headerState>
+                  <headerState>
+                    <option name="key" value="Date" />
+                    <option name="value" value="Mon, 05 May 2025 20:02:56 GMT" />
+                  </headerState>
+                  <headerState>
+                    <option name="key" value="Keep-Alive" />
+                    <option name="value" value="timeout=60" />
+                  </headerState>
+                  <headerState>
+                    <option name="key" value="Connection" />
+                    <option name="value" value="keep-alive" />
+                  </headerState>
+                </list>
+              </option>
+              <option name="id" value="89ac8234-8ea4-48b4-8255-547acba6819d" />
+              <option name="message" value="OK" />
+              <option name="prettyResponseType" value="JSON" />
+              <option name="rawBodyString" value="{&quot;accessToken&quot;:&quot;eyJhbGciOiJSUzI1NiJ9.eyJhdWQiOiJodHRwczovL2lkZW50aXR5dG9vbGtpdC5nb29nbGVhcGlzLmNvbS9nb29nbGUuaWRlbnRpdHkuaWRlbnRpdHl0b29sa2l0LnYxLklkZW50aXR5VG9vbGtpdCIsImV4cCI6MTc0NjQ3ODk3NiwiaWF0IjoxNzQ2NDc1Mzc2LCJpc3MiOiJmaXJlYmFzZS1hZG1pbnNkay1mYnN2Y0BwaG90b2FwcC1jMTk1ZC5pYW0uZ3NlcnZpY2VhY2NvdW50LmNvbSIsInN1YiI6ImZpcmViYXNlLWFkbWluc2RrLWZic3ZjQHBob3RvYXBwLWMxOTVkLmlhbS5nc2VydmljZWFjY291bnQuY29tIiwidWlkIjoiTDE3MmcyWjllMlRBM0FXaEpKaVBKTnR2YVVIMiJ9.T7MXx798HjiUB6QAfyAhtlKmYAKQwF0xYKEiDOQ08C2z4G8Lhuw1Vs5k4opIOnVO40Z5P6uMF67CDoBaZSM-16jeB2WuqkwTrHeDtLEv20UmYze8k3rFMfN8zQodo28TqFa9u6T5Sdy1C04kBxPYZ-BZcIONtq13snJOlRCG5XGrhrORoK56nLt53NoD3vs9CkVOdpqsaEmhdUr2_vlL1ocuklMaQsYfxHGflapoiArBdDFH8aPYEyEAZ-dwtrQchctSFUXazhGY-zLklLtZIhzKjHv9xmyQBkyaf5yIwlwuUdx5O_5Dw3DeXTjjLaEZqp-CpBvM3pGIaN9gKZOmMg&quot;,&quot;refreshToken&quot;:null,&quot;user&quot;:{&quot;id&quot;:null,&quot;email&quot;:&quot;mislav.cupic1@skole.hr&quot;,&quot;userType&quot;:&quot;ADMIN&quot;,&quot;userPackage&quot;:&quot;GOLD&quot;,&quot;firebaseUid&quot;:&quot;L172g2Z9e2TA3AWhJJiPJNtvaUH2&quot;,&quot;displayName&quot;:&quot;Testni korisnik 2&quot;}}" />
+              <option name="size" value="989" />
+              <option name="time" value="929" />
+            </responseState>
+          </option>
+          <option name="workspaceId" value="drafts" />
+        </requestHistoryState>
+        <requestHistoryState>
+          <option name="dateTime" value="1746475406258" />
+          <option name="id" value="9f82c21e-e1f1-4bc4-944c-c2a53c263ccc" />
+          <option name="request">
+            <requestState>
+              <option name="body">
+                <bodyState>
+                  <option name="raw" value="{&#10;  &quot;userType&quot;: &quot;ADMIN&quot;,&#10;  &quot;userPackage&quot;: &quot;PRO&quot;,&#10;}" />
+                  <option name="type" value="JSON" />
+                </bodyState>
+              </option>
+              <option name="headers">
+                <list>
+                  <headerState>
+                    <option name="key" value="Authorization" />
+                    <option name="value" value="Bearer eyJhbGciOiJSUzI1NiIsImtpZCI6IjNmOWEwNTBkYzRhZTgyOGMyODcxYzMyNTYzYzk5ZDUwMjc3ODRiZTUiLCJ0eXAiOiJKV1QifQ.eyJuYW1lIjoiVGVzdCBVc2VyIiwiaXNzIjoiaHR0cHM6Ly9zZWN1cmV0b2tlbi5nb29nbGUuY29tL3Bob3RvYXBwLWMxOTVkIiwiYXVkIjoicGhvdG9hcHAtYzE5NWQiLCJhdXRoX3RpbWUiOjE3NDY0NzEzMjYsInVzZXJfaWQiOiJuVjM5VTRmSkpHWUJudjFtSnlmeWk3TDNxNTUzIiwic3ViIjoiblYzOVU0ZkpKR1lCbnYxbUp5ZnlpN0wzcTU1MyIsImlhdCI6MTc0NjQ3MTMyNiwiZXhwIjoxNzQ2NDc0OTI2LCJlbWFpbCI6Im1pc2xhdi5jdXBpY0BnbWFpbC5jb20iLCJlbWFpbF92ZXJpZmllZCI6ZmFsc2UsImZpcmViYXNlIjp7ImlkZW50aXRpZXMiOnsiZW1haWwiOlsibWlzbGF2LmN1cGljQGdtYWlsLmNvbSJdfSwic2lnbl9pbl9wcm92aWRlciI6InBhc3N3b3JkIn19.L6FlK74sji91jQQqiJTqGnjawj0QfIKimeAFL3OxugFb8KyoXmvmJUD9ImADw6Y6ko70n76Bs-cSuw3Ta80eBqpIsWlgko1CcOhm6W1tS63z9dWeCsC0OFSGJp5OTHF_H7Rr_LXhie24kD3ZFOS13SU3GPQzX7qeCduI72LCXryxkuEXeYRMSyFxu2aqUoFCP_zcQLSH4gdsNlEfLWCMZFooEjZUbYbxx8WcTXcjV5glxVCm0pPkcINRzvaDVnJWEVjMKysH8pW-MlFjfQSlD3eVBPhQUHirHME4QalsGKjc1mcttSWB5YrkYHDMee099ull9JqUvAhdyiDczxbNWQ" />
+                  </headerState>
+                </list>
+              </option>
+              <option name="id" value="8f4810ac-ed97-492f-be0f-9fe8c105d47f" />
+              <option name="method" value="PUT" />
+              <option name="name" value="Draft (4)" />
+              <option name="url" value="http://localhost:8080/auth/update" />
+            </requestState>
+          </option>
+          <option name="response">
+            <responseState>
+              <option name="code" value="403" />
+              <option name="connectionEstablishingTime" value="1" />
+              <option name="contentType" value="application/octet-stream" />
+              <option name="headers">
+                <list>
+                  <headerState>
+                    <option name="key" value="X-Content-Type-Options" />
+                    <option name="value" value="nosniff" />
+                  </headerState>
+                  <headerState>
+                    <option name="key" value="X-XSS-Protection" />
+                    <option name="value" value="0" />
+                  </headerState>
+                  <headerState>
+                    <option name="key" value="Cache-Control" />
+                    <option name="value" value="no-cache, no-store, max-age=0, must-revalidate" />
+                  </headerState>
+                  <headerState>
+                    <option name="key" value="Pragma" />
+                    <option name="value" value="no-cache" />
+                  </headerState>
+                  <headerState>
+                    <option name="key" value="Expires" />
+                    <option name="value" value="0" />
+                  </headerState>
+                  <headerState>
+                    <option name="key" value="X-Frame-Options" />
+                    <option name="value" value="DENY" />
+                  </headerState>
+                  <headerState>
+                    <option name="key" value="Content-Length" />
+                    <option name="value" value="0" />
+                  </headerState>
+                  <headerState>
+                    <option name="key" value="Date" />
+                    <option name="value" value="Mon, 05 May 2025 20:03:26 GMT" />
+                  </headerState>
+                  <headerState>
+                    <option name="key" value="Keep-Alive" />
+                    <option name="value" value="timeout=60" />
+                  </headerState>
+                  <headerState>
+                    <option name="key" value="Connection" />
+                    <option name="value" value="keep-alive" />
+                  </headerState>
+                </list>
+              </option>
+              <option name="id" value="9f82c21e-e1f1-4bc4-944c-c2a53c263ccc" />
+              <option name="message" value="Forbidden" />
+              <option name="time" value="31" />
+            </responseState>
+          </option>
+          <option name="workspaceId" value="drafts" />
+        </requestHistoryState>
+        <requestHistoryState>
+          <option name="dateTime" value="1746475515032" />
+          <option name="id" value="da8466d4-ef64-4044-a678-b77ac837b9d1" />
+          <option name="request">
+            <requestState>
+              <option name="auth">
+                <authState>
+                  <option name="type" value="BEARER" />
+                </authState>
+              </option>
+              <option name="body">
+                <bodyState>
+                  <option name="raw" value="{&#10;  &quot;email&quot;: &quot;mislav.cupic1@skole.hr&quot;,&#10;  &quot;password&quot;: &quot;tajna123&quot;,&#10;  &quot;displayName&quot;: &quot;Testni korisnik 2&quot;,&#10;  &quot;idToken&quot;: &quot;eyJhbGciOiJSUzI1NiJ9.eyJhdWQiOiJodHRwczovL2lkZW50aXR5dG9vbGtpdC5nb29nbGVhcGlzLmNvbS9nb29nbGUuaWRlbnRpdHkuaWRlbnRpdHl0b29sa2l0LnYxLklkZW50aXR5VG9vbGtpdCIsImV4cCI6MTc0NjQ3ODk3NiwiaWF0IjoxNzQ2NDc1Mzc2LCJpc3MiOiJmaXJlYmFzZS1hZG1pbnNkay1mYnN2Y0BwaG90b2FwcC1jMTk1ZC5pYW0uZ3NlcnZpY2VhY2NvdW50LmNvbSIsInN1YiI6ImZpcmViYXNlLWFkbWluc2RrLWZic3ZjQHBob3RvYXBwLWMxOTVkLmlhbS5nc2VydmljZWFjY291bnQuY29tIiwidWlkIjoiTDE3MmcyWjllMlRBM0FXaEpKaVBKTnR2YVVIMiJ9.T7MXx798HjiUB6QAfyAhtlKmYAKQwF0xYKEiDOQ08C2z4G8Lhuw1Vs5k4opIOnVO40Z5P6uMF67CDoBaZSM-16jeB2WuqkwTrHeDtLEv20UmYze8k3rFMfN8zQodo28TqFa9u6T5Sdy1C04kBxPYZ-BZcIONtq13snJOlRCG5XGrhrORoK56nLt53NoD3vs9CkVOdpqsaEmhdUr2_vlL1ocuklMaQsYfxHGflapoiArBdDFH8aPYEyEAZ-dwtrQchctSFUXazhGY-zLklLtZIhzKjHv9xmyQBkyaf5yIwlwuUdx5O_5Dw3DeXTjjLaEZqp-CpBvM3pGIaN9gKZOmMg&quot;&#10;}&#10;" />
+                  <option name="type" value="JSON" />
+                </bodyState>
+              </option>
+              <option name="id" value="563ad1be-a7ec-4a70-bb60-3073d3fa73af" />
+              <option name="method" value="POST" />
+              <option name="name" value="Draft" />
+              <option name="url" value="http://localhost:8080/auth/login" />
+            </requestState>
+          </option>
+          <option name="response">
+            <responseState>
+              <option name="bodyBytesBase64" value="SW52YWxpZCB0b2tlbg==" />
+              <option name="bodyString" value="Invalid token" />
+              <option name="code" value="401" />
+              <option name="connectionEstablishingTime" value="5" />
+              <option name="contentType" value="text/plain; charset=UTF-8" />
+              <option name="headers">
+                <list>
+                  <headerState>
+                    <option name="key" value="Vary" />
+                    <option name="value" value="Origin" />
+                  </headerState>
+                  <headerState>
+                    <option name="key" value="Vary" />
+                    <option name="value" value="Access-Control-Request-Method" />
+                  </headerState>
+                  <headerState>
+                    <option name="key" value="Vary" />
+                    <option name="value" value="Access-Control-Request-Headers" />
+                  </headerState>
+                  <headerState>
+                    <option name="key" value="X-Content-Type-Options" />
+                    <option name="value" value="nosniff" />
+                  </headerState>
+                  <headerState>
+                    <option name="key" value="X-XSS-Protection" />
+                    <option name="value" value="0" />
+                  </headerState>
+                  <headerState>
+                    <option name="key" value="Cache-Control" />
+                    <option name="value" value="no-cache, no-store, max-age=0, must-revalidate" />
+                  </headerState>
+                  <headerState>
+                    <option name="key" value="Pragma" />
+                    <option name="value" value="no-cache" />
+                  </headerState>
+                  <headerState>
+                    <option name="key" value="Expires" />
+                    <option name="value" value="0" />
+                  </headerState>
+                  <headerState>
+                    <option name="key" value="X-Frame-Options" />
+                    <option name="value" value="DENY" />
+                  </headerState>
+                  <headerState>
+                    <option name="key" value="Content-Type" />
+                    <option name="value" value="text/plain;charset=UTF-8" />
+                  </headerState>
+                  <headerState>
+                    <option name="key" value="Content-Length" />
+                    <option name="value" value="13" />
+                  </headerState>
+                  <headerState>
+                    <option name="key" value="Date" />
+                    <option name="value" value="Mon, 05 May 2025 20:05:15 GMT" />
+                  </headerState>
+                  <headerState>
+                    <option name="key" value="Keep-Alive" />
+                    <option name="value" value="timeout=60" />
+                  </headerState>
+                  <headerState>
+                    <option name="key" value="Connection" />
+                    <option name="value" value="keep-alive" />
+                  </headerState>
+                </list>
+              </option>
+              <option name="id" value="da8466d4-ef64-4044-a678-b77ac837b9d1" />
+              <option name="message" value="Unauthorized" />
+              <option name="prettyResponseType" value="TEXT" />
+              <option name="rawBodyString" value="Invalid token" />
+              <option name="size" value="13" />
+              <option name="time" value="14" />
+            </responseState>
+          </option>
+          <option name="workspaceId" value="drafts" />
+        </requestHistoryState>
+        <requestHistoryState>
+          <option name="dateTime" value="1746475631172" />
+          <option name="id" value="45b00550-57e5-4322-9258-76ad9694ae65" />
+          <option name="request">
+            <requestState>
+              <option name="auth">
+                <authState>
+                  <option name="type" value="BEARER" />
+                </authState>
+              </option>
+              <option name="body">
+                <bodyState>
+                  <option name="raw" value="{&#10;  &quot;email&quot;: &quot;mislav.cupic1@skole.hr&quot;,&#10;  &quot;password&quot;: &quot;tajna123&quot;,&#10;  &quot;displayName&quot;: &quot;Testni korisnik 2&quot;,&#10;  &quot;idToken&quot;: &quot;eyJhbGciOiJSUzI1NiIsImtpZCI6IjNmOWEwNTBkYzRhZTgyOGMyODcxYzMyNTYzYzk5ZDUwMjc3ODRiZTUiLCJ0eXAiOiJKV1QifQ.eyJuYW1lIjoiVGVzdG5pIGtvcmlzbmlrIDIiLCJpc3MiOiJodHRwczovL3NlY3VyZXRva2VuLmdvb2dsZS5jb20vcGhvdG9hcHAtYzE5NWQiLCJhdWQiOiJwaG90b2FwcC1jMTk1ZCIsImF1dGhfdGltZSI6MTc0NjQ3NTU5MCwidXNlcl9pZCI6IkwxNzJnMlo5ZTJUQTNBV2hKSmlQSk50dmFVSDIiLCJzdWIiOiJMMTcyZzJaOWUyVEEzQVdoSkppUEpOdHZhVUgyIiwiaWF0IjoxNzQ2NDc1NTkwLCJleHAiOjE3NDY0NzkxOTAsImVtYWlsIjoibWlzbGF2LmN1cGljMUBza29sZS5ociIsImVtYWlsX3ZlcmlmaWVkIjpmYWxzZSwiZmlyZWJhc2UiOnsiaWRlbnRpdGllcyI6eyJlbWFpbCI6WyJtaXNsYXYuY3VwaWMxQHNrb2xlLmhyIl19LCJzaWduX2luX3Byb3ZpZGVyIjoicGFzc3dvcmQifX0.UwDm2_KFnAMyCFsRCBONvTVtJUR7V5kSwBGgOR9AAiIhuIzg_1Wc7DJDqW1ICH2z33h7Z_VCee7QX5HHx0VnlH8uW1L6Iz8d-SiORVG5lH_lKkxXvVslHo9nrd6b0cMnLo95PBFW9h7tBDuJNbOm6gvdi-gHE1FjrrS6Zxe2PIu3DnyeqnsJ5Hrrr1GUoFTEIfSzM0h3M0l27F7eGOH2YCwIt2pK5kzsfZxPNeo7jaMfBQ26eyVWWkYVI_eN0WK-_iOAJz6eoQHi5KOKPdlInR-E8-R4j0iJ29whkm1hwhqcjjK5MkNc0vEnBIVbUVtv0AE6RysGE4aZwwN-OHHk3A&quot;&#10;}" />
+                  <option name="type" value="JSON" />
+                </bodyState>
+              </option>
+              <option name="id" value="563ad1be-a7ec-4a70-bb60-3073d3fa73af" />
+              <option name="method" value="POST" />
+              <option name="name" value="Draft" />
+              <option name="url" value="http://localhost:8080/auth/login" />
+            </requestState>
+          </option>
+          <option name="response">
+            <responseState>
+              <option name="bodyBytesBase64" value="eyJhY2Nlc3NUb2tlbiI6ImV5SmhiR2NpT2lKU1V6STFOaUo5LmV5SmhkV1FpT2lKb2RIUndjem92TDJsa1pXNTBhWFI1ZEc5dmJHdHBkQzVuYjI5bmJHVmhjR2x6TG1OdmJTOW5iMjluYkdVdWFXUmxiblJwZEhrdWFXUmxiblJwZEhsMGIyOXNhMmwwTG5ZeExrbGtaVzUwYVhSNVZHOXZiR3RwZENJc0ltVjRjQ0k2TVRjME5qUTNPVEl6TVN3aWFXRjBJam94TnpRMk5EYzFOak14TENKcGMzTWlPaUptYVhKbFltRnpaUzFoWkcxcGJuTmtheTFtWW5OMlkwQndhRzkwYjJGd2NDMWpNVGsxWkM1cFlXMHVaM05sY25acFkyVmhZMk52ZFc1MExtTnZiU0lzSW5OMVlpSTZJbVpwY21WaVlYTmxMV0ZrYldsdWMyUnJMV1ppYzNaalFIQm9iM1J2WVhCd0xXTXhPVFZrTG1saGJTNW5jMlZ5ZG1salpXRmpZMjkxYm5RdVkyOXRJaXdpZFdsa0lqb2lUREUzTW1jeVdqbGxNbFJCTTBGWGFFcEthVkJLVG5SMllWVklNaUo5LnRJTHMzY3IwZ1UwZzlpZzduV0FiOW5QdFp5RXVOYmVGbThGXzFTTVdOSGxVajBKUjNfbXYtSHpiVHdScHZ4X1RpVzdrMllzZXJHZjhmR1BmQlgtekRZclRVdTVZQVNQSDZKV2tPR1FoVlRra3ZZWUNtNGl3X1dyT2w5eEUzM3dldTIwQTNOTjVBdEtOeFh6TWFnS012dTNkZnJYTDJ2NWFKWkExMThOTFZwS3I0RHFzN2tJQTdsMTQyaGRYc3V1X043ZGtqeWtsRC15a1VwbS0tbnhMamhCY0lLMGJHWm8wUGNSVVNwdjhQNlExYWwwVFB0WGJFT2JhWDNIYzRtRF95Sk51aHQzUWdZVldSQUc2WHZualZURXdVcW5jT1ZjaE9ZTEpkR0Njdk15OU9YcGxsaGY4X3BBYzAwWDN6UzZ5MGdZdFJTdHY3NE83bmdYcS1KM0VpQSIsInJlZnJlc2hUb2tlbiI6bnVsbCwidXNlciI6eyJpZCI6bnVsbCwiZW1haWwiOiJtaXNsYXYuY3VwaWMxQHNrb2xlLmhyIiwidXNlclR5cGUiOiJBRE1JTiIsInVzZXJQYWNrYWdlIjoiR09MRCIsImZpcmViYXNlVWlkIjoiTDE3MmcyWjllMlRBM0FXaEpKaVBKTnR2YVVIMiIsImRpc3BsYXlOYW1lIjoiVGVzdG5pIGtvcmlzbmlrIDIifX0=" />
+              <option name="bodyString" value="{&#10;  &quot;accessToken&quot;: &quot;eyJhbGciOiJSUzI1NiJ9.eyJhdWQiOiJodHRwczovL2lkZW50aXR5dG9vbGtpdC5nb29nbGVhcGlzLmNvbS9nb29nbGUuaWRlbnRpdHkuaWRlbnRpdHl0b29sa2l0LnYxLklkZW50aXR5VG9vbGtpdCIsImV4cCI6MTc0NjQ3OTIzMSwiaWF0IjoxNzQ2NDc1NjMxLCJpc3MiOiJmaXJlYmFzZS1hZG1pbnNkay1mYnN2Y0BwaG90b2FwcC1jMTk1ZC5pYW0uZ3NlcnZpY2VhY2NvdW50LmNvbSIsInN1YiI6ImZpcmViYXNlLWFkbWluc2RrLWZic3ZjQHBob3RvYXBwLWMxOTVkLmlhbS5nc2VydmljZWFjY291bnQuY29tIiwidWlkIjoiTDE3MmcyWjllMlRBM0FXaEpKaVBKTnR2YVVIMiJ9.tILs3cr0gU0g9ig7nWAb9nPtZyEuNbeFm8F_1SMWNHlUj0JR3_mv-HzbTwRpvx_TiW7k2YserGf8fGPfBX-zDYrTUu5YASPH6JWkOGQhVTkkvYYCm4iw_WrOl9xE33weu20A3NN5AtKNxXzMagKMvu3dfrXL2v5aJZA118NLVpKr4Dqs7kIA7l142hdXsuu_N7dkjyklD-ykUpm--nxLjhBcIK0bGZo0PcRUSpv8P6Q1al0TPtXbEObaX3Hc4mD_yJNuht3QgYVWRAG6XvnjVTEwUqncOVchOYLJdGCcvMy9OXpllhf8_pAc00X3zS6y0gYtRStv74O7ngXq-J3EiA&quot;,&#10;  &quot;refreshToken&quot;: null,&#10;  &quot;user&quot;: {&#10;    &quot;id&quot;: null,&#10;    &quot;email&quot;: &quot;mislav.cupic1@skole.hr&quot;,&#10;    &quot;userType&quot;: &quot;ADMIN&quot;,&#10;    &quot;userPackage&quot;: &quot;GOLD&quot;,&#10;    &quot;firebaseUid&quot;: &quot;L172g2Z9e2TA3AWhJJiPJNtvaUH2&quot;,&#10;    &quot;displayName&quot;: &quot;Testni korisnik 2&quot;&#10;  }&#10;}" />
+              <option name="code" value="200" />
+              <option name="connectionEstablishingTime" value="8" />
+              <option name="contentType" value="application/json" />
+              <option name="headers">
+                <list>
+                  <headerState>
+                    <option name="key" value="Vary" />
+                    <option name="value" value="Origin" />
+                  </headerState>
+                  <headerState>
+                    <option name="key" value="Vary" />
+                    <option name="value" value="Access-Control-Request-Method" />
+                  </headerState>
+                  <headerState>
+                    <option name="key" value="Vary" />
+                    <option name="value" value="Access-Control-Request-Headers" />
+                  </headerState>
+                  <headerState>
+                    <option name="key" value="X-Content-Type-Options" />
+                    <option name="value" value="nosniff" />
+                  </headerState>
+                  <headerState>
+                    <option name="key" value="X-XSS-Protection" />
+                    <option name="value" value="0" />
+                  </headerState>
+                  <headerState>
+                    <option name="key" value="Cache-Control" />
+                    <option name="value" value="no-cache, no-store, max-age=0, must-revalidate" />
+                  </headerState>
+                  <headerState>
+                    <option name="key" value="Pragma" />
+                    <option name="value" value="no-cache" />
+                  </headerState>
+                  <headerState>
+                    <option name="key" value="Expires" />
+                    <option name="value" value="0" />
+                  </headerState>
+                  <headerState>
+                    <option name="key" value="X-Frame-Options" />
+                    <option name="value" value="DENY" />
+                  </headerState>
+                  <headerState>
+                    <option name="key" value="Content-Type" />
+                    <option name="value" value="application/json" />
+                  </headerState>
+                  <headerState>
+                    <option name="key" value="Transfer-Encoding" />
+                    <option name="value" value="chunked" />
+                  </headerState>
+                  <headerState>
+                    <option name="key" value="Date" />
+                    <option name="value" value="Mon, 05 May 2025 20:07:11 GMT" />
+                  </headerState>
+                  <headerState>
+                    <option name="key" value="Keep-Alive" />
+                    <option name="value" value="timeout=60" />
+                  </headerState>
+                  <headerState>
+                    <option name="key" value="Connection" />
+                    <option name="value" value="keep-alive" />
+                  </headerState>
+                </list>
+              </option>
+              <option name="id" value="45b00550-57e5-4322-9258-76ad9694ae65" />
+              <option name="message" value="OK" />
+              <option name="prettyResponseType" value="JSON" />
+              <option name="rawBodyString" value="{&quot;accessToken&quot;:&quot;eyJhbGciOiJSUzI1NiJ9.eyJhdWQiOiJodHRwczovL2lkZW50aXR5dG9vbGtpdC5nb29nbGVhcGlzLmNvbS9nb29nbGUuaWRlbnRpdHkuaWRlbnRpdHl0b29sa2l0LnYxLklkZW50aXR5VG9vbGtpdCIsImV4cCI6MTc0NjQ3OTIzMSwiaWF0IjoxNzQ2NDc1NjMxLCJpc3MiOiJmaXJlYmFzZS1hZG1pbnNkay1mYnN2Y0BwaG90b2FwcC1jMTk1ZC5pYW0uZ3NlcnZpY2VhY2NvdW50LmNvbSIsInN1YiI6ImZpcmViYXNlLWFkbWluc2RrLWZic3ZjQHBob3RvYXBwLWMxOTVkLmlhbS5nc2VydmljZWFjY291bnQuY29tIiwidWlkIjoiTDE3MmcyWjllMlRBM0FXaEpKaVBKTnR2YVVIMiJ9.tILs3cr0gU0g9ig7nWAb9nPtZyEuNbeFm8F_1SMWNHlUj0JR3_mv-HzbTwRpvx_TiW7k2YserGf8fGPfBX-zDYrTUu5YASPH6JWkOGQhVTkkvYYCm4iw_WrOl9xE33weu20A3NN5AtKNxXzMagKMvu3dfrXL2v5aJZA118NLVpKr4Dqs7kIA7l142hdXsuu_N7dkjyklD-ykUpm--nxLjhBcIK0bGZo0PcRUSpv8P6Q1al0TPtXbEObaX3Hc4mD_yJNuht3QgYVWRAG6XvnjVTEwUqncOVchOYLJdGCcvMy9OXpllhf8_pAc00X3zS6y0gYtRStv74O7ngXq-J3EiA&quot;,&quot;refreshToken&quot;:null,&quot;user&quot;:{&quot;id&quot;:null,&quot;email&quot;:&quot;mislav.cupic1@skole.hr&quot;,&quot;userType&quot;:&quot;ADMIN&quot;,&quot;userPackage&quot;:&quot;GOLD&quot;,&quot;firebaseUid&quot;:&quot;L172g2Z9e2TA3AWhJJiPJNtvaUH2&quot;,&quot;displayName&quot;:&quot;Testni korisnik 2&quot;}}" />
+              <option name="size" value="989" />
+              <option name="time" value="593" />
+            </responseState>
+          </option>
+          <option name="workspaceId" value="drafts" />
+        </requestHistoryState>
+        <requestHistoryState>
+          <option name="dateTime" value="1746947279106" />
+          <option name="id" value="f69668b9-f2f5-4bcf-a8b4-8f1d97731ab9" />
+          <option name="request">
+            <requestState>
+              <option name="id" value="68c4e6f8-6b18-463a-ad97-7df6e9bf1b75" />
+              <option name="method" value="GET" />
+              <option name="name" value="Draft (7)" />
+              <option name="url" value="http://localhost:8080/user-package/user-package" />
+            </requestState>
+          </option>
+          <option name="response">
+            <responseState>
+              <option name="code" value="403" />
+              <option name="connectionEstablishingTime" value="172" />
+              <option name="contentType" value="application/octet-stream" />
+              <option name="headers">
+                <list>
+                  <headerState>
+                    <option name="key" value="X-Content-Type-Options" />
+                    <option name="value" value="nosniff" />
+                  </headerState>
+                  <headerState>
+                    <option name="key" value="X-XSS-Protection" />
+                    <option name="value" value="0" />
+                  </headerState>
+                  <headerState>
+                    <option name="key" value="Cache-Control" />
+                    <option name="value" value="no-cache, no-store, max-age=0, must-revalidate" />
+                  </headerState>
+                  <headerState>
+                    <option name="key" value="Pragma" />
+                    <option name="value" value="no-cache" />
+                  </headerState>
+                  <headerState>
+                    <option name="key" value="Expires" />
+                    <option name="value" value="0" />
+                  </headerState>
+                  <headerState>
+                    <option name="key" value="X-Frame-Options" />
+                    <option name="value" value="DENY" />
+                  </headerState>
+                  <headerState>
+                    <option name="key" value="Content-Length" />
+                    <option name="value" value="0" />
+                  </headerState>
+                  <headerState>
+                    <option name="key" value="Date" />
+                    <option name="value" value="Sun, 11 May 2025 07:07:59 GMT" />
+                  </headerState>
+                  <headerState>
+                    <option name="key" value="Keep-Alive" />
+                    <option name="value" value="timeout=60" />
+                  </headerState>
+                  <headerState>
+                    <option name="key" value="Connection" />
+                    <option name="value" value="keep-alive" />
+                  </headerState>
+                </list>
+              </option>
+              <option name="id" value="f69668b9-f2f5-4bcf-a8b4-8f1d97731ab9" />
+              <option name="message" value="Forbidden" />
+              <option name="time" value="201" />
+            </responseState>
+          </option>
+          <option name="workspaceId" value="drafts" />
+        </requestHistoryState>
+        <requestHistoryState>
+          <option name="dateTime" value="1746947336146" />
+          <option name="id" value="4cdff883-faf7-4f3d-b366-defec25feafe" />
+          <option name="request">
+            <requestState>
+              <option name="auth">
+                <authState>
+                  <option name="bearer">
+                    <pw>
+                      <option name="token" value="eyJhbGciOiJSUzI1NiIsImtpZCI6IjU5MWYxNWRlZTg0OTUzNjZjOTgyZTA1MTMzYmNhOGYyNDg5ZWFjNzIiLCJ0eXAiOiJKV1QifQ.eyJuYW1lIjoiYWRtaW4iLCJpc3MiOiJodHRwczovL3NlY3VyZXRva2VuLmdvb2dsZS5jb20vcGhvdG9hcHAtYzE5NWQiLCJhdWQiOiJwaG90b2FwcC1jMTk1ZCIsImF1dGhfdGltZSI6MTc0Njk0NzAyOSwidXNlcl9pZCI6ImtuRFVCaWNidXBUTGVhNmlQZExlTkVVOXYzejEiLCJzdWIiOiJrbkRVQmljYnVwVExlYTZpUGRMZU5FVTl2M3oxIiwiaWF0IjoxNzQ2OTQ3MDI5LCJleHAiOjE3NDY5NTA2MjksImVtYWlsIjoiYWRtaW5AYWRtaW4uaHIiLCJlbWFpbF92ZXJpZmllZCI6ZmFsc2UsImZpcmViYXNlIjp7ImlkZW50aXRpZXMiOnsiZW1haWwiOlsiYWRtaW5AYWRtaW4uaHIiXX0sInNpZ25faW5fcHJvdmlkZXIiOiJwYXNzd29yZCJ9fQ.eBo6V9y7JCzMERP7VlLjJojvOj_cL1epOJYZ2fbE-AL3vHk0w7-0BdQEnIVrtBVNplWk19f8H435nHLbnCTp4CFLNlQOBuQCdEmvFHLlKxLKLT8XC_4nj5j9LtFsXVLSlzm88Bu_oI7VGGqk6rK0WWylsxG49K23u2thADoxGORbrkZUn7P4ra5yVH-Q2U06YtfYRfIFVUtcOpDbKBuVKX_Al_emyJLAoOpb8zZZRVDtcbweA2f4hwzAo3oKGOI5WU84ftc_ffudSBvjjqLcmyJyDomNBcaMgYMp5DEPN9untOIJyxuxJE3QQQ3P2_CggDPT132ClVCMol4STJNRtg" />
+                    </pw>
+                  </option>
+                  <option name="type" value="BEARER" />
+                </authState>
+              </option>
+              <option name="id" value="68c4e6f8-6b18-463a-ad97-7df6e9bf1b75" />
+              <option name="method" value="GET" />
+              <option name="name" value="Draft (7)" />
+              <option name="url" value="http://localhost:8080/user-package/user-package" />
+            </requestState>
+          </option>
+          <option name="response">
+            <responseState>
+              <option name="code" value="403" />
+              <option name="connectionEstablishingTime" value="2" />
+              <option name="contentType" value="application/octet-stream" />
+              <option name="headers">
+                <list>
+                  <headerState>
+                    <option name="key" value="X-Content-Type-Options" />
+                    <option name="value" value="nosniff" />
+                  </headerState>
+                  <headerState>
+                    <option name="key" value="X-XSS-Protection" />
+                    <option name="value" value="0" />
+                  </headerState>
+                  <headerState>
+                    <option name="key" value="Cache-Control" />
+                    <option name="value" value="no-cache, no-store, max-age=0, must-revalidate" />
+                  </headerState>
+                  <headerState>
+                    <option name="key" value="Pragma" />
+                    <option name="value" value="no-cache" />
+                  </headerState>
+                  <headerState>
+                    <option name="key" value="Expires" />
+                    <option name="value" value="0" />
+                  </headerState>
+                  <headerState>
+                    <option name="key" value="X-Frame-Options" />
+                    <option name="value" value="DENY" />
+                  </headerState>
+                  <headerState>
+                    <option name="key" value="Content-Length" />
+                    <option name="value" value="0" />
+                  </headerState>
+                  <headerState>
+                    <option name="key" value="Date" />
+                    <option name="value" value="Sun, 11 May 2025 07:08:56 GMT" />
+                  </headerState>
+                  <headerState>
+                    <option name="key" value="Keep-Alive" />
+                    <option name="value" value="timeout=60" />
+                  </headerState>
+                  <headerState>
+                    <option name="key" value="Connection" />
+                    <option name="value" value="keep-alive" />
+                  </headerState>
+                </list>
+              </option>
+              <option name="id" value="4cdff883-faf7-4f3d-b366-defec25feafe" />
+              <option name="message" value="Forbidden" />
+              <option name="time" value="14" />
+            </responseState>
+          </option>
+          <option name="workspaceId" value="drafts" />
+        </requestHistoryState>
+        <requestHistoryState>
+          <option name="dateTime" value="1746947338150" />
+          <option name="id" value="36c98055-0091-4abc-80a4-e047f8186f44" />
+          <option name="request">
+            <requestState>
+              <option name="auth">
+                <authState>
+                  <option name="bearer">
+                    <pw>
+                      <option name="token" value="eyJhbGciOiJSUzI1NiIsImtpZCI6IjU5MWYxNWRlZTg0OTUzNjZjOTgyZTA1MTMzYmNhOGYyNDg5ZWFjNzIiLCJ0eXAiOiJKV1QifQ.eyJuYW1lIjoiYWRtaW4iLCJpc3MiOiJodHRwczovL3NlY3VyZXRva2VuLmdvb2dsZS5jb20vcGhvdG9hcHAtYzE5NWQiLCJhdWQiOiJwaG90b2FwcC1jMTk1ZCIsImF1dGhfdGltZSI6MTc0Njk0NzAyOSwidXNlcl9pZCI6ImtuRFVCaWNidXBUTGVhNmlQZExlTkVVOXYzejEiLCJzdWIiOiJrbkRVQmljYnVwVExlYTZpUGRMZU5FVTl2M3oxIiwiaWF0IjoxNzQ2OTQ3MDI5LCJleHAiOjE3NDY5NTA2MjksImVtYWlsIjoiYWRtaW5AYWRtaW4uaHIiLCJlbWFpbF92ZXJpZmllZCI6ZmFsc2UsImZpcmViYXNlIjp7ImlkZW50aXRpZXMiOnsiZW1haWwiOlsiYWRtaW5AYWRtaW4uaHIiXX0sInNpZ25faW5fcHJvdmlkZXIiOiJwYXNzd29yZCJ9fQ.eBo6V9y7JCzMERP7VlLjJojvOj_cL1epOJYZ2fbE-AL3vHk0w7-0BdQEnIVrtBVNplWk19f8H435nHLbnCTp4CFLNlQOBuQCdEmvFHLlKxLKLT8XC_4nj5j9LtFsXVLSlzm88Bu_oI7VGGqk6rK0WWylsxG49K23u2thADoxGORbrkZUn7P4ra5yVH-Q2U06YtfYRfIFVUtcOpDbKBuVKX_Al_emyJLAoOpb8zZZRVDtcbweA2f4hwzAo3oKGOI5WU84ftc_ffudSBvjjqLcmyJyDomNBcaMgYMp5DEPN9untOIJyxuxJE3QQQ3P2_CggDPT132ClVCMol4STJNRtg" />
+                    </pw>
+                  </option>
+                  <option name="type" value="BEARER" />
+                </authState>
+              </option>
+              <option name="id" value="68c4e6f8-6b18-463a-ad97-7df6e9bf1b75" />
+              <option name="method" value="GET" />
+              <option name="name" value="Draft (7)" />
+              <option name="url" value="http://localhost:8080/user-package/user-package" />
+            </requestState>
+          </option>
+          <option name="response">
+            <responseState>
+              <option name="code" value="403" />
+              <option name="connectionEstablishingTime" value="3" />
+              <option name="contentType" value="application/octet-stream" />
+              <option name="headers">
+                <list>
+                  <headerState>
+                    <option name="key" value="X-Content-Type-Options" />
+                    <option name="value" value="nosniff" />
+                  </headerState>
+                  <headerState>
+                    <option name="key" value="X-XSS-Protection" />
+                    <option name="value" value="0" />
+                  </headerState>
+                  <headerState>
+                    <option name="key" value="Cache-Control" />
+                    <option name="value" value="no-cache, no-store, max-age=0, must-revalidate" />
+                  </headerState>
+                  <headerState>
+                    <option name="key" value="Pragma" />
+                    <option name="value" value="no-cache" />
+                  </headerState>
+                  <headerState>
+                    <option name="key" value="Expires" />
+                    <option name="value" value="0" />
+                  </headerState>
+                  <headerState>
+                    <option name="key" value="X-Frame-Options" />
+                    <option name="value" value="DENY" />
+                  </headerState>
+                  <headerState>
+                    <option name="key" value="Content-Length" />
+                    <option name="value" value="0" />
+                  </headerState>
+                  <headerState>
+                    <option name="key" value="Date" />
+                    <option name="value" value="Sun, 11 May 2025 07:08:58 GMT" />
+                  </headerState>
+                  <headerState>
+                    <option name="key" value="Keep-Alive" />
+                    <option name="value" value="timeout=60" />
+                  </headerState>
+                  <headerState>
+                    <option name="key" value="Connection" />
+                    <option name="value" value="keep-alive" />
+                  </headerState>
+                </list>
+              </option>
+              <option name="id" value="36c98055-0091-4abc-80a4-e047f8186f44" />
+              <option name="message" value="Forbidden" />
+              <option name="time" value="15" />
+            </responseState>
+          </option>
+          <option name="workspaceId" value="drafts" />
+        </requestHistoryState>
+        <requestHistoryState>
+          <option name="dateTime" value="1746947343070" />
+          <option name="id" value="37c53524-a972-4d95-923c-50185e641d96" />
+          <option name="request">
+            <requestState>
+              <option name="auth">
+                <authState>
+                  <option name="bearer">
+                    <pw>
+                      <option name="token" value="eyJhbGciOiJSUzI1NiIsImtpZCI6IjU5MWYxNWRlZTg0OTUzNjZjOTgyZTA1MTMzYmNhOGYyNDg5ZWFjNzIiLCJ0eXAiOiJKV1QifQ.eyJuYW1lIjoiYWRtaW4iLCJpc3MiOiJodHRwczovL3NlY3VyZXRva2VuLmdvb2dsZS5jb20vcGhvdG9hcHAtYzE5NWQiLCJhdWQiOiJwaG90b2FwcC1jMTk1ZCIsImF1dGhfdGltZSI6MTc0Njk0NzAyOSwidXNlcl9pZCI6ImtuRFVCaWNidXBUTGVhNmlQZExlTkVVOXYzejEiLCJzdWIiOiJrbkRVQmljYnVwVExlYTZpUGRMZU5FVTl2M3oxIiwiaWF0IjoxNzQ2OTQ3MDI5LCJleHAiOjE3NDY5NTA2MjksImVtYWlsIjoiYWRtaW5AYWRtaW4uaHIiLCJlbWFpbF92ZXJpZmllZCI6ZmFsc2UsImZpcmViYXNlIjp7ImlkZW50aXRpZXMiOnsiZW1haWwiOlsiYWRtaW5AYWRtaW4uaHIiXX0sInNpZ25faW5fcHJvdmlkZXIiOiJwYXNzd29yZCJ9fQ.eBo6V9y7JCzMERP7VlLjJojvOj_cL1epOJYZ2fbE-AL3vHk0w7-0BdQEnIVrtBVNplWk19f8H435nHLbnCTp4CFLNlQOBuQCdEmvFHLlKxLKLT8XC_4nj5j9LtFsXVLSlzm88Bu_oI7VGGqk6rK0WWylsxG49K23u2thADoxGORbrkZUn7P4ra5yVH-Q2U06YtfYRfIFVUtcOpDbKBuVKX_Al_emyJLAoOpb8zZZRVDtcbweA2f4hwzAo3oKGOI5WU84ftc_ffudSBvjjqLcmyJyDomNBcaMgYMp5DEPN9untOIJyxuxJE3QQQ3P2_CggDPT132ClVCMol4STJNRtg" />
+                    </pw>
+                  </option>
+                  <option name="type" value="BEARER" />
+                </authState>
+              </option>
+              <option name="id" value="68c4e6f8-6b18-463a-ad97-7df6e9bf1b75" />
+              <option name="method" value="GET" />
+              <option name="name" value="Draft (7)" />
+              <option name="url" value="http://localhost:8080/user-package/user-package" />
+            </requestState>
+          </option>
+          <option name="response">
+            <responseState>
+              <option name="code" value="403" />
+              <option name="connectionEstablishingTime" value="1" />
+              <option name="contentType" value="application/octet-stream" />
+              <option name="headers">
+                <list>
+                  <headerState>
+                    <option name="key" value="X-Content-Type-Options" />
+                    <option name="value" value="nosniff" />
+                  </headerState>
+                  <headerState>
+                    <option name="key" value="X-XSS-Protection" />
+                    <option name="value" value="0" />
+                  </headerState>
+                  <headerState>
+                    <option name="key" value="Cache-Control" />
+                    <option name="value" value="no-cache, no-store, max-age=0, must-revalidate" />
+                  </headerState>
+                  <headerState>
+                    <option name="key" value="Pragma" />
+                    <option name="value" value="no-cache" />
+                  </headerState>
+                  <headerState>
+                    <option name="key" value="Expires" />
+                    <option name="value" value="0" />
+                  </headerState>
+                  <headerState>
+                    <option name="key" value="X-Frame-Options" />
+                    <option name="value" value="DENY" />
+                  </headerState>
+                  <headerState>
+                    <option name="key" value="Content-Length" />
+                    <option name="value" value="0" />
+                  </headerState>
+                  <headerState>
+                    <option name="key" value="Date" />
+                    <option name="value" value="Sun, 11 May 2025 07:09:03 GMT" />
+                  </headerState>
+                  <headerState>
+                    <option name="key" value="Keep-Alive" />
+                    <option name="value" value="timeout=60" />
+                  </headerState>
+                  <headerState>
+                    <option name="key" value="Connection" />
+                    <option name="value" value="keep-alive" />
+                  </headerState>
+                </list>
+              </option>
+              <option name="id" value="37c53524-a972-4d95-923c-50185e641d96" />
+              <option name="message" value="Forbidden" />
+              <option name="time" value="8" />
+            </responseState>
+          </option>
+          <option name="workspaceId" value="drafts" />
+        </requestHistoryState>
+        <requestHistoryState>
+          <option name="dateTime" value="1749663426400" />
+          <option name="id" value="b740cadc-a2b9-4ce6-8905-116dd373b157" />
+          <option name="request">
+            <requestState>
+              <option name="id" value="f18c47f2-7190-470f-ae10-f1c4f5a7b8cc" />
+              <option name="method" value="GET" />
+              <option name="name" value="Draft (8)" />
+              <option name="url" value="http://localhost:8080/users/all" />
+            </requestState>
+          </option>
+          <option name="response">
+            <responseState>
+              <option name="bodyBytesBase64" value="eyJ0aW1lc3RhbXAiOiIyMDI1LTA2LTExVDE3OjM3OjA2LjM4NCswMDowMCIsInN0YXR1cyI6NDAxLCJlcnJvciI6IlVuYXV0aG9yaXplZCIsInBhdGgiOiIvdXNlcnMvYWxsIn0=" />
+              <option name="bodyString" value="{&#10;  &quot;timestamp&quot;: &quot;2025-06-11T17:37:06.384+00:00&quot;,&#10;  &quot;status&quot;: 401,&#10;  &quot;error&quot;: &quot;Unauthorized&quot;,&#10;  &quot;path&quot;: &quot;/users/all&quot;&#10;}" />
+              <option name="code" value="401" />
+              <option name="connectionEstablishingTime" value="121" />
+              <option name="contentType" value="application/json" />
+              <option name="headers">
+                <list>
+                  <headerState>
+                    <option name="key" value="Vary" />
+                    <option name="value" value="Origin" />
+                  </headerState>
+                  <headerState>
+                    <option name="key" value="Vary" />
+                    <option name="value" value="Access-Control-Request-Method" />
+                  </headerState>
+                  <headerState>
+                    <option name="key" value="Vary" />
+                    <option name="value" value="Access-Control-Request-Headers" />
+                  </headerState>
+                  <headerState>
+                    <option name="key" value="X-Content-Type-Options" />
+                    <option name="value" value="nosniff" />
+                  </headerState>
+                  <headerState>
+                    <option name="key" value="X-XSS-Protection" />
+                    <option name="value" value="0" />
+                  </headerState>
+                  <headerState>
+                    <option name="key" value="Cache-Control" />
+                    <option name="value" value="no-cache, no-store, max-age=0, must-revalidate" />
+                  </headerState>
+                  <headerState>
+                    <option name="key" value="Pragma" />
+                    <option name="value" value="no-cache" />
+                  </headerState>
+                  <headerState>
+                    <option name="key" value="Expires" />
+                    <option name="value" value="0" />
+                  </headerState>
+                  <headerState>
+                    <option name="key" value="X-Frame-Options" />
+                    <option name="value" value="DENY" />
+                  </headerState>
+                  <headerState>
+                    <option name="key" value="Content-Type" />
+                    <option name="value" value="application/json" />
+                  </headerState>
+                  <headerState>
+                    <option name="key" value="Transfer-Encoding" />
+                    <option name="value" value="chunked" />
+                  </headerState>
+                  <headerState>
+                    <option name="key" value="Date" />
+                    <option name="value" value="Wed, 11 Jun 2025 17:37:06 GMT" />
+                  </headerState>
+                  <headerState>
+                    <option name="key" value="Keep-Alive" />
+                    <option name="value" value="timeout=60" />
+                  </headerState>
+                  <headerState>
+                    <option name="key" value="Connection" />
+                    <option name="value" value="keep-alive" />
+                  </headerState>
+                </list>
+              </option>
+              <option name="id" value="b740cadc-a2b9-4ce6-8905-116dd373b157" />
+              <option name="message" value="Unauthorized" />
+              <option name="prettyResponseType" value="JSON" />
+              <option name="rawBodyString" value="{&quot;timestamp&quot;:&quot;2025-06-11T17:37:06.384+00:00&quot;,&quot;status&quot;:401,&quot;error&quot;:&quot;Unauthorized&quot;,&quot;path&quot;:&quot;/users/all&quot;}" />
+              <option name="size" value="101" />
+              <option name="time" value="133" />
+            </responseState>
+          </option>
+          <option name="workspaceId" value="drafts" />
+        </requestHistoryState>
+        <requestHistoryState>
+          <option name="dateTime" value="1749663482635" />
+          <option name="id" value="6c76f982-5eda-4e53-b900-f901d071fd22" />
+          <option name="request">
+            <requestState>
+              <option name="body">
+                <bodyState>
+                  <option name="raw" value="{&quot;username&quot;: &quot;admin@admin.hr&quot;,&#10;&quot;password&quot;: &quot;admin12345!&quot;}" />
+                  <option name="type" value="JSON" />
+                </bodyState>
+              </option>
+              <option name="id" value="f18c47f2-7190-470f-ae10-f1c4f5a7b8cc" />
+              <option name="method" value="POST" />
+              <option name="name" value="Draft (8)" />
+              <option name="url" value="http://localhost:8080/users/all" />
+            </requestState>
+          </option>
+          <option name="response">
+            <responseState>
+              <option name="bodyBytesBase64" value="eyJ0aW1lc3RhbXAiOiIyMDI1LTA2LTExVDE3OjM4OjAyLjYzMyswMDowMCIsInN0YXR1cyI6NDAxLCJlcnJvciI6IlVuYXV0aG9yaXplZCIsInBhdGgiOiIvdXNlcnMvYWxsIn0=" />
+              <option name="bodyString" value="{&#10;  &quot;timestamp&quot;: &quot;2025-06-11T17:38:02.633+00:00&quot;,&#10;  &quot;status&quot;: 401,&#10;  &quot;error&quot;: &quot;Unauthorized&quot;,&#10;  &quot;path&quot;: &quot;/users/all&quot;&#10;}" />
+              <option name="code" value="401" />
+              <option name="connectionEstablishingTime" value="4" />
+              <option name="contentType" value="application/json" />
+              <option name="headers">
+                <list>
+                  <headerState>
+                    <option name="key" value="Vary" />
+                    <option name="value" value="Origin" />
+                  </headerState>
+                  <headerState>
+                    <option name="key" value="Vary" />
+                    <option name="value" value="Access-Control-Request-Method" />
+                  </headerState>
+                  <headerState>
+                    <option name="key" value="Vary" />
+                    <option name="value" value="Access-Control-Request-Headers" />
+                  </headerState>
+                  <headerState>
+                    <option name="key" value="X-Content-Type-Options" />
+                    <option name="value" value="nosniff" />
+                  </headerState>
+                  <headerState>
+                    <option name="key" value="X-XSS-Protection" />
+                    <option name="value" value="0" />
+                  </headerState>
+                  <headerState>
+                    <option name="key" value="Cache-Control" />
+                    <option name="value" value="no-cache, no-store, max-age=0, must-revalidate" />
+                  </headerState>
+                  <headerState>
+                    <option name="key" value="Pragma" />
+                    <option name="value" value="no-cache" />
+                  </headerState>
+                  <headerState>
+                    <option name="key" value="Expires" />
+                    <option name="value" value="0" />
+                  </headerState>
+                  <headerState>
+                    <option name="key" value="X-Frame-Options" />
+                    <option name="value" value="DENY" />
+                  </headerState>
+                  <headerState>
+                    <option name="key" value="Content-Type" />
+                    <option name="value" value="application/json" />
+                  </headerState>
+                  <headerState>
+                    <option name="key" value="Transfer-Encoding" />
+                    <option name="value" value="chunked" />
+                  </headerState>
+                  <headerState>
+                    <option name="key" value="Date" />
+                    <option name="value" value="Wed, 11 Jun 2025 17:38:02 GMT" />
+                  </headerState>
+                  <headerState>
+                    <option name="key" value="Keep-Alive" />
+                    <option name="value" value="timeout=60" />
+                  </headerState>
+                  <headerState>
+                    <option name="key" value="Connection" />
+                    <option name="value" value="keep-alive" />
+                  </headerState>
+                </list>
+              </option>
+              <option name="id" value="6c76f982-5eda-4e53-b900-f901d071fd22" />
+              <option name="message" value="Unauthorized" />
+              <option name="prettyResponseType" value="JSON" />
+              <option name="rawBodyString" value="{&quot;timestamp&quot;:&quot;2025-06-11T17:38:02.633+00:00&quot;,&quot;status&quot;:401,&quot;error&quot;:&quot;Unauthorized&quot;,&quot;path&quot;:&quot;/users/all&quot;}" />
+              <option name="size" value="101" />
+              <option name="time" value="12" />
+            </responseState>
+          </option>
+          <option name="workspaceId" value="drafts" />
+        </requestHistoryState>
+        <requestHistoryState>
+          <option name="dateTime" value="1749663484053" />
+          <option name="id" value="20620bb8-2e9a-4529-9654-c61f2f52e910" />
+          <option name="request">
+            <requestState>
+              <option name="body">
+                <bodyState>
+                  <option name="raw" value="{&quot;username&quot;: &quot;admin@admin.hr&quot;,&#10;&quot;password&quot;: &quot;admin12345!&quot;}" />
+                  <option name="type" value="JSON" />
+                </bodyState>
+              </option>
+              <option name="id" value="f18c47f2-7190-470f-ae10-f1c4f5a7b8cc" />
+              <option name="method" value="POST" />
+              <option name="name" value="Draft (8)" />
+              <option name="url" value="http://localhost:8080/users/all" />
+            </requestState>
+          </option>
+          <option name="response">
+            <responseState>
+              <option name="bodyBytesBase64" value="eyJ0aW1lc3RhbXAiOiIyMDI1LTA2LTExVDE3OjM4OjA0LjA1MCswMDowMCIsInN0YXR1cyI6NDAxLCJlcnJvciI6IlVuYXV0aG9yaXplZCIsInBhdGgiOiIvdXNlcnMvYWxsIn0=" />
+              <option name="bodyString" value="{&#10;  &quot;timestamp&quot;: &quot;2025-06-11T17:38:04.050+00:00&quot;,&#10;  &quot;status&quot;: 401,&#10;  &quot;error&quot;: &quot;Unauthorized&quot;,&#10;  &quot;path&quot;: &quot;/users/all&quot;&#10;}" />
+              <option name="code" value="401" />
+              <option name="contentType" value="application/json" />
+              <option name="headers">
+                <list>
+                  <headerState>
+                    <option name="key" value="Vary" />
+                    <option name="value" value="Origin" />
+                  </headerState>
+                  <headerState>
+                    <option name="key" value="Vary" />
+                    <option name="value" value="Access-Control-Request-Method" />
+                  </headerState>
+                  <headerState>
+                    <option name="key" value="Vary" />
+                    <option name="value" value="Access-Control-Request-Headers" />
+                  </headerState>
+                  <headerState>
+                    <option name="key" value="X-Content-Type-Options" />
+                    <option name="value" value="nosniff" />
+                  </headerState>
+                  <headerState>
+                    <option name="key" value="X-XSS-Protection" />
+                    <option name="value" value="0" />
+                  </headerState>
+                  <headerState>
+                    <option name="key" value="Cache-Control" />
+                    <option name="value" value="no-cache, no-store, max-age=0, must-revalidate" />
+                  </headerState>
+                  <headerState>
+                    <option name="key" value="Pragma" />
+                    <option name="value" value="no-cache" />
+                  </headerState>
+                  <headerState>
+                    <option name="key" value="Expires" />
+                    <option name="value" value="0" />
+                  </headerState>
+                  <headerState>
+                    <option name="key" value="X-Frame-Options" />
+                    <option name="value" value="DENY" />
+                  </headerState>
+                  <headerState>
+                    <option name="key" value="Content-Type" />
+                    <option name="value" value="application/json" />
+                  </headerState>
+                  <headerState>
+                    <option name="key" value="Transfer-Encoding" />
+                    <option name="value" value="chunked" />
+                  </headerState>
+                  <headerState>
+                    <option name="key" value="Date" />
+                    <option name="value" value="Wed, 11 Jun 2025 17:38:04 GMT" />
+                  </headerState>
+                  <headerState>
+                    <option name="key" value="Keep-Alive" />
+                    <option name="value" value="timeout=60" />
+                  </headerState>
+                  <headerState>
+                    <option name="key" value="Connection" />
+                    <option name="value" value="keep-alive" />
+                  </headerState>
+                </list>
+              </option>
+              <option name="id" value="20620bb8-2e9a-4529-9654-c61f2f52e910" />
+              <option name="message" value="Unauthorized" />
+              <option name="prettyResponseType" value="JSON" />
+              <option name="rawBodyString" value="{&quot;timestamp&quot;:&quot;2025-06-11T17:38:04.050+00:00&quot;,&quot;status&quot;:401,&quot;error&quot;:&quot;Unauthorized&quot;,&quot;path&quot;:&quot;/users/all&quot;}" />
+              <option name="size" value="101" />
+              <option name="time" value="7" />
+            </responseState>
+          </option>
+          <option name="workspaceId" value="drafts" />
+        </requestHistoryState>
+        <requestHistoryState>
+          <option name="dateTime" value="1749663521411" />
+          <option name="id" value="e599f427-2a32-4c1d-8dd2-47ed84f35f46" />
+          <option name="request">
+            <requestState>
+              <option name="body">
+                <bodyState>
+                  <option name="raw" value="{&quot;username&quot;: &quot;admin@admin.hr&quot;,&#10;&quot;password&quot;: &quot;admin12345!&quot;,&#10;&quot;idToken&quot;: &quot;${idToken}&quot;}" />
+                  <option name="type" value="JSON" />
+                </bodyState>
+              </option>
+              <option name="id" value="f18c47f2-7190-470f-ae10-f1c4f5a7b8cc" />
+              <option name="method" value="POST" />
+              <option name="name" value="Draft (8)" />
+              <option name="url" value="http://localhost:8080/users/all" />
+            </requestState>
+          </option>
+          <option name="response">
+            <responseState>
+              <option name="bodyBytesBase64" value="eyJ0aW1lc3RhbXAiOiIyMDI1LTA2LTExVDE3OjM4OjQxLjQwOCswMDowMCIsInN0YXR1cyI6NDAxLCJlcnJvciI6IlVuYXV0aG9yaXplZCIsInBhdGgiOiIvdXNlcnMvYWxsIn0=" />
+              <option name="bodyString" value="{&#10;  &quot;timestamp&quot;: &quot;2025-06-11T17:38:41.408+00:00&quot;,&#10;  &quot;status&quot;: 401,&#10;  &quot;error&quot;: &quot;Unauthorized&quot;,&#10;  &quot;path&quot;: &quot;/users/all&quot;&#10;}" />
+              <option name="code" value="401" />
+              <option name="connectionEstablishingTime" value="1" />
+              <option name="contentType" value="application/json" />
+              <option name="headers">
+                <list>
+                  <headerState>
+                    <option name="key" value="Vary" />
+                    <option name="value" value="Origin" />
+                  </headerState>
+                  <headerState>
+                    <option name="key" value="Vary" />
+                    <option name="value" value="Access-Control-Request-Method" />
+                  </headerState>
+                  <headerState>
+                    <option name="key" value="Vary" />
+                    <option name="value" value="Access-Control-Request-Headers" />
+                  </headerState>
+                  <headerState>
+                    <option name="key" value="X-Content-Type-Options" />
+                    <option name="value" value="nosniff" />
+                  </headerState>
+                  <headerState>
+                    <option name="key" value="X-XSS-Protection" />
+                    <option name="value" value="0" />
+                  </headerState>
+                  <headerState>
+                    <option name="key" value="Cache-Control" />
+                    <option name="value" value="no-cache, no-store, max-age=0, must-revalidate" />
+                  </headerState>
+                  <headerState>
+                    <option name="key" value="Pragma" />
+                    <option name="value" value="no-cache" />
+                  </headerState>
+                  <headerState>
+                    <option name="key" value="Expires" />
+                    <option name="value" value="0" />
+                  </headerState>
+                  <headerState>
+                    <option name="key" value="X-Frame-Options" />
+                    <option name="value" value="DENY" />
+                  </headerState>
+                  <headerState>
+                    <option name="key" value="Content-Type" />
+                    <option name="value" value="application/json" />
+                  </headerState>
+                  <headerState>
+                    <option name="key" value="Transfer-Encoding" />
+                    <option name="value" value="chunked" />
+                  </headerState>
+                  <headerState>
+                    <option name="key" value="Date" />
+                    <option name="value" value="Wed, 11 Jun 2025 17:38:41 GMT" />
+                  </headerState>
+                  <headerState>
+                    <option name="key" value="Keep-Alive" />
+                    <option name="value" value="timeout=60" />
+                  </headerState>
+                  <headerState>
+                    <option name="key" value="Connection" />
+                    <option name="value" value="keep-alive" />
+                  </headerState>
+                </list>
+              </option>
+              <option name="id" value="e599f427-2a32-4c1d-8dd2-47ed84f35f46" />
+              <option name="message" value="Unauthorized" />
+              <option name="prettyResponseType" value="JSON" />
+              <option name="rawBodyString" value="{&quot;timestamp&quot;:&quot;2025-06-11T17:38:41.408+00:00&quot;,&quot;status&quot;:401,&quot;error&quot;:&quot;Unauthorized&quot;,&quot;path&quot;:&quot;/users/all&quot;}" />
+              <option name="size" value="101" />
+              <option name="time" value="7" />
+            </responseState>
+          </option>
+          <option name="workspaceId" value="drafts" />
+        </requestHistoryState>
+        <requestHistoryState>
+          <option name="dateTime" value="1749663581398" />
+          <option name="id" value="2e1a6452-657b-4bbb-9440-d29e54901487" />
+          <option name="request">
+            <requestState>
+              <option name="auth">
+                <authState>
+                  <option name="bearer">
+                    <pw>
+                      <option name="token" value="eyJhbGciOiJSUzI1NiIsImtpZCI6ImE0YTEwZGVjZTk4MzY2ZDZmNjNlMTY3Mjg2YWU5YjYxMWQyYmFhMjciLCJ0eXAiOiJKV1QifQ.eyJuYW1lIjoiTWlzbGF2IMSMdXBpxIciLCJ1c2VyVHlwZSI6IkFETUlOIiwiaXNzIjoiaHR0cHM6Ly9zZWN1cmV0b2tlbi5nb29nbGUuY29tL3Bob3RvYXBwLWMxOTVkIiwiYXVkIjoicGhvdG9hcHAtYzE5NWQiLCJhdXRoX3RpbWUiOjE3NDk2NjIyMTQsInVzZXJfaWQiOiJGZThoaUtjTWNUVGE0OFVpMFJCbmo1Z0dUWFAyIiwic3ViIjoiRmU4aGlLY01jVFRhNDhVaTBSQm5qNWdHVFhQMiIsImlhdCI6MTc0OTY2MjIxNCwiZXhwIjoxNzQ5NjY1ODE0LCJlbWFpbCI6ImFkbWluQGFkbWluLmhyIiwiZW1haWxfdmVyaWZpZWQiOmZhbHNlLCJmaXJlYmFzZSI6eyJpZGVudGl0aWVzIjp7ImVtYWlsIjpbImFkbWluQGFkbWluLmhyIl19LCJzaWduX2luX3Byb3ZpZGVyIjoicGFzc3dvcmQifX0.DCBtclkQ3iz9UaY6pL4kkPK55Q1Nlk15Kmypv8f6VXOOI_H1Tl_JIYInfKsIicyF5YNafGGI1z0HJwT5ZYDn0xh6sahyCDjkHw1YC8ptCWwBTTGahtGdVvZ4HwK-OtWHQLYDblljGo2B0vAXZoBfi5SegEmm-oV1na5OYXodOhE8GPKoqEp16Csni2tK9XVDSMWgIRX6aCZ2sJKqNcCTp5ydz8QyNu5GRutzMl_3xyGk5rLblbSWLFaCYdWe68ba_-xbYqXBNIjUCp0xBMismxu2Y0wBQ9W3EqL0abbNv1mluQFRMfujbwKs1GGZ_WNPiWGopx6nrXQ6XBsZ0gRXYg" />
+                    </pw>
+                  </option>
+                  <option name="type" value="BEARER" />
+                </authState>
+              </option>
+              <option name="body">
+                <bodyState>
+                  <option name="raw" value="{&quot;username&quot;: &quot;admin@admin.hr&quot;,&#10;&quot;password&quot;: &quot;admin12345!&quot;}" />
+                  <option name="type" value="JSON" />
+                </bodyState>
+              </option>
+              <option name="id" value="f18c47f2-7190-470f-ae10-f1c4f5a7b8cc" />
+              <option name="method" value="POST" />
+              <option name="name" value="Draft (8)" />
+              <option name="url" value="http://localhost:8080/users/all" />
+            </requestState>
+          </option>
+          <option name="response">
+            <responseState>
+              <option name="bodyBytesBase64" value="eyJ0aW1lc3RhbXAiOiIyMDI1LTA2LTExVDE3OjM5OjQxLjM5NiswMDowMCIsInN0YXR1cyI6NDA0LCJlcnJvciI6Ik5vdCBGb3VuZCIsInBhdGgiOiIvdXNlcnMvYWxsIn0=" />
+              <option name="bodyString" value="{&#10;  &quot;timestamp&quot;: &quot;2025-06-11T17:39:41.396+00:00&quot;,&#10;  &quot;status&quot;: 404,&#10;  &quot;error&quot;: &quot;Not Found&quot;,&#10;  &quot;path&quot;: &quot;/users/all&quot;&#10;}" />
+              <option name="code" value="404" />
+              <option name="connectionEstablishingTime" value="2" />
+              <option name="contentType" value="application/json" />
+              <option name="headers">
+                <list>
+                  <headerState>
+                    <option name="key" value="Vary" />
+                    <option name="value" value="Origin" />
+                  </headerState>
+                  <headerState>
+                    <option name="key" value="Vary" />
+                    <option name="value" value="Access-Control-Request-Method" />
+                  </headerState>
+                  <headerState>
+                    <option name="key" value="Vary" />
+                    <option name="value" value="Access-Control-Request-Headers" />
+                  </headerState>
+                  <headerState>
+                    <option name="key" value="X-Content-Type-Options" />
+                    <option name="value" value="nosniff" />
+                  </headerState>
+                  <headerState>
+                    <option name="key" value="X-XSS-Protection" />
+                    <option name="value" value="0" />
+                  </headerState>
+                  <headerState>
+                    <option name="key" value="Cache-Control" />
+                    <option name="value" value="no-cache, no-store, max-age=0, must-revalidate" />
+                  </headerState>
+                  <headerState>
+                    <option name="key" value="Pragma" />
+                    <option name="value" value="no-cache" />
+                  </headerState>
+                  <headerState>
+                    <option name="key" value="Expires" />
+                    <option name="value" value="0" />
+                  </headerState>
+                  <headerState>
+                    <option name="key" value="X-Frame-Options" />
+                    <option name="value" value="DENY" />
+                  </headerState>
+                  <headerState>
+                    <option name="key" value="Content-Type" />
+                    <option name="value" value="application/json" />
+                  </headerState>
+                  <headerState>
+                    <option name="key" value="Transfer-Encoding" />
+                    <option name="value" value="chunked" />
+                  </headerState>
+                  <headerState>
+                    <option name="key" value="Date" />
+                    <option name="value" value="Wed, 11 Jun 2025 17:39:41 GMT" />
+                  </headerState>
+                  <headerState>
+                    <option name="key" value="Keep-Alive" />
+                    <option name="value" value="timeout=60" />
+                  </headerState>
+                  <headerState>
+                    <option name="key" value="Connection" />
+                    <option name="value" value="keep-alive" />
+                  </headerState>
+                </list>
+              </option>
+              <option name="id" value="2e1a6452-657b-4bbb-9440-d29e54901487" />
+              <option name="message" value="Not Found" />
+              <option name="prettyResponseType" value="JSON" />
+              <option name="rawBodyString" value="{&quot;timestamp&quot;:&quot;2025-06-11T17:39:41.396+00:00&quot;,&quot;status&quot;:404,&quot;error&quot;:&quot;Not Found&quot;,&quot;path&quot;:&quot;/users/all&quot;}" />
+              <option name="size" value="98" />
+              <option name="time" value="19" />
+            </responseState>
+          </option>
+          <option name="workspaceId" value="drafts" />
+        </requestHistoryState>
+      </list>
+    </option>
+  </component>
+</project>

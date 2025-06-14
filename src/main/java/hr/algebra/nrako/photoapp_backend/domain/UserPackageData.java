@@ -1,0 +1,66 @@
+package hr.algebra.nrako.photoapp_backend.domain;
+
+import com.google.cloud.Timestamp;
+
+public class UserPackageData {
+    private String firebaseUid;
+    private String userPackage;
+    private Timestamp lastPackageChangeDateTime;
+    private Timestamp nextEligibleChangeDateTime;
+
+    public UserPackageData() {
+        // Firestore treba prazan konstruktor
+    }
+
+    public UserPackageData(String firebaseUid, String userPackage, Timestamp lastPackageChangeDateTime) {
+        this.firebaseUid = firebaseUid;
+        this.userPackage = userPackage;
+        this.lastPackageChangeDateTime = lastPackageChangeDateTime;
+        this.nextEligibleChangeDateTime = Timestamp.ofTimeSecondsAndNanos(
+                lastPackageChangeDateTime.getSeconds() + 86400, // +1 dan
+                lastPackageChangeDateTime.getNanos()
+        );
+    }
+
+    // Getteri i setteri
+
+    public String getFirebaseUid() {
+        return firebaseUid;
+    }
+
+    public void setFirebaseUid(String firebaseUid) {
+        this.firebaseUid = firebaseUid;
+    }
+
+    public String getUserPackage() {
+        return userPackage;
+    }
+
+    public void setUserPackage(String userPackage) {
+        this.userPackage = userPackage;
+    }
+
+    public Timestamp getLastPackageChangeDateTime() {
+        return lastPackageChangeDateTime;
+    }
+
+    public void setLastPackageChangeDateTime(Timestamp lastPackageChangeDateTime) {
+        this.lastPackageChangeDateTime = lastPackageChangeDateTime;
+    }
+
+    public Timestamp getNextEligibleChangeDateTime() {
+        return nextEligibleChangeDateTime;
+    }
+
+    public void setNextEligibleChangeDateTime(Timestamp nextEligibleChangeDateTime) {
+        this.nextEligibleChangeDateTime = nextEligibleChangeDateTime;
+    }
+
+
+    public UserPackage getUserPackageEnum() {
+        return UserPackage.valueOf(this.userPackage);
+    }
+    public void setUserPackageEnum(UserPackage userPackage) {
+        this.userPackage = userPackage.name();
+    }
+}

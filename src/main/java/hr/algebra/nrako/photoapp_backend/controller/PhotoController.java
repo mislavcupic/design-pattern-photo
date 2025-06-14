@@ -1,0 +1,244 @@
+package hr.algebra.nrako.photoapp_backend.controller;
+
+import hr.algebra.nrako.photoapp_backend.asynchelper.AsyncHelperPhoto;
+import hr.algebra.nrako.photoapp_backend.dto.PhotoDto;
+import hr.algebra.nrako.photoapp_backend.domain.Photo;
+import hr.algebra.nrako.photoapp_backend.filter.FirebaseAuthenticationFilter;
+import hr.algebra.nrako.photoapp_backend.service.PhotoService;
+import hr.algebra.nrako.photoapp_backend.service.StorageService;
+import hr.algebra.nrako.photoapp_backend.util.FirebaseTokenUtils;
+import jakarta.servlet.http.HttpServletRequest;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+import java.util.List;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutionException;
+import java.util.stream.Collectors;
+
+@RestController
+@RequestMapping("/api/photos")
+public class PhotoController {
+
+    private final FirebaseTokenUtils firebaseTokenUtils;
+    private final AsyncHelperPhoto asyncHelperPhoto;
+    private final StorageService storageService; // Injektiran, iako se direktno ne koristi u kontroleru za upload/download
+    private final PhotoService photoService; // Injektiran, iako se direktno ne koristi (koristi ga asyncHelperPhoto)
+    private static final Logger logger = LoggerFactory.getLogger(FirebaseAuthenticationFilter.class); // Loger
+
+    public PhotoController(FirebaseTokenUtils firebaseTokenUtils, PhotoService photoService, AsyncHelperPhoto asyncHelperPhoto, StorageService storageService) {
+        this.firebaseTokenUtils = firebaseTokenUtils;
+        this.asyncHelperPhoto = asyncHelperPhoto;
+        this.storageService = storageService;
+        this.photoService = photoService;
+    }
+
+    @PostMapping("/upload")
+    @PreAuthorize("hasRole('REGISTERED') or hasRole('ADMIN')")
+    public ResponseEntity<PhotoDto> uploadPhoto(
+            @RequestParam("file") MultipartFile file,
+            @RequestParam("description") String description,
+            @RequestParam("hashtags") String hashtags,
+            @RequestParam("isPrivate") Boolean isPrivate) throws ExecutionException, InterruptedException {
+
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String uid = (String) authentication.getPrincipal();
+
+        logger.info("Handling photo upload request for UID: {}", uid);
+
+        Photo photo = asyncHelperPhoto.uploadPhoto(file, description, hashtags, uid, null, isPrivate);
+
+        return ResponseEntity.ok(mapToDto(photo));
+    }
+
+    @GetMapping("/user")
+    @PreAuthorize("hasRole('REGISTERED')or hasRole('ADMIN')")
+    public List<PhotoDto> getPhotosForCurrentUser(HttpServletRequest request) throws ExecutionException, InterruptedException {
+        String uid = firebaseTokenUtils.extractUidFromRequest(request);
+        List<Photo> photos = asyncHelperPhoto.getPhotosByUser(uid);
+        return photos.stream()
+                .map(this::mapToDto)
+                .collect(Collectors.toList());
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<PhotoDto> getPhotoDetails(@PathVariable Long id) throws ExecutionException, InterruptedException {
+        return ResponseEntity.ok(mapToDto(asyncHelperPhoto.getPhotoDetails(id)));
+    }
+
+    @PutMapping("/{id}")
+    @PreAuthorize("hasRole('ADMIN') or hasRole('REGISTERED')")
+    public ResponseEntity<PhotoDto> updateMetadata(
+            @PathVariable Long id,
+            @RequestParam String description,
+            @RequestParam String hashtags,
+            @RequestParam Boolean isPrivate
+    ) throws ExecutionException, InterruptedException {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String uid = (String) authentication.getPrincipal();
+
+        return ResponseEntity.ok(mapToDto(asyncHelperPhoto.updatePhotoMetadata(id, description, hashtags, uid, isPrivate)));
+    }
+
+    @DeleteMapping("/{id}")
+    @PreAuthorize("hasRole('ADMIN') or @photoService.isOwner(#id.toString(), authentication.principal)")
+    public ResponseEntity<Void> deletePhoto(@PathVariable Long id) throws ExecutionException, InterruptedException {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String uid = (String) authentication.getPrincipal();
+        boolean isAdmin = authentication.getAuthorities().stream().anyMatch(a -> a.getAuthority().equals("ROLE_ADMIN"));
+        asyncHelperPhoto.deletePhoto(id, uid, isAdmin);
+        return ResponseEntity.noContent().build();
+    }
+
+    @GetMapping("/last10")
+    public List<PhotoDto> getLast10Photos() throws ExecutionException, InterruptedException {
+        List<Photo> photos =  asyncHelperPhoto.getLast10Photos();
+        return photos.stream()
+                .map(this::mapToDto)
+                .collect(Collectors.toList());
+    }
+
+    @GetMapping("/user/{uid}")
+    @PreAuthorize("hasRole('ADMIN') or hasRole('REGISTERED')")
+    public List<PhotoDto> getPhotosByUser(@PathVariable String uid) throws ExecutionException, InterruptedException {
+        List<Photo> photos = asyncHelperPhoto.getPhotosByUser(uid);
+        return photos.stream()
+                .map(this::mapToDto)
+                .collect(Collectors.toList());
+    }
+
+    @DeleteMapping("/user/{uid}")
+    @PreAuthorize("hasRole('ADMIN') or #uid == authentication.principal")
+    public ResponseEntity<String> deleteAllUserPhotos(@PathVariable String uid) throws ExecutionException, InterruptedException {
+        asyncHelperPhoto.deleteAllPhotos(uid);
+        return ResponseEntity.ok("All photos for user " + uid + " have been deleted.");
+    }
+
+    private PhotoDto mapToDto(Photo photo) {
+        PhotoDto photoDto = new PhotoDto();
+        photoDto.setId(photo.getId());
+        photoDto.setFilename(photo.getFilename());
+        photoDto.setDescription(photo.getDescription());
+        photoDto.setHashtags(photo.getHashtags());
+        photoDto.setUploadedBy(photo.getUploadedBy());
+        photoDto.setUploadDate(photo.getUploadDate() != null ? photo.getUploadDate().toString() : null);
+        photoDto.setFileUrl(photo.getFileUrl());
+        photoDto.setIsPrivate(photo.getIsPrivate());
+        return photoDto;
+    }
+
+    private PhotoDto mapToDto(Photo photo, String fileUrl) {
+        PhotoDto photoDto = mapToDto(photo);
+        photoDto.setFileUrl(fileUrl);
+        return photoDto;
+    }
+
+    @PutMapping("/{photoId}/toggle-privacy")
+    @PreAuthorize("isAuthenticated() or hasRole('ADMIN') or hasRole('REGISTERED')")
+    public ResponseEntity<String> togglePhotoPrivacy(@PathVariable String photoId) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String firebaseUid = (String) authentication.getPrincipal();
+
+        logger.info("Toggle privacy request for photo ID: {} by user: {}", photoId, firebaseUid);
+
+        try {
+            Boolean success = asyncHelperPhoto.togglePhotoPrivacy(photoId, firebaseUid);
+            if (success) {
+                return ResponseEntity.ok("Status privatnosti uspješno promijenjen.");
+            } else {
+                return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Nema dozvolu za promjenu statusa privatnosti ili fotografija nije pronađena.");
+            }
+        } catch (ExecutionException | InterruptedException e) {
+            logger.error("Greška pri promjeni statusa privatnosti za ID {}: {}", photoId, e.getMessage(), e);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Greška pri promjeni statusa privatnosti: " + e.getMessage());
+        }
+    }
+
+    @GetMapping("/{photoId}/download")
+    @PreAuthorize("isAuthenticated() or hasRole('ADMIN') or hasRole('REGISTERED')")
+    public CompletableFuture<ResponseEntity<byte[]>> downloadPhotoWithFilters(
+            @PathVariable Long photoId,
+            @RequestParam(required = false) Integer maxWidth,
+            @RequestParam(required = false) Integer maxHeight,
+            @RequestParam(required = false) String outputFormat,
+            @RequestParam(defaultValue = "false") boolean sepia,
+            @RequestParam(defaultValue = "false") boolean blur
+    ) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String requesterUid = (String) authentication.getPrincipal();
+        boolean isAdmin = authentication.getAuthorities().stream().anyMatch(a -> a.getAuthority().equals("ROLE_ADMIN"));
+
+        return asyncHelperPhoto.downloadPhotoWithFilters(photoId, requesterUid, isAdmin, maxWidth, maxHeight, outputFormat, sepia, blur)
+                .thenApply(imageBytes -> {
+                    if (imageBytes == null || imageBytes.length == 0) {
+                        // KLJUČNA PROMJENA: Eksplicitno castamo null u (byte[]) null
+                        return ResponseEntity.status(HttpStatus.NOT_FOUND).body((byte[]) null);
+                    }
+
+                    MediaType contentType = MediaType.IMAGE_JPEG; // Default
+                    if (outputFormat != null) {
+                        switch (outputFormat.toLowerCase()) {
+                            case "png":
+                                contentType = MediaType.IMAGE_PNG;
+                                break;
+                            case "gif":
+                                contentType = MediaType.IMAGE_GIF;
+                                break;
+                            case "bmp":
+                                contentType = MediaType.parseMediaType("image/bmp");
+                                break;
+                            // Dodajte ostale formate po potrebi
+                            default:
+                                contentType = MediaType.IMAGE_JPEG;
+                                break;
+                        }
+                    } else {
+                        // Ovdje bi se moglo pokušati odrediti ContentType iz ImageBytes ako outputFormat nije zadan.
+                        // Za sada, ako outputFormat nije zadan, ostaje default JPEG ili null.
+                        // Bolja praksa bi bila dodati logiku za detekciju tipa iz bajtova (npr. koristeći ImageIO.getImageReaders)
+                        // ali za ovu svrhu, možemo se osloniti na default ili klijenta.
+                    }
+
+                    return ResponseEntity.ok()
+                            .contentType(contentType)
+                            .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"processed_photo." + (outputFormat != null ? outputFormat.toLowerCase() : "jpeg") + "\"")
+                            .body(imageBytes);
+                })
+                .exceptionally(ex -> {
+                    logger.error("Error downloading photo with filters for ID {}: {}", photoId, ex.getMessage(), ex);
+                    if (ex.getCause() instanceof RuntimeException && ex.getCause().getMessage().contains("Unauthorized")) {
+                        // KLJUČNA PROMJENA: Eksplicitno castamo null u (byte[]) null
+                        return ResponseEntity.status(HttpStatus.FORBIDDEN).body((byte[]) null);
+                    }
+                    // KLJUČNA PROMJENA: Eksplicitno castamo null u (byte[]) null
+                    return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body((byte[]) null);
+                });
+    }
+
+    @GetMapping("/search")
+    @PreAuthorize("isAuthenticated() or hasRole('ADMIN') or hasRole('REGISTERED')")
+    public CompletableFuture<ResponseEntity<List<PhotoDto>>> searchPhotos(
+            @RequestParam String searchTerm,
+            @RequestParam(required = false) String uploadedBy,
+            HttpServletRequest request
+    ) {
+        String requesterUid = firebaseTokenUtils.extractUidFromRequest(request);
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        boolean isAdmin = authentication.getAuthorities().stream().anyMatch(a -> a.getAuthority().equals("ROLE_ADMIN"));
+
+        return asyncHelperPhoto.searchPhotos(searchTerm, uploadedBy, requesterUid, isAdmin)
+                .thenApply(photos -> ResponseEntity.ok(photos.stream().map(this::mapToDto).collect(Collectors.toList())))
+                .exceptionally(ex -> {
+                    logger.error("Error searching photos for term '{}': {}", searchTerm, ex.getMessage(), ex);
+                    return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
+                });
+    }
+}
