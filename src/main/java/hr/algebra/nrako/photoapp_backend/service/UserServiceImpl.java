@@ -20,13 +20,11 @@ import org.springframework.stereotype.Service;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import com.google.cloud.Timestamp;
-
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import org.springframework.core.annotation.Order;
+import java.util.*;
 import java.util.concurrent.CompletableFuture;
-import java.util.Optional;
 import java.util.concurrent.ExecutionException;
+import java.util.stream.Collectors;
 
 
 @Service
@@ -36,12 +34,12 @@ public class UserServiceImpl implements UserService {
     private static final Logger logger = LoggerFactory.getLogger(UserServiceImpl.class);
     private final UserRepository userRepository;
     private final FirebaseAuth firebaseAuth;
-    private final UserPackageDataRepository userPackageDataRepository;
-    private final PhotoRepository photoRepository;
-    private final StorageService storageService;
+
     private final UserPackageService userPackageService;
-    private final Firestore firestore; // Potreban ti je Firestore instanca
-    private final Bucket bucket;
+
+    private final List<UserDeletionStrategy> deletionStrategies;
+
+
     @Override
     public CompletableFuture<Optional<AuthResponse>> registerUser(RegistrationRequest request) {
         return CompletableFuture.supplyAsync(() -> {
@@ -261,143 +259,151 @@ public class UserServiceImpl implements UserService {
             }
         });
     }
+    @Override
+    public CompletableFuture<Void> deleteAccount(String idToken) {
+        return CompletableFuture.supplyAsync(() -> {
+            String uid = null;
+            try {
+                FirebaseToken decodedToken = firebaseAuth.verifyIdToken(idToken);
+                uid = decodedToken.getUid();
+                logger.info("Attempting to delete account for UID: {}", uid);
 
-
-//    @Override
-//    public CompletableFuture<Void> deleteAccount(String idToken) {
-//        return CompletableFuture.supplyAsync(() -> {
-//            try {
-//                // Verifikacija ID tokena i ekstrakcija UID-a
-//                FirebaseToken decodedToken = firebaseAuth.verifyIdToken(idToken);
-//                String uid = decodedToken.getUid();  // UID korisnika
-//
-//                // Brisanje korisničkih podataka iz Firestore-a
-//                userRepository.deleteUserData(uid);
-//
-//
-//
-//                // Opcionalno: brisanje korisnika iz Firebase Authentication-a
-//                firebaseAuth.deleteUser(uid);
-//
-//                return null;  // Brisanje je uspješno
-//
-//            } catch (Exception e) {
-//                // Logiranje i obraditi greške
-//                throw new RuntimeException("Greška prilikom brisanja računa: " + e.getMessage(), e);
-//            }
-//        });
-//    }
-@Override
-public CompletableFuture<Void> deleteAccount(String idToken) {
-    return CompletableFuture.supplyAsync(() -> {
-        try {
-            FirebaseToken decodedToken = firebaseAuth.verifyIdToken(idToken);
-            String uid = decodedToken.getUid();
-
-            // DOHVATI STORAGE BUCKET
-            StorageClient storageClient = StorageClient.getInstance();
-            Bucket bucket = storageClient.bucket();
-
-            // 1. BRIŠI PODATKE IZ FIRESTORE 'photos' KOLEKCIJE I CORRESPONDING STORAGE DATOTEKE
-            CollectionReference photosCollection = firestore.collection("photos");
-            ApiFuture<QuerySnapshot> photosFuture = photosCollection.whereEqualTo("uploadedBy", uid).get();
-            List<QueryDocumentSnapshot> photoDocuments = photosFuture.get().getDocuments();
-
-            if (photoDocuments != null && !photoDocuments.isEmpty()) {
-                for (QueryDocumentSnapshot document : photoDocuments) {
-                    String fileUrl = document.getString("fileUrl");
-                    if (fileUrl != null && !fileUrl.isEmpty()) {
-                        String storagePath = extractStoragePathFromUrl(fileUrl);
-                        if (storagePath != null) {
-                            try {
-                                BlobId blobId = BlobId.of(bucket.getName(), storagePath);
-                                Blob blob = bucket.getStorage().get(blobId);
-                                if (blob != null && blob.exists()) {
-                                    blob.delete();
-                                    System.out.println("Obrisana datoteka iz Storagea: " + storagePath);
-                                } else {
-                                    System.out.println("Datoteka ne postoji u Storageu ili već obrisana: " + storagePath);
-                                }
-                            } catch (Exception storageEx) {
-                                System.err.println("Greška prilikom brisanja datoteke iz Storagea: " + storagePath + ". Greška: " + storageEx.getMessage());
-                            }
-                        }
+                // Izvršavamo sve strategije u sortiranom redoslijedu
+                for (UserDeletionStrategy strategy : deletionStrategies) {
+                    try {
+                        logger.debug("Executing deletion strategy: {}", strategy.getClass().getSimpleName());
+                        strategy.delete(uid);
+                    } catch (Exception strategyEx) {
+                        logger.error("Error executing deletion strategy {} for UID {}: {}",
+                                strategy.getClass().getSimpleName(), uid, strategyEx.getMessage(), strategyEx);
+                        // Ako se dogodi greška u bilo kojoj strategiji, zaustavljamo cijeli proces.
+                        throw new RuntimeException("Failed to complete a deletion step for user " + uid + ": " + strategyEx.getMessage(), strategyEx);
                     }
-                    // Nakon pokušaja brisanja iz Storagea, obriši dokument iz Firestore 'photos' kolekcije
-                    document.getReference().delete();
-                    System.out.println("Obrisan dokument iz Firestore 'photos' kolekcije: " + document.getId());
                 }
-            }
 
-            // 2. BRIŠI PODATKE IZ FIRESTORE 'user_package_data' KOLEKCIJE
-            CollectionReference userPackageCollection = firestore.collection("user_package_data");
-            ApiFuture<QuerySnapshot> userPackageFuture = userPackageCollection.whereEqualTo("firebaseUid", uid).get(); // Pretpostavka da imaš 'userId' polje
-            List<QueryDocumentSnapshot> userPackageDocuments = userPackageFuture.get().getDocuments();
-
-            if (userPackageDocuments != null && !userPackageDocuments.isEmpty()) {
-                for (QueryDocumentSnapshot document : userPackageDocuments) {
-                    document.getReference().delete();
-                    System.out.println("Obrisan dokument iz Firestore 'user_package_data' kolekcije: " + document.getId());
-                }
-            } else {
-                // Ako 'user_package_data' ima dokument ID koji je isti kao UID, možeš i direktno
-                // firestore.collection("user_package_data").document(uid).delete();
-                // Provjeri kako ti je strukturiran user_package_data
-                System.out.println("Nema dokumenata u 'user_package_data' za brisanje ili već obrisani.");
-            }
-
-
-            // 3. BRIŠI GLAVNI KORISNIČKI DOKUMENT IZ 'users' KOLEKCIJE
-            // Ovo je vjerojatno ono što tvoj userRepository.deleteUserData(uid) radi
-            // Ako tvoj UserRepository sadrži više složenu logiku, ostavi ga.
-            // Ako ne, možeš ga zamijeniti direktnim pozivom:
-            // firestore.collection("users").document(uid).delete();
-            userRepository.deleteUserData(uid); // Ovo je za glavni users dokument
-            System.out.println("Korisnički podaci obrisani iz Firestore 'users' kolekcije za UID: " + uid);
-
-
-            // 4. BRIŠI KORISNIKA IZ FIREBASE AUTHENTICATION-A
-            firebaseAuth.deleteUser(uid);
-            System.out.println("Korisnik obrisan iz Firebase Authentikacije: " + uid);
-
-            return null;
-
-        } catch (ExecutionException | InterruptedException e) {
-            Thread.currentThread().interrupt();
-            System.err.println("Greška prilikom dohvata ili obrade podataka za brisanje (ExecutionException/InterruptedException): " + e.getMessage());
-            throw new RuntimeException("Greška prilikom dohvata podataka za brisanje: " + e.getMessage(), e);
-        } catch (Exception e) {
-            System.err.println("FATALNA Greška prilikom brisanja računa za UID. Provjerite dozvole ili strukturu baze: " + e.getMessage());
-            e.printStackTrace(); // Ispiši cijeli stack trace za debug
-            throw new RuntimeException("Opća greška prilikom brisanja računa: " + e.getMessage(), e);
-        }
-    });
-}
-
-    // Pomoćna funkcija ostaje ista
-    private String extractStoragePathFromUrl(String fileUrl) {
-        if (fileUrl == null || fileUrl.isEmpty()) {
-            return null;
-        }
-        try {
-            int oIndex = fileUrl.indexOf("/o/");
-            if (oIndex == -1) {
+                logger.info("Account deletion process completed for UID: {}", uid);
                 return null;
+
+            } catch (Exception e) {
+                logger.error("FATAL Error during account deletion for UID {}: {}", uid, e.getMessage(), e);
+                throw new RuntimeException("General error during account deletion: " + e.getMessage(), e);
             }
-
-            String pathWithQueryParams = fileUrl.substring(oIndex + 3);
-
-            int qIndex = pathWithQueryParams.indexOf("?");
-            String encodedPath = (qIndex == -1) ? pathWithQueryParams : pathWithQueryParams.substring(0, qIndex);
-
-            String decodedPath = java.net.URLDecoder.decode(encodedPath, "UTF-8");
-
-            return decodedPath;
-        } catch (Exception e) {
-            System.err.println("Greška prilikom parsiranja Storage URL-a: " + fileUrl + ". Greška: " + e.getMessage());
-            return null;
-        }
+        });
     }
+
+
+//
+//@Override
+//public CompletableFuture<Void> deleteAccount(String idToken) {
+//    return CompletableFuture.supplyAsync(() -> {
+//        try {
+//            FirebaseToken decodedToken = firebaseAuth.verifyIdToken(idToken);
+//            String uid = decodedToken.getUid();
+//
+//            // DOHVATI STORAGE BUCKET
+//            StorageClient storageClient = StorageClient.getInstance();
+//            Bucket bucket = storageClient.bucket();
+//
+//            // 1. BRIŠI PODATKE IZ FIRESTORE 'photos' KOLEKCIJE I CORRESPONDING STORAGE DATOTEKE
+//            CollectionReference photosCollection = firestore.collection("photos");
+//            ApiFuture<QuerySnapshot> photosFuture = photosCollection.whereEqualTo("uploadedBy", uid).get();
+//            List<QueryDocumentSnapshot> photoDocuments = photosFuture.get().getDocuments();
+//
+//            if (photoDocuments != null && !photoDocuments.isEmpty()) {
+//                for (QueryDocumentSnapshot document : photoDocuments) {
+//                    String fileUrl = document.getString("fileUrl");
+//                    if (fileUrl != null && !fileUrl.isEmpty()) {
+//                        String storagePath = extractStoragePathFromUrl(fileUrl);
+//                        if (storagePath != null) {
+//                            try {
+//                                BlobId blobId = BlobId.of(bucket.getName(), storagePath);
+//                                Blob blob = bucket.getStorage().get(blobId);
+//                                if (blob != null && blob.exists()) {
+//                                    blob.delete();
+//                                    System.out.println("Obrisana datoteka iz Storagea: " + storagePath);
+//                                } else {
+//                                    System.out.println("Datoteka ne postoji u Storageu ili već obrisana: " + storagePath);
+//                                }
+//                            } catch (Exception storageEx) {
+//                                System.err.println("Greška prilikom brisanja datoteke iz Storagea: " + storagePath + ". Greška: " + storageEx.getMessage());
+//                            }
+//                        }
+//                    }
+//                    // Nakon pokušaja brisanja iz Storagea, obriši dokument iz Firestore 'photos' kolekcije
+//                    document.getReference().delete();
+//                    System.out.println("Obrisan dokument iz Firestore 'photos' kolekcije: " + document.getId());
+//                }
+//            }
+//
+//            // 2. BRIŠI PODATKE IZ FIRESTORE 'user_package_data' KOLEKCIJE
+//            CollectionReference userPackageCollection = firestore.collection("user_package_data");
+//            ApiFuture<QuerySnapshot> userPackageFuture = userPackageCollection.whereEqualTo("firebaseUid", uid).get(); // Pretpostavka da imaš 'userId' polje
+//            List<QueryDocumentSnapshot> userPackageDocuments = userPackageFuture.get().getDocuments();
+//
+//            if (userPackageDocuments != null && !userPackageDocuments.isEmpty()) {
+//                for (QueryDocumentSnapshot document : userPackageDocuments) {
+//                    document.getReference().delete();
+//                    System.out.println("Obrisan dokument iz Firestore 'user_package_data' kolekcije: " + document.getId());
+//                }
+//            } else {
+//                // Ako 'user_package_data' ima dokument ID koji je isti kao UID, možeš i direktno
+//                // firestore.collection("user_package_data").document(uid).delete();
+//                // Provjeri kako ti je strukturiran user_package_data
+//                System.out.println("Nema dokumenata u 'user_package_data' za brisanje ili već obrisani.");
+//            }
+//
+//
+//            // 3. BRIŠI GLAVNI KORISNIČKI DOKUMENT IZ 'users' KOLEKCIJE
+//            // Ovo je vjerojatno ono što tvoj userRepository.deleteUserData(uid) radi
+//            // Ako tvoj UserRepository sadrži više složenu logiku, ostavi ga.
+//            // Ako ne, možeš ga zamijeniti direktnim pozivom:
+//            // firestore.collection("users").document(uid).delete();
+//            userRepository.deleteUserData(uid); // Ovo je za glavni users dokument
+//            System.out.println("Korisnički podaci obrisani iz Firestore 'users' kolekcije za UID: " + uid);
+//
+//
+//            // 4. BRIŠI KORISNIKA IZ FIREBASE AUTHENTICATION-A
+//            firebaseAuth.deleteUser(uid);
+//            System.out.println("Korisnik obrisan iz Firebase Authentikacije: " + uid);
+//
+//            return null;
+//
+//        } catch (ExecutionException | InterruptedException e) {
+//            Thread.currentThread().interrupt();
+//            System.err.println("Greška prilikom dohvata ili obrade podataka za brisanje (ExecutionException/InterruptedException): " + e.getMessage());
+//            throw new RuntimeException("Greška prilikom dohvata podataka za brisanje: " + e.getMessage(), e);
+//        } catch (Exception e) {
+//            System.err.println("FATALNA Greška prilikom brisanja računa za UID. Provjerite dozvole ili strukturu baze: " + e.getMessage());
+//            e.printStackTrace(); // Ispiši cijeli stack trace za debug
+//            throw new RuntimeException("Opća greška prilikom brisanja računa: " + e.getMessage(), e);
+//        }
+//    });
+//}
+//
+//    // Pomoćna funkcija ostaje ista
+//    private String extractStoragePathFromUrl(String fileUrl) {
+//        if (fileUrl == null || fileUrl.isEmpty()) {
+//            return null;
+//        }
+//        try {
+//            int oIndex = fileUrl.indexOf("/o/");
+//            if (oIndex == -1) {
+//                return null;
+//            }
+//
+//            String pathWithQueryParams = fileUrl.substring(oIndex + 3);
+//
+//            int qIndex = pathWithQueryParams.indexOf("?");
+//            String encodedPath = (qIndex == -1) ? pathWithQueryParams : pathWithQueryParams.substring(0, qIndex);
+//
+//            String decodedPath = java.net.URLDecoder.decode(encodedPath, "UTF-8");
+//
+//            return decodedPath;
+//        } catch (Exception e) {
+//            System.err.println("Greška prilikom parsiranja Storage URL-a: " + fileUrl + ". Greška: " + e.getMessage());
+//            return null;
+//        }
+//    }
     @Override
     public void setAdminUserType(String firebaseUid) {
         try {

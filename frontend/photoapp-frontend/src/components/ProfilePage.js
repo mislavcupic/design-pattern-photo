@@ -18,7 +18,7 @@ import {
 } from 'react-bootstrap';
 import {
     FaStar, FaRegStar, FaDownload, FaTrashAlt, FaLock, FaGlobe,
-    FaImage, FaCloudUploadAlt, FaExchangeAlt, FaUserCircle, FaInfoCircle
+    FaImage, FaCloudUploadAlt, FaExchangeAlt, FaUserCircle, FaInfoCircle, FaEdit
 } from 'react-icons/fa';
 import './css/ProfilePage.css';
 import { ToastContainer, toast } from 'react-toastify';
@@ -60,6 +60,13 @@ const ProfilePage = () => {
     const [downloadApplyBlur, setDownloadApplyBlur] = useState(false);
     const [downloading, setDownloading] = useState(false);
     const [downloadError, setDownloadError] = useState(null);
+
+    // Stanja za uređivanje fotografija
+    const [showEditModal, setShowEditModal] = useState(false);
+    const [currentPhotoToEdit, setCurrentPhotoToEdit] = useState(null);
+    const [editDescription, setEditDescription] = useState('');
+    const [editHashtags, setEditHashtags] = useState('');
+    const [editIsPrivate, setEditIsPrivate] = useState(false);
 
     const fetchWithAuth = async (url, options = {}) => {
         try {
@@ -182,6 +189,7 @@ const ProfilePage = () => {
 
             if (!currentUser) {
                 setIsLoading(false);
+                setPhotos([]);
                 return;
             }
 
@@ -199,7 +207,7 @@ const ProfilePage = () => {
             setUploadsLeft(remainingUploadsData);
 
             const photosData = await photosRes.json();
-            setPhotos(photosData);
+            setPhotos(photosData || []);
 
             const nextChangeData = await nextChangeRes.json();
             setNextEligibleChange(nextChangeData ? new Date(nextChangeData) : null);
@@ -208,6 +216,7 @@ const ProfilePage = () => {
             console.error('Greška pri dohvaćanju podataka profila:', error);
             setUploadError(`Greška pri učitavanju profila: ${error.message}`);
             toast.error(`Greška pri učitavanju profila: ${error.message}`, { autoClose: 5000 });
+            setPhotos([]);
         } finally {
             setIsLoading(false);
         }
@@ -220,6 +229,7 @@ const ProfilePage = () => {
                 fetchDataAndUserStatus();
             } else {
                 setUser(null);
+                setPhotos([]);
                 setIsLoading(false);
             }
         });
@@ -398,6 +408,84 @@ const ProfilePage = () => {
         setSelectedPhotoForDownload(null);
     };
 
+    const formatHashtagsForDisplay = (hashtags) => {
+        if (!hashtags) {
+            return '';
+        }
+
+        let tags = [];
+
+        if (Array.isArray(hashtags)) {
+            tags = hashtags;
+        } else if (typeof hashtags === 'string') {
+            let cleanedString = hashtags.replace(/^\[?#?|\]?$/g, '');
+            tags = cleanedString.split(/[\s,;]+/);
+        } else {
+            return '';
+        }
+
+        return tags
+            .map(tag => tag.trim().replace(/^#/, ''))
+            .filter(tag => tag !== '')
+            .map(tag => `#${tag}`)
+            .join(' ');
+    };
+
+    const formatHashtagsForEdit = (hashtags) => {
+        if (!hashtags) {
+            return '';
+        }
+
+        let tags = [];
+
+        if (Array.isArray(hashtags)) {
+            tags = hashtags;
+        } else if (typeof hashtags === 'string') {
+            let cleanedString = hashtags.replace(/^\[?#?|\]?$/g, '');
+            tags = cleanedString.split(/[\s,;]+/);
+        } else {
+            return '';
+        }
+
+        return tags
+            .map(tag => tag.trim().replace(/^#/, ''))
+            .filter(tag => tag !== '')
+            .join(' ');
+    };
+
+    const handleEditClick = (photo) => {
+        setCurrentPhotoToEdit(photo);
+        setEditDescription(photo.description || '');
+        setEditHashtags(formatHashtagsForEdit(photo.hashtags));
+        setEditIsPrivate(photo.isPrivate !== undefined ? photo.isPrivate : false);
+        setShowEditModal(true);
+    };
+
+    // KLJUČNA IZMJENA ZA SLANJE PUT ZAHTJEVA KAO URL PARAMETRE (usklađeno s HomePage.js)
+    const handleUpdatePhoto = async (e) => {
+        e.preventDefault();
+        if (!currentPhotoToEdit) return;
+
+        try {
+            const queryParams = new URLSearchParams({
+                description: editDescription,
+                hashtags: editHashtags, // Backend očekuje string
+                isPrivate: editIsPrivate
+            }).toString();
+
+            await fetchWithAuth(`${BASE_URL}/api/photos/${currentPhotoToEdit.id}?${queryParams}`, {
+                method: 'PUT',
+                // Nema 'Content-Type': 'application/json' jer šaljemo query parametre
+            });
+            toast.success('Metapodaci fotografije uspješno ažurirani!', { autoClose: 2000 });
+            setShowEditModal(false);
+            await fetchDataAndUserStatus();
+        } catch (error) {
+            console.error('Greška pri ažuriranju fotografije:', error);
+            toast.error(`Greška prilikom ažuriranja fotografije: ${error.message}`, { autoClose: 5000 });
+        }
+    };
+
     if (isLoading) {
         return (
             <Container className="my-5 text-center loading-container">
@@ -532,7 +620,7 @@ const ProfilePage = () => {
                                         type="text"
                                         value={hashtags}
                                         onChange={(e) => setHashtags(e.target.value)}
-                                        placeholder="Unesite hashtagove (odvojene zarezom, npr. #zalazaksunca, #priroda)"
+                                        placeholder="Unesite hashtagove (odvojene razmakom, npr. #zalazaksunca #priroda)"
                                         disabled={uploading}
                                     />
                                 </Form.Group>
@@ -657,15 +745,20 @@ const ProfilePage = () => {
                                                 <Card.Body className="d-flex flex-column justify-content-between p-3">
                                                     <div>
                                                         <Card.Text className="small text-muted mb-2 photo-description">{photoData.description || 'Bez opisa'}</Card.Text>
-                                                        {photoData.hashtags && photoData.hashtags.split(',').filter(tag => tag.trim() !== '').length > 0 && (
-                                                            <div className="mb-2 hashtags-container">
-                                                                {photoData.hashtags.split(',').map((tag, index) => (
-                                                                    <Badge key={index} pill className="hashtag-badge">#{tag.trim()}</Badge>
-                                                                ))}
-                                                            </div>
-                                                        )}
+                                                        <div className="mb-2 hashtags-container">
+                                                            {formatHashtagsForDisplay(photoData.hashtags)}
+                                                        </div>
                                                     </div>
-                                                    <div className="d-flex justify-content-around align-items-center mt-3 photo-actions">
+                                                    <div className="d-flex justify-content-between align-items-center mt-3 photo-actions">
+                                                        <Button
+                                                            variant="link"
+                                                            className="action-icon-button"
+                                                            onClick={() => handleEditClick(photoData)}
+                                                            title="Uredi metapodatke"
+                                                        >
+                                                            <FaEdit className="text-info" size={18} />
+                                                        </Button>
+
                                                         <Button
                                                             variant="link"
                                                             className="action-icon-button"
@@ -673,9 +766,9 @@ const ProfilePage = () => {
                                                             title={photoData.isPrivate ? 'Privatna (klikni za javno)' : 'Javna (klikni za privatno)'}
                                                         >
                                                             {photoData.isPrivate ? (
-                                                                <FaLock className="text-danger" size={22} />
+                                                                <FaLock className="text-danger" size={18} />
                                                             ) : (
-                                                                <FaGlobe className="text-primary" size={22} />
+                                                                <FaGlobe className="text-primary" size={18} />
                                                             )}
                                                         </Button>
                                                         <Button
@@ -684,7 +777,7 @@ const ProfilePage = () => {
                                                             onClick={() => handleDownloadClick(photoData)}
                                                             title="Preuzmi fotografiju"
                                                         >
-                                                            <FaDownload className="text-primary" size={22} />
+                                                            <FaDownload className="text-primary" size={18} />
                                                         </Button>
                                                         <Button
                                                             variant="link"
@@ -692,7 +785,7 @@ const ProfilePage = () => {
                                                             onClick={() => handleDeletePhoto(photoData.id)}
                                                             title="Obriši fotografiju"
                                                         >
-                                                            <FaTrashAlt className="text-danger" size={22} />
+                                                            <FaTrashAlt className="text-danger" size={18} />
                                                         </Button>
                                                     </div>
                                                 </Card.Body>
@@ -707,7 +800,9 @@ const ProfilePage = () => {
                     {/* MODAL ZA OPCIJE PREUZIMANJA */}
                     <Modal show={showDownloadModal} onHide={handleCloseDownloadModal} centered contentClassName="modal-custom">
                         <Modal.Header closeButton className="modal-header-custom">
-                            <Modal.Title className="fw-bold">Preuzmi fotografiju: <span className="text-primary">{selectedPhotoForDownload?.description || 'Bez opisa'}</span></Modal.Title>
+                            <Modal.Title className="fw-bold">
+                                Preuzmi fotografiju: <span className="text-primary">{selectedPhotoForDownload?.description || 'Bez opisa'}</span>
+                            </Modal.Title>
                         </Modal.Header>
                         <Modal.Body className="p-4">
                             {downloadError && <Alert variant="danger" className="shake-animation">{downloadError}</Alert>}
@@ -793,6 +888,66 @@ const ProfilePage = () => {
                                 )}
                             </Button>
                         </Modal.Footer>
+                    </Modal>
+
+                    {/* Modal za uređivanje metapodataka fotografije */}
+                    <Modal show={showEditModal} onHide={() => setShowEditModal(false)} centered>
+                        <Modal.Header closeButton>
+                            <Modal.Title>Uredi metapodatke fotografije</Modal.Title>
+                        </Modal.Header>
+                        <Form onSubmit={handleUpdatePhoto}>
+                            <Modal.Body>
+                                {currentPhotoToEdit && (
+                                    <>
+                                        <Form.Group className="mb-3">
+                                            <Form.Label>Opis</Form.Label>
+                                            <FormControl
+                                                as="textarea"
+                                                rows={3}
+                                                value={editDescription}
+                                                onChange={(e) => setEditDescription(e.target.value)}
+                                            />
+                                        </Form.Group>
+                                        <Form.Group className="mb-3">
+                                            <Form.Label>Hashtagovi (razdvojeni razmakom)</Form.Label>
+                                            <FormControl
+                                                type="text"
+                                                value={editHashtags}
+                                                onChange={(e) => setEditHashtags(e.target.value)}
+                                                placeholder="npr. priroda sunce more"
+                                            />
+                                            <Form.Text className="text-muted">
+                                                Unesite hashtagove razdvojene razmakom.
+                                            </Form.Text>
+                                        </Form.Group>
+                                        <Form.Group className="mb-3">
+                                            <Form.Check
+                                                type="checkbox"
+                                                label={
+                                                    <>
+                                                        {editIsPrivate ? <FaLock className="me-1 text-danger" /> : <FaGlobe className="me-1 text-primary" />}
+                                                        Privatna fotografija
+                                                    </>
+                                                }
+                                                checked={editIsPrivate}
+                                                onChange={(e) => setEditIsPrivate(e.target.checked)}
+                                            />
+                                            <Form.Text className="text-muted">
+                                                Ako je označeno, fotografija neće biti javno vidljiva.
+                                            </Form.Text>
+                                        </Form.Group>
+                                    </>
+                                )}
+                            </Modal.Body>
+                            <Modal.Footer>
+                                <Button variant="secondary" onClick={() => setShowEditModal(false)}>
+                                    Odustani
+                                </Button>
+                                <Button variant="primary" type="submit">
+                                    Spremi promjene
+                                </Button>
+                            </Modal.Footer>
+                        </Form>
                     </Modal>
 
                 </Col>

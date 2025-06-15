@@ -6,6 +6,7 @@ import lombok.AllArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
+import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -26,6 +27,7 @@ import java.util.List;
 @EnableWebSecurity
 @AllArgsConstructor
 @EnableMethodSecurity
+@EnableAsync
 public class SecurityConfig implements WebMvcConfigurer {
 
     public static final String API_PHOTOS_ID = "/api/photos/{id}";

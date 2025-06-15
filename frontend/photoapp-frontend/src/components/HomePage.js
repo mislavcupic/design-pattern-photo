@@ -9,11 +9,12 @@ import {
     Form,
     Button,
     InputGroup,
-    FormControl
+    FormControl,
+    Modal
 } from 'react-bootstrap';
-import { auth } from './Firebase'; // Pretpostavka da je Firebase auth dostupan
-import { FaSearch, FaTimes, FaSpinner, FaInfoCircle, FaImage } from 'react-icons/fa'; // Dodane ikone
-import './css/HomePage.css'; // Dodajemo novi CSS file za HomePage
+import { auth } from './Firebase';
+import { FaSearch, FaTimes, FaSpinner, FaInfoCircle, FaImage, FaTrash, FaDownload, FaEdit, FaEyeSlash, FaEye } from 'react-icons/fa';
+import './css/HomePage.css';
 
 function HomePage() {
     const [photos, setPhotos] = useState([]);
@@ -27,6 +28,25 @@ function HomePage() {
     const [searchLoading, setSearchLoading] = useState(false);
     const [searchError, setSearchError] = useState(null);
 
+    const [currentUserUid, setCurrentUserUid] = useState(null);
+
+    const [showEditModal, setShowEditModal] = useState(false);
+    const [currentPhotoToEdit, setCurrentPhotoToEdit] = useState(null);
+    const [editDescription, setEditDescription] = useState('');
+    const [editHashtags, setEditHashtags] = useState('');
+    const [editIsPrivate, setEditIsPrivate] = useState(false);
+
+    useEffect(() => {
+        const unsubscribe = auth.onAuthStateChanged(user => {
+            if (user) {
+                setCurrentUserUid(user.uid);
+            } else {
+                setCurrentUserUid(null);
+            }
+        });
+        return () => unsubscribe();
+    }, []);
+
     const fetchWithAuth = async (url, options = {}) => {
         let headers = { ...options.headers };
         try {
@@ -36,7 +56,7 @@ function HomePage() {
                 headers['Authorization'] = `Bearer ${idToken}`;
             }
         } catch (tokenError) {
-            console.warn("Nema ID tokena, nastavljam bez autentifikacije za javne rute:", tokenError);
+            console.warn("Nema ID tokena ili greška pri dohvatu tokena:", tokenError);
         }
 
         const response = await fetch(url, { ...options, headers });
@@ -44,7 +64,12 @@ function HomePage() {
             const errorText = await response.text();
             throw new Error(`HTTP error! status: ${response.status} - ${errorText}`);
         }
-        return response.json();
+
+        const contentType = response.headers.get('content-type');
+        if (contentType && contentType.includes('application/json')) {
+            return response.json();
+        }
+        return response;
     };
 
     const fetchPublicPhotos = async () => {
@@ -60,6 +85,10 @@ function HomePage() {
             setLoading(false);
         }
     };
+
+    useEffect(() => {
+        fetchPublicPhotos();
+    }, []);
 
     const handleSearch = async (e) => {
         e.preventDefault();
@@ -96,19 +125,186 @@ function HomePage() {
         fetchPublicPhotos();
     };
 
-    useEffect(() => {
-        fetchPublicPhotos();
-    }, []);
+    const handleDeletePhoto = async (photoId) => {
+        if (!window.confirm('Jeste li sigurni da želite obrisati ovu fotografiju?')) {
+            return;
+        }
+        try {
+            await fetchWithAuth(`http://localhost:8080/api/photos/${photoId}`, {
+                method: 'DELETE',
+            });
+            alert('Fotografija uspješno obrisana!');
+            fetchPublicPhotos();
+            if (hasSearched) {
+                handleSearch({ preventDefault: () => {} });
+            }
+        } catch (err) {
+            console.error('Greška pri brisanju fotografije:', err);
+            alert(`Greška prilikom brisanja fotografije: ${err.message}`);
+        }
+    };
+
+    const handleDownloadPhoto = async (photoId, filename) => {
+        try {
+            const queryParams = new URLSearchParams({
+                outputFormat: 'jpeg'
+            }).toString();
+
+            const response = await fetchWithAuth(`http://localhost:8080/api/photos/${photoId}/download?${queryParams}`, {
+                method: 'GET',
+            });
+
+            const blob = await response.blob();
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+
+            const contentDisposition = response.headers.get('Content-Disposition');
+            let downloadFilename = `photo_${photoId}.jpeg`;
+            if (contentDisposition && contentDisposition.includes('filename=')) {
+                const filenameMatch = /filename\*?=['"]?(?:UTF-8'')?([^;"\n\r]+)['"]?/.exec(contentDisposition);
+                if (filenameMatch && filenameMatch[1]) {
+                    downloadFilename = decodeURIComponent(filenameMatch[1]);
+                }
+            } else if (filename) {
+                downloadFilename = filename.substring(filename.lastIndexOf('/') + 1);
+            }
+            a.download = downloadFilename;
+            document.body.appendChild(a);
+            a.click();
+            a.remove();
+            window.URL.revokeObjectURL(url);
+            alert('Fotografija uspješno preuzeta!');
+        } catch (err) {
+            console.error('Greška pri preuzimanju fotografije:', err);
+            alert(`Greška prilikom preuzimanja fotografije: ${err.message}`);
+        }
+    };
+
+    const handleEditClick = (photo) => {
+        setCurrentPhotoToEdit(photo);
+        setEditDescription(photo.description || '');
+        // Prilikom otvaranja modalnog prozora, konvertiraj niz hashtagova u string s razmacima
+        // Sada koristi novu funkciju i za popunjavanje polja u modalu!
+        setEditHashtags(formatHashtagsForEdit(photo.hashtags));
+        setEditIsPrivate(photo.isPrivate !== undefined ? photo.isPrivate : false);
+        setShowEditModal(true);
+    };
+
+    const handleUpdatePhoto = async (e) => {
+        e.preventDefault();
+        if (!currentPhotoToEdit) return;
+
+        try {
+            const queryParams = new URLSearchParams({
+                description: editDescription,
+                hashtags: editHashtags, // Backend očekuje string, koji se dobije iz inputa
+                isPrivate: editIsPrivate
+            }).toString();
+
+            await fetchWithAuth(`http://localhost:8080/api/photos/${currentPhotoToEdit.id}?${queryParams}`, {
+                method: 'PUT',
+            });
+            alert('Metapodaci fotografije uspješno ažurirani!');
+            setShowEditModal(false);
+            fetchPublicPhotos();
+            if (hasSearched) {
+                handleSearch({ preventDefault: () => {} });
+            }
+        } catch (err) {
+            console.error('Greška pri ažuriranju fotografije:', err);
+            alert(`Greška prilikom ažuriranja fotografije: ${err.message}`);
+        }
+    };
+
+    const handleTogglePrivacy = async (photoId, currentIsPrivate) => {
+        try {
+            await fetchWithAuth(`http://localhost:8080/api/photos/${photoId}/toggle-privacy`, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+            });
+            alert(`Fotografija je sada ${currentIsPrivate ? 'javna' : 'privatna'}!`);
+            fetchPublicPhotos();
+            if (hasSearched) {
+                handleSearch({ preventDefault: () => {} });
+            }
+        } catch (err) {
+            console.error('Greška pri promjeni privatnosti:', err);
+            alert(`Greška prilikom promjene privatnosti: ${err.message}`);
+        }
+    };
 
     const photosToDisplay = hasSearched ? searchResults : photos;
 
+    // --- Ispravljena funkcija za formatiranje hashtagova za prikaz ---
+    const formatHashtagsForDisplay = (hashtags) => {
+        if (!hashtags) {
+            return '';
+        }
+
+        let tags = [];
+
+        if (Array.isArray(hashtags)) {
+            // Ako je već niz, koristi ga direktno
+            tags = hashtags;
+        } else if (typeof hashtags === 'string') {
+            // Ako je string, prvo ukloni zagrade i hashtag znakove,
+            // zatim podijeli po zarezima, pa trimaj i filtriraj.
+            // Primjer: "#[insecure,, #bad,, #error]"
+            // Prvo ukloni vanjske zagrade i potencijalne # na početku
+            let cleanedString = hashtags.replace(/^\[?#?|\]?$/g, ''); // Ukloni početne/krajnje [,] i #
+
+            // Podijeli po zarezima (jedan ili više)
+            tags = cleanedString.split(/,+/);
+        } else {
+            return ''; // Nepoznat format
+        }
+
+        // Procesiraj dobiveni niz: trimaj, ukloni # ako je već dodan, filtriraj prazne
+        return tags
+            .map(tag => tag.trim().replace(/^#/, '')) // Trimaj i ukloni početni # ako postoji
+            .filter(tag => tag !== '') // Ukloni prazne stringove
+            .map(tag => `#${tag}`) // Dodaj # ispred svakog taga
+            .join(' '); // Spoji s razmacima
+    };
+    // --- Kraj ispravljene funkcije za prikaz ---
+
+    // --- Nova funkcija za formatiranje hashtagova za uređivanje u input polju ---
+    // Ova funkcija konvertira ulazni format (niz ili čudan string) u čisti string razdvojen razmacima
+    const formatHashtagsForEdit = (hashtags) => {
+        if (!hashtags) {
+            return '';
+        }
+
+        let tags = [];
+
+        if (Array.isArray(hashtags)) {
+            tags = hashtags;
+        } else if (typeof hashtags === 'string') {
+            // Ista logika čišćenja kao i za prikaz, ali bez dodavanja # znakova
+            let cleanedString = hashtags.replace(/^\[?#?|\]?$/g, '');
+            tags = cleanedString.split(/,+/);
+        } else {
+            return '';
+        }
+
+        // Trimaj, ukloni #, filtriraj prazne i spoji s razmacima (bez #)
+        return tags
+            .map(tag => tag.trim().replace(/^#/, ''))
+            .filter(tag => tag !== '')
+            .join(' ');
+    };
+    // --- Kraj nove funkcije za uređivanje ---
+
     return (
-        <Container fluid className="homepage-container"> {/* Promjena na fluid container */}
+        <Container fluid className="homepage-container">
             <h1 className="section-heading text-center mb-5">
                 <FaImage className="me-2 text-primary" /> Javne fotografije
             </h1>
 
-            <Card className="search-card shadow-lg mb-5"> {/* Dodane klase za stiliziranje */}
+            <Card className="search-card shadow-lg mb-5">
                 <Card.Body className="p-4 p-md-5">
                     <Card.Title className="text-center mb-4 search-card-title">
                         <FaSearch className="me-2 text-primary" /> Pretraži fotografije
@@ -152,7 +348,7 @@ function HomePage() {
                             </Alert>
                         )}
 
-                        <div className="d-grid gap-3"> {/* Povećan gap za gumbe */}
+                        <div className="d-grid gap-3">
                             <Button
                                 variant="primary"
                                 type="submit"
@@ -205,10 +401,10 @@ function HomePage() {
             )}
 
             {!loading && !error && !searchLoading && !searchError && photosToDisplay.length > 0 && (
-                <Row xs={1} md={2} lg={3} className="g-4 public-photo-grid"> {/* Dodana klasa za grid */}
+                <Row xs={1} md={2} lg={3} className="g-4 public-photo-grid">
                     {photosToDisplay.map(photo => (
                         <Col key={photo.id}>
-                            <Card className="h-100 public-photo-card shadow-sm"> {/* Dodana klasa i shadow */}
+                            <Card className="h-100 public-photo-card shadow-sm">
                                 <Card.Img
                                     variant="top"
                                     src={photo.fileUrl}
@@ -218,7 +414,8 @@ function HomePage() {
                                 <Card.Body>
                                     <Card.Title className="photo-card-title">{photo.description}</Card.Title>
                                     <Card.Text className="photo-card-hashtags">
-                                        #{photo.hashtags}
+                                        {/* POZIV NOVE FUNKCIJE OVDJE */}
+                                        {formatHashtagsForDisplay(photo.hashtags)}
                                     </Card.Text>
                                     <Card.Text className="photo-card-author">
                                         Postavio: <strong>{photo.uploadedBy}</strong>
@@ -226,12 +423,112 @@ function HomePage() {
                                 </Card.Body>
                                 <Card.Footer className="text-muted photo-card-footer">
                                     Objavljeno: {new Date(photo.uploadDate._seconds * 1000).toLocaleDateString()}
+                                    <div className="photo-actions mt-2">
+                                        {currentUserUid && (
+                                            <Button
+                                                variant="outline-primary"
+                                                size="sm"
+                                                className="me-2"
+                                                onClick={() => handleDownloadPhoto(photo.id, photo.filename)}
+                                                title="Preuzmi fotografiju"
+                                            >
+                                                <FaDownload />
+                                            </Button>
+                                        )}
+
+                                        {currentUserUid === photo.uploadedBy && (
+                                            <>
+                                                <Button
+                                                    variant="outline-danger"
+                                                    size="sm"
+                                                    className="me-2"
+                                                    onClick={() => handleDeletePhoto(photo.id)}
+                                                    title="Obriši fotografiju"
+                                                >
+                                                    <FaTrash />
+                                                </Button>
+
+                                                <Button
+                                                    variant="outline-info"
+                                                    size="sm"
+                                                    className="me-2"
+                                                    onClick={() => handleEditClick(photo)}
+                                                    title="Uredi metapodatke"
+                                                >
+                                                    <FaEdit />
+                                                </Button>
+
+                                                <Button
+                                                    variant={photo.isPrivate ? "outline-secondary" : "outline-success"}
+                                                    size="sm"
+                                                    onClick={() => handleTogglePrivacy(photo.id, photo.isPrivate)}
+                                                    title={photo.isPrivate ? "Učini javnom" : "Učini privatnom"}
+                                                >
+                                                    {photo.isPrivate ? <FaEyeSlash /> : <FaEye />}
+                                                </Button>
+                                            </>
+                                        )}
+                                    </div>
                                 </Card.Footer>
                             </Card>
                         </Col>
                     ))}
                 </Row>
             )}
+
+            <Modal show={showEditModal} onHide={() => setShowEditModal(false)} centered>
+                <Modal.Header closeButton>
+                    <Modal.Title>Uredi metapodatke fotografije</Modal.Title>
+                </Modal.Header>
+                <Form onSubmit={handleUpdatePhoto}>
+                    <Modal.Body>
+                        {currentPhotoToEdit && (
+                            <>
+                                <Form.Group className="mb-3">
+                                    <Form.Label>Opis</Form.Label>
+                                    <FormControl
+                                        as="textarea"
+                                        rows={3}
+                                        value={editDescription}
+                                        onChange={(e) => setEditDescription(e.target.value)}
+                                    />
+                                </Form.Group>
+                                <Form.Group className="mb-3">
+                                    <Form.Label>Hashtagovi (razdvojeni razmakom)</Form.Label>
+                                    <FormControl
+                                        type="text"
+                                        value={editHashtags}
+                                        onChange={(e) => setEditHashtags(e.target.value)}
+                                        placeholder="npr. priroda sunce more"
+                                    />
+                                    <Form.Text className="text-muted">
+                                        Unesite hashtagove razdvojene razmakom.
+                                    </Form.Text>
+                                </Form.Group>
+                                <Form.Group className="mb-3">
+                                    <Form.Check
+                                        type="checkbox"
+                                        label="Privatna fotografija"
+                                        checked={editIsPrivate}
+                                        onChange={(e) => setEditIsPrivate(e.target.checked)}
+                                    />
+                                    <Form.Text className="text-muted">
+                                        Ako je označeno, fotografija neće biti javno vidljiva (osim na vašem profilu).
+                                    </Form.Text>
+                                </Form.Group>
+                            </>
+                        )}
+                    </Modal.Body>
+                    <Modal.Footer>
+                        <Button variant="secondary" onClick={() => setShowEditModal(false)}>
+                            Odustani
+                        </Button>
+                        <Button variant="primary" type="submit">
+                            Spremi promjene
+                        </Button>
+                    </Modal.Footer>
+                </Form>
+            </Modal>
         </Container>
     );
 }
