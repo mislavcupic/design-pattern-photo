@@ -4,6 +4,7 @@ import com.google.cloud.Timestamp;
 import hr.algebra.nrako.photoapp_backend.domain.ImageProcessingOptions;
 import hr.algebra.nrako.photoapp_backend.domain.Photo;
 import hr.algebra.nrako.photoapp_backend.observer.PhotoUploadObserver;
+import hr.algebra.nrako.photoapp_backend.observer.PhotoUploadSubject;
 import hr.algebra.nrako.photoapp_backend.repository.PhotoRepository;
 import hr.algebra.nrako.photoapp_backend.util.ImageProcessorBuilder;
 import org.slf4j.Logger;
@@ -27,7 +28,7 @@ import java.util.stream.Collectors;
 
 
 @Service
-public class PhotoServiceImpl implements PhotoService {
+public class PhotoServiceImpl implements PhotoService, PhotoUploadSubject {
     private static final Logger logger = LoggerFactory.getLogger(PhotoServiceImpl.class);
 
     private final PhotoRepository photoRepository;

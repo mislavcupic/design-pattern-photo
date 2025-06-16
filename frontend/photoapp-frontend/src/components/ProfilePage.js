@@ -546,7 +546,7 @@ const ProfilePage = () => {
                         <ListGroup.Item className="package-info-item d-flex justify-content-between align-items-center">
                             <span>Paket:</span>
                             <Badge pill className="package-badge px-3 py-2">
-                                {userPackage?.packageName || 'N/A'}
+                                {userPackage || 'N/A'}
                             </Badge>
                         </ListGroup.Item>
                         <ListGroup.Item className="upload-info-item d-flex justify-content-between align-items-center">
@@ -571,7 +571,7 @@ const ProfilePage = () => {
                             disabled={changingPackage || (nextEligibleChange && new Date() < new Date(nextEligibleChange))}
                         >
                             <option value="">-- Odaberite --</option>
-                            {['FREE', 'BASIC', 'PREMIUM'].filter(pkg => pkg !== userPackage?.packageName).map(pkg => (
+                            {['FREE', 'PRO', 'GOLD'].filter(pkg => pkg !== userPackage?.packageName).map(pkg => (
                                 <option key={pkg} value={pkg}>{pkg}</option>
                             ))}
                         </Form.Select>
