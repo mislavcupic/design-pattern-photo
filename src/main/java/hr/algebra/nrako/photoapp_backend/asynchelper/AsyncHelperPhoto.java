@@ -6,6 +6,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
@@ -28,6 +29,7 @@ public class AsyncHelperPhoto {
     }
 
     public List<Photo> getLast10Photos() throws ExecutionException, InterruptedException {
+        System.out.println("bla " + photoService.getLast10Photos().get().size());
         return photoService.getLast10Photos().get();
     }
 
@@ -38,7 +40,9 @@ public class AsyncHelperPhoto {
     public Void deletePhoto(Long photoId, String requesterUid, boolean isAdmin) throws ExecutionException, InterruptedException {
         return photoService.deletePhoto(photoId, requesterUid, isAdmin).get();
     }
-
+    public String getFormatFromBytes(byte[] imageBytes) throws IOException {
+        return photoService.getFormatFromBytes(imageBytes);
+    }
 
 
     public List<Photo> getAllPhotos() throws ExecutionException, InterruptedException {

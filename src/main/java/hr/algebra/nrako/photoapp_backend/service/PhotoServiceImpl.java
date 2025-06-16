@@ -37,6 +37,7 @@ public class PhotoServiceImpl implements PhotoService, PhotoUploadSubject {
     private final ImageProcessorBuilder imageProcessorBuilder;
     private final List<PhotoUploadObserver> observers = new ArrayList<>();
 
+
     public PhotoServiceImpl(PhotoRepository photoRepository, StorageService storageService,
                             ImageProcessingService imageProcessingService,
                             ImageProcessorBuilder imageProcessorBuilder) {
@@ -333,7 +334,11 @@ public class PhotoServiceImpl implements PhotoService, PhotoUploadSubject {
         }
         return false;
     }
-
+    @Override
+    public String getFormatFromBytes(byte[] imageBytes) throws IOException {
+        // Poziva imageProcessingService koji ima stvarnu logiku za detekciju formata
+        return imageProcessingService.getOriginalImageFormat(imageBytes);
+    }
     @Override
     public CompletableFuture<byte[]> downloadPhotoWithFilters(
             Long photoId,

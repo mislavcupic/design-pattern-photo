@@ -4,6 +4,7 @@ import hr.algebra.nrako.photoapp_backend.domain.Photo;
 import hr.algebra.nrako.photoapp_backend.observer.PhotoUploadObserver;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 
@@ -22,6 +23,7 @@ public interface PhotoService {
     CompletableFuture<List<Photo>> getAllPhotos();
     CompletableFuture<Boolean> togglePhotoPrivacy(String photoId, String authenticatedFirebaseUid);
     boolean isOwner(String photoId, String firebaseUid);
+    String getFormatFromBytes(byte[] imageBytes) throws IOException;
 
     /**
      * Downloads a photo with applied filters and resizing.

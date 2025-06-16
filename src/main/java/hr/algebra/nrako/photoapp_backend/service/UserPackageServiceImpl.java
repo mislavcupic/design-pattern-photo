@@ -113,7 +113,7 @@ public class UserPackageServiceImpl implements UserPackageService, PhotoUploadOb
         return getUserPackageData(firebaseUid)
                 .thenApply(data -> new PackageContext(data).canChangePackage());
     }
-
+//OVDJE KORISTIM FACTORY
     @Override
     @Async("taskExecutor")
     public CompletableFuture<Void> changeUserPackage(String firebaseUid, UserPackage newUserPackage) {

@@ -57,7 +57,7 @@ public class SecurityConfig implements WebMvcConfigurer {
                         .requestMatchers(HttpMethod.DELETE, "/auth/delete").hasAnyRole("REGISTERED", "ADMIN") // Samo registrirani korisnici ili admin mogu brisati svoj account
 
                         // 2. Specifične putanje koje zahtijevaju ULOGE
-                        .requestMatchers("/api/photos/{photoId}/download").hasAnyRole("ADMIN","REGISTERED") // <-- OVO MORA BITI PRIJE /api/photos/{id}
+                        .requestMatchers("/api/photos/{photoId}/download").permitAll() // <-- OVO MORA BITI PRIJE /api/photos/{id}
                         .requestMatchers("/api/photos/upload", "/api/photos/user").hasAnyRole("ADMIN","REGISTERED")
                         .requestMatchers("/user-package/**").hasAnyRole("REGISTERED", "ADMIN")
                         .requestMatchers("/api/photos/user/{uid}").hasAnyRole("REGISTERED", "ADMIN") // Jedanput je dovoljno

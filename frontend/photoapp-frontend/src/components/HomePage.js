@@ -14,7 +14,7 @@ import {
 } from 'react-bootstrap';
 import { auth } from './Firebase';
 import { FaSearch, FaTimes, FaSpinner, FaInfoCircle, FaImage, FaTrash, FaDownload, FaEdit, FaEyeSlash, FaEye } from 'react-icons/fa';
-import './css/HomePage.css';
+import './css/HomePage.css'; // Pretpostavljam da ovdje imaš CSS za opći dizajn
 
 function HomePage() {
     const [photos, setPhotos] = useState([]);
@@ -36,10 +36,21 @@ function HomePage() {
     const [editHashtags, setEditHashtags] = useState('');
     const [editIsPrivate, setEditIsPrivate] = useState(false);
 
-    // --- NOVO STANJE ZA VELIKU FOTOGRAFIJU ---
+    // --- STANJE ZA VELIKU FOTOGRAFIJU ---
     const [showPhotoModal, setShowPhotoModal] = useState(false);
     const [selectedPhotoUrl, setSelectedPhotoUrl] = useState('');
     const [selectedPhotoDescription, setSelectedPhotoDescription] = useState('');
+    // ------------------------------------------
+
+    // --- NOVO STANJE ZA MODAL ZA FILTERE ---
+    const [showFilterModal, setShowFilterModal] = useState(false);
+    const [currentPhotoIdForFilters, setCurrentPhotoIdForFilters] = useState(null);
+    const [currentPhotoFilenameForFilters, setCurrentPhotoFilenameForFilters] = useState('');
+    const [applySepiaFilter, setApplySepiaFilter] = useState(false);
+    const [applyBlurFilter, setApplyBlurFilter] = useState(false);
+    const [resizeWidth, setResizeWidth] = useState('');
+    const [resizeHeight, setResizeHeight] = useState('');
+    const [selectedOutputFormat, setSelectedOutputFormat] = useState('jpeg'); // Defaultni format
     // ------------------------------------------
 
     useEffect(() => {
@@ -151,13 +162,32 @@ function HomePage() {
         }
     };
 
-    const handleDownloadPhoto = async (photoId, filename) => {
-        try {
-            const queryParams = new URLSearchParams({
-                outputFormat: 'jpeg'
-            }).toString();
+    // --- NOVA FUNKCIJA ZA OTVARANJE MODALA ZA FILTERE ---
+    const handleOpenFilterModal = (photoId, filename) => {
+        setCurrentPhotoIdForFilters(photoId);
+        setCurrentPhotoFilenameForFilters(filename);
+        // Resetiraj filtere pri otvaranju modala
+        setApplySepiaFilter(false);
+        setApplyBlurFilter(false);
+        setResizeWidth('');
+        setResizeHeight('');
+        setSelectedOutputFormat('jpeg'); // Defaultni format
+        setShowFilterModal(true);
+    };
 
-            const response = await fetchWithAuth(`http://localhost:8080/api/photos/${photoId}/download?${queryParams}`, {
+    // --- NOVA FUNKCIJA ZA PREUZIMANJE S ODABRANIM FILTERIMA ---
+    const handleDownloadWithSelectedFilters = async () => {
+        if (!currentPhotoIdForFilters) return;
+
+        try {
+            const queryParams = new URLSearchParams();
+            if (applySepiaFilter) queryParams.append('applySepia', 'true');
+            if (applyBlurFilter) queryParams.append('applyBlur', 'true');
+            if (resizeWidth) queryParams.append('maxWidth', resizeWidth);
+            if (resizeHeight) queryParams.append('maxHeight', resizeHeight);
+            if (selectedOutputFormat) queryParams.append('outputFormat', selectedOutputFormat);
+
+            const response = await fetchWithAuth(`http://localhost:8080/api/photos/${currentPhotoIdForFilters}/download?${queryParams.toString()}`, {
                 method: 'GET',
             });
 
@@ -167,26 +197,32 @@ function HomePage() {
             a.href = url;
 
             const contentDisposition = response.headers.get('Content-Disposition');
-            let downloadFilename = `photo_${photoId}.jpeg`;
+            let downloadFilename = `photo_${currentPhotoIdForFilters}.${selectedOutputFormat}`; // Prilagodi ekstenziju
             if (contentDisposition && contentDisposition.includes('filename=')) {
                 const filenameMatch = /filename\*?=['"]?(?:UTF-8'')?([^;"\n\r]+)['"]?/.exec(contentDisposition);
                 if (filenameMatch && filenameMatch[1]) {
                     downloadFilename = decodeURIComponent(filenameMatch[1]);
                 }
-            } else if (filename) {
-                downloadFilename = filename.substring(filename.lastIndexOf('/') + 1);
+            } else if (currentPhotoFilenameForFilters) {
+                // Pokušaj izvući originalnu ekstenziju ako outputFormat nije promijenjen,
+                // ili se osloni na odabrani format.
+                const originalExt = currentPhotoFilenameForFilters.split('.').pop();
+                downloadFilename = currentPhotoFilenameForFilters.substring(currentPhotoFilenameForFilters.lastIndexOf('/') + 1).replace(`.${originalExt}`, `.${selectedOutputFormat}`);
             }
+
             a.download = downloadFilename;
             document.body.appendChild(a);
             a.click();
             a.remove();
             window.URL.revokeObjectURL(url);
-            alert('Fotografija uspješno preuzeta!');
+            alert('Fotografija uspješno preuzeta s filterima!');
+            setShowFilterModal(false); // Zatvori modal nakon preuzimanja
         } catch (err) {
-            console.error('Greška pri preuzimanju fotografije:', err);
-            alert(`Greška prilikom preuzimanja fotografije: ${err.message}`);
+            console.error('Greška pri preuzimanju fotografije s filterima:', err);
+            alert(`Greška prilikom preuzimanja fotografije s filterima: ${err.message}`);
         }
     };
+
 
     const handleEditClick = (photo) => {
         setCurrentPhotoToEdit(photo);
@@ -243,7 +279,7 @@ function HomePage() {
         }
     };
 
-    // --- NOVO: Funkcija za otvaranje modala s velikom fotkom ---
+    // --- Funkcija za otvaranje modala s velikom fotkom ---
     const handlePhotoClick = (photoUrl, description) => {
         setSelectedPhotoUrl(photoUrl);
         setSelectedPhotoDescription(description);
@@ -251,7 +287,10 @@ function HomePage() {
     };
     // -----------------------------------------------------------
 
+    // Ograniči prikaz na najviše 10 fotografija, ali ne filtrira ako ih je manje
+    // Backend je taj koji kontrolira koliko ih se vraća s limit(10)
     const photosToDisplay = hasSearched ? searchResults : photos;
+
 
     const formatHashtagsForDisplay = (hashtags) => {
         if (!hashtags) {
@@ -410,8 +449,8 @@ function HomePage() {
                                     src={photo.fileUrl}
                                     alt={photo.description}
                                     className="public-photo-img"
-                                    onClick={() => handlePhotoClick(photo.fileUrl, photo.description)} // --- DODANO OVDJE ---
-                                    style={{ cursor: 'pointer' }} // Dodaje vizualni indikator da je klikabilno
+                                    onClick={() => handlePhotoClick(photo.fileUrl, photo.description)}
+                                    style={{ cursor: 'pointer' }}
                                 />
                                 <Card.Body>
                                     <Card.Title className="photo-card-title">{photo.description}</Card.Title>
@@ -442,8 +481,8 @@ function HomePage() {
                                                 variant="outline-primary"
                                                 size="sm"
                                                 className="me-2"
-                                                onClick={() => handleDownloadPhoto(photo.id, photo.filename)}
-                                                title="Preuzmi fotografiju"
+                                                onClick={() => handleOpenFilterModal(photo.id, photo.filename)}
+                                                title="Preuzmi s filterima"
                                             >
                                                 <FaDownload />
                                             </Button>
@@ -543,7 +582,7 @@ function HomePage() {
                 </Form>
             </Modal>
 
-            {/* --- NOVI MODAL ZA PRIKAZ VELIKE FOTOGRAFIJE --- */}
+            {/* --- MODAL ZA PRIKAZ VELIKE FOTOGRAFIJE --- */}
             <Modal show={showPhotoModal} onHide={() => setShowPhotoModal(false)} centered size="lg">
                 <Modal.Header closeButton>
                     <Modal.Title>{selectedPhotoDescription || 'Pregled fotografije'}</Modal.Title>
@@ -564,6 +603,76 @@ function HomePage() {
                 </Modal.Footer>
             </Modal>
             {/* ------------------------------------------------ */}
+
+            {/* --- NOVI MODAL ZA OPCIJE PREUZIMANJA I FILTERS - Prilagođen dizajn --- */}
+            <Modal show={showFilterModal} onHide={() => setShowFilterModal(false)} centered>
+                <Modal.Header closeButton>
+                    <Modal.Title>Preuzmi fotografiju: {selectedPhotoDescription || 'Opcije'}</Modal.Title>
+                </Modal.Header>
+                <Modal.Body>
+                    <Form.Group className="mb-3">
+                        <Form.Label>Izlazni format</Form.Label>
+                        <Form.Select value={selectedOutputFormat} onChange={(e) => setSelectedOutputFormat(e.target.value)}>
+                            <option value="jpeg">JPEG</option>
+                            <option value="png">PNG</option>
+                            <option value="bmp">BMP</option>
+                            {/* Dodaj druge formate ako ih backend podržava i ako su relevantni */}
+                        </Form.Select>
+                        <Form.Text className="text-muted">Odaberite željeni izlazni format slike.</Form.Text>
+                    </Form.Group>
+
+                    <Form.Group className="mb-3">
+                        <Form.Label>Maks. Širina (px)</Form.Label>
+                        <FormControl
+                            type="number"
+                            value={resizeWidth}
+                            onChange={(e) => setResizeWidth(e.target.value)}
+                            placeholder="Opcionalno"
+                            min="1" // Dodana validacija
+                        />
+                        <Form.Text className="text-muted">Opcionalno, unesite maksimalnu širinu za promjenu veličine.</Form.Text>
+                    </Form.Group>
+
+                    <Form.Group className="mb-3">
+                        <Form.Label>Maks. Visina (px)</Form.Label>
+                        <FormControl
+                            type="number"
+                            value={resizeHeight}
+                            onChange={(e) => setResizeHeight(e.target.value)}
+                            placeholder="Opcionalno"
+                            min="1" // Dodana validacija
+                        />
+                        <Form.Text className="text-muted">Opcionalno, unesite maksimalnu visinu za promjenu veličine.</Form.Text>
+                    </Form.Group>
+
+                    <Form.Group className="mb-3">
+                        <Form.Check
+                            type="checkbox"
+                            label="Primijeni Sepia filter"
+                            checked={applySepiaFilter}
+                            onChange={(e) => setApplySepiaFilter(e.target.checked)}
+                        />
+                    </Form.Group>
+
+                    <Form.Group className="mb-3">
+                        <Form.Check
+                            type="checkbox"
+                            label="Primijeni Blur filter"
+                            checked={applyBlurFilter}
+                            onChange={(e) => setApplyBlurFilter(e.target.checked)}
+                        />
+                    </Form.Group>
+                </Modal.Body>
+                <Modal.Footer>
+                    <Button variant="secondary" onClick={() => setShowFilterModal(false)}>
+                        Odustani
+                    </Button>
+                    <Button variant="primary" onClick={handleDownloadWithSelectedFilters}>
+                        <FaDownload className="me-2" /> Preuzmi
+                    </Button>
+                </Modal.Footer>
+            </Modal>
+            {/* ---------------------------------------------------- */}
         </Container>
     );
 }
