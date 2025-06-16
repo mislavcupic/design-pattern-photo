@@ -325,7 +325,7 @@ public class PhotoController {
     @GetMapping("/search")
   // @PreAuthorize("isAuthenticated() or hasRole('ADMIN') or hasRole('REGISTERED')")
     public CompletableFuture<ResponseEntity<List<PhotoDto>>> searchPhotos(
-            @RequestParam String searchTerm,
+            @RequestParam (required = false) String searchTerm,
             @RequestParam(required = false) String uploadedBy,
             HttpServletRequest request
     ) {
