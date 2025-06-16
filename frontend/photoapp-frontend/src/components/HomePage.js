@@ -36,6 +36,12 @@ function HomePage() {
     const [editHashtags, setEditHashtags] = useState('');
     const [editIsPrivate, setEditIsPrivate] = useState(false);
 
+    // --- NOVO STANJE ZA VELIKU FOTOGRAFIJU ---
+    const [showPhotoModal, setShowPhotoModal] = useState(false);
+    const [selectedPhotoUrl, setSelectedPhotoUrl] = useState('');
+    const [selectedPhotoDescription, setSelectedPhotoDescription] = useState('');
+    // ------------------------------------------
+
     useEffect(() => {
         const unsubscribe = auth.onAuthStateChanged(user => {
             if (user) {
@@ -72,14 +78,14 @@ function HomePage() {
         return response;
     };
 
-    const fetchPublicPhotos = async () => {
+    const fetchLast10PublicPhotos = async () => {
         try {
             setLoading(true);
             setError(null);
-            const data = await fetchWithAuth('http://localhost:8080/api/photos/public');
+            const data = await fetchWithAuth('http://localhost:8080/api/photos/last10');
             setPhotos(data);
         } catch (err) {
-            console.error("Greška pri dohvatu fotografija za homepage:", err);
+            console.error("Greška pri dohvatu zadnjih 10 fotografija za homepage:", err);
             setError(err);
         } finally {
             setLoading(false);
@@ -87,7 +93,7 @@ function HomePage() {
     };
 
     useEffect(() => {
-        fetchPublicPhotos();
+        fetchLast10PublicPhotos();
     }, []);
 
     const handleSearch = async (e) => {
@@ -122,7 +128,7 @@ function HomePage() {
         setSearchResults([]);
         setHasSearched(false);
         setSearchError(null);
-        fetchPublicPhotos();
+        fetchLast10PublicPhotos();
     };
 
     const handleDeletePhoto = async (photoId) => {
@@ -134,9 +140,10 @@ function HomePage() {
                 method: 'DELETE',
             });
             alert('Fotografija uspješno obrisana!');
-            fetchPublicPhotos();
             if (hasSearched) {
                 handleSearch({ preventDefault: () => {} });
+            } else {
+                fetchLast10PublicPhotos();
             }
         } catch (err) {
             console.error('Greška pri brisanju fotografije:', err);
@@ -184,8 +191,6 @@ function HomePage() {
     const handleEditClick = (photo) => {
         setCurrentPhotoToEdit(photo);
         setEditDescription(photo.description || '');
-        // Prilikom otvaranja modalnog prozora, konvertiraj niz hashtagova u string s razmacima
-        // Sada koristi novu funkciju i za popunjavanje polja u modalu!
         setEditHashtags(formatHashtagsForEdit(photo.hashtags));
         setEditIsPrivate(photo.isPrivate !== undefined ? photo.isPrivate : false);
         setShowEditModal(true);
@@ -198,7 +203,7 @@ function HomePage() {
         try {
             const queryParams = new URLSearchParams({
                 description: editDescription,
-                hashtags: editHashtags, // Backend očekuje string, koji se dobije iz inputa
+                hashtags: editHashtags,
                 isPrivate: editIsPrivate
             }).toString();
 
@@ -207,9 +212,10 @@ function HomePage() {
             });
             alert('Metapodaci fotografije uspješno ažurirani!');
             setShowEditModal(false);
-            fetchPublicPhotos();
             if (hasSearched) {
                 handleSearch({ preventDefault: () => {} });
+            } else {
+                fetchLast10PublicPhotos();
             }
         } catch (err) {
             console.error('Greška pri ažuriranju fotografije:', err);
@@ -226,9 +232,10 @@ function HomePage() {
                 },
             });
             alert(`Fotografija je sada ${currentIsPrivate ? 'javna' : 'privatna'}!`);
-            fetchPublicPhotos();
             if (hasSearched) {
                 handleSearch({ preventDefault: () => {} });
+            } else {
+                fetchLast10PublicPhotos();
             }
         } catch (err) {
             console.error('Greška pri promjeni privatnosti:', err);
@@ -236,9 +243,16 @@ function HomePage() {
         }
     };
 
+    // --- NOVO: Funkcija za otvaranje modala s velikom fotkom ---
+    const handlePhotoClick = (photoUrl, description) => {
+        setSelectedPhotoUrl(photoUrl);
+        setSelectedPhotoDescription(description);
+        setShowPhotoModal(true);
+    };
+    // -----------------------------------------------------------
+
     const photosToDisplay = hasSearched ? searchResults : photos;
 
-    // --- Ispravljena funkcija za formatiranje hashtagova za prikaz ---
     const formatHashtagsForDisplay = (hashtags) => {
         if (!hashtags) {
             return '';
@@ -247,32 +261,21 @@ function HomePage() {
         let tags = [];
 
         if (Array.isArray(hashtags)) {
-            // Ako je već niz, koristi ga direktno
             tags = hashtags;
         } else if (typeof hashtags === 'string') {
-            // Ako je string, prvo ukloni zagrade i hashtag znakove,
-            // zatim podijeli po zarezima, pa trimaj i filtriraj.
-            // Primjer: "#[insecure,, #bad,, #error]"
-            // Prvo ukloni vanjske zagrade i potencijalne # na početku
-            let cleanedString = hashtags.replace(/^\[?#?|\]?$/g, ''); // Ukloni početne/krajnje [,] i #
-
-            // Podijeli po zarezima (jedan ili više)
+            let cleanedString = hashtags.replace(/^\[?#?|\]?$/g, '');
             tags = cleanedString.split(/,+/);
         } else {
-            return ''; // Nepoznat format
+            return '';
         }
 
-        // Procesiraj dobiveni niz: trimaj, ukloni # ako je već dodan, filtriraj prazne
         return tags
-            .map(tag => tag.trim().replace(/^#/, '')) // Trimaj i ukloni početni # ako postoji
-            .filter(tag => tag !== '') // Ukloni prazne stringove
-            .map(tag => `#${tag}`) // Dodaj # ispred svakog taga
-            .join(' '); // Spoji s razmacima
+            .map(tag => tag.trim().replace(/^#/, ''))
+            .filter(tag => tag !== '')
+            .map(tag => `#${tag}`)
+            .join(' ');
     };
-    // --- Kraj ispravljene funkcije za prikaz ---
 
-    // --- Nova funkcija za formatiranje hashtagova za uređivanje u input polju ---
-    // Ova funkcija konvertira ulazni format (niz ili čudan string) u čisti string razdvojen razmacima
     const formatHashtagsForEdit = (hashtags) => {
         if (!hashtags) {
             return '';
@@ -283,20 +286,17 @@ function HomePage() {
         if (Array.isArray(hashtags)) {
             tags = hashtags;
         } else if (typeof hashtags === 'string') {
-            // Ista logika čišćenja kao i za prikaz, ali bez dodavanja # znakova
             let cleanedString = hashtags.replace(/^\[?#?|\]?$/g, '');
             tags = cleanedString.split(/,+/);
         } else {
             return '';
         }
 
-        // Trimaj, ukloni #, filtriraj prazne i spoji s razmacima (bez #)
         return tags
             .map(tag => tag.trim().replace(/^#/, ''))
             .filter(tag => tag !== '')
             .join(' ');
     };
-    // --- Kraj nove funkcije za uređivanje ---
 
     return (
         <Container fluid className="homepage-container">
@@ -410,19 +410,32 @@ function HomePage() {
                                     src={photo.fileUrl}
                                     alt={photo.description}
                                     className="public-photo-img"
+                                    onClick={() => handlePhotoClick(photo.fileUrl, photo.description)} // --- DODANO OVDJE ---
+                                    style={{ cursor: 'pointer' }} // Dodaje vizualni indikator da je klikabilno
                                 />
                                 <Card.Body>
                                     <Card.Title className="photo-card-title">{photo.description}</Card.Title>
                                     <Card.Text className="photo-card-hashtags">
-                                        {/* POZIV NOVE FUNKCIJE OVDJE */}
                                         {formatHashtagsForDisplay(photo.hashtags)}
                                     </Card.Text>
                                     <Card.Text className="photo-card-author">
                                         Postavio: <strong>{photo.uploadedBy}</strong>
                                     </Card.Text>
+                                    <Card.Text className="photo-card-upload-date">
+                                        Objavljeno: {
+                                        photo.uploadDate
+                                            ? new Date(photo.uploadDate).toLocaleDateString('hr-HR', {
+                                                year: 'numeric',
+                                                month: 'long',
+                                                day: 'numeric',
+                                                hour: '2-digit',
+                                                minute: '2-digit'
+                                            })
+                                            : 'Datum nije dostupan'
+                                    }
+                                    </Card.Text>
                                 </Card.Body>
                                 <Card.Footer className="text-muted photo-card-footer">
-                                    Objavljeno: {new Date(photo.uploadDate._seconds * 1000).toLocaleDateString()}
                                     <div className="photo-actions mt-2">
                                         {currentUserUid && (
                                             <Button
@@ -529,6 +542,28 @@ function HomePage() {
                     </Modal.Footer>
                 </Form>
             </Modal>
+
+            {/* --- NOVI MODAL ZA PRIKAZ VELIKE FOTOGRAFIJE --- */}
+            <Modal show={showPhotoModal} onHide={() => setShowPhotoModal(false)} centered size="lg">
+                <Modal.Header closeButton>
+                    <Modal.Title>{selectedPhotoDescription || 'Pregled fotografije'}</Modal.Title>
+                </Modal.Header>
+                <Modal.Body className="text-center">
+                    {selectedPhotoUrl && (
+                        <img
+                            src={selectedPhotoUrl}
+                            alt={selectedPhotoDescription}
+                            style={{ maxWidth: '100%', height: 'auto' }}
+                        />
+                    )}
+                </Modal.Body>
+                <Modal.Footer>
+                    <Button variant="secondary" onClick={() => setShowPhotoModal(false)}>
+                        Zatvori
+                    </Button>
+                </Modal.Footer>
+            </Modal>
+            {/* ------------------------------------------------ */}
         </Container>
     );
 }

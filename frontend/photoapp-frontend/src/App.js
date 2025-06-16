@@ -9,7 +9,7 @@ import DeleteAccount from "./components/DeleteAccount";
 import Logout from "./components/Logout";
 import './App.css';
 
-import PhotoUploadForm from "./components/PhotoUploadForm";
+import PhotoUploadForm from "./components/PhotoUploadCard";
 import HomePage from "./components/HomePage"; // Dodatni CSS za specifične stilove
 
 function App() {
@@ -54,7 +54,7 @@ function App() {
                     <Route path="/profile" element={<ProfilePage />} />
                     <Route path="/login" element={<Login />} />
                     <Route path="/register" element={<Register />} />
-                    {/*<Route path="/photouploadform" element={<PhotoUploadForm />} />*/}
+                    {/*<Route path="/photouploadcard" element={<PhotoUploadCard />} />*/}
                     <Route path="/delete-account" element={<DeleteAccount />} />
                     <Route path="/logout" element={<Logout />} />
                     {/*<Route path="/admin" element={<AdminPanel/>} />*/}

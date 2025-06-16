@@ -134,18 +134,18 @@ public class PhotoRepository {
         });
     }
 
-    public CompletableFuture<Void> deletePhoto(Long photoId) {
-        return CompletableFuture.runAsync(() -> {
-            try {
-                firestore.collection("photos").document(photoId.toString()).delete().get();
-                logger.info("PhotoRepository: Photo with ID {} deleted from Firestore.", photoId);
-            } catch (InterruptedException | ExecutionException e) {
-                logger.error("PhotoRepository: Error deleting photo {}: {}", photoId, e.getMessage(), e);
-                Thread.currentThread().interrupt();
-                throw new RuntimeException("Failed to delete photo", e);
-            }
-        });
-    }
+//    public CompletableFuture<Void> deletePhoto(Long photoId) {
+//        return CompletableFuture.runAsync(() -> {
+//            try {
+//                firestore.collection("photos").document(photoId.toString()).delete().get();
+//                logger.info("PhotoRepository: Photo with ID {} deleted from Firestore.", photoId);
+//            } catch (InterruptedException | ExecutionException e) {
+//                logger.error("PhotoRepository: Error deleting photo {}: {}", photoId, e.getMessage(), e);
+//                Thread.currentThread().interrupt();
+//                throw new RuntimeException("Failed to delete photo", e);
+//            }
+//        });
+//    }
 
     public CompletableFuture<List<Photo>> searchPhotos(String searchTerm, String uploadedByUid) {
         return CompletableFuture.supplyAsync(() -> {

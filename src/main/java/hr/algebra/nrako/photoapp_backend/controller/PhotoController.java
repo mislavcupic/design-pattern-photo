@@ -323,7 +323,7 @@ public class PhotoController {
     }
 
     @GetMapping("/search")
-    @PreAuthorize("isAuthenticated() or hasRole('ADMIN') or hasRole('REGISTERED')")
+  // @PreAuthorize("isAuthenticated() or hasRole('ADMIN') or hasRole('REGISTERED')")
     public CompletableFuture<ResponseEntity<List<PhotoDto>>> searchPhotos(
             @RequestParam String searchTerm,
             @RequestParam(required = false) String uploadedBy,
