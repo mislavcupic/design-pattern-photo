@@ -3,8 +3,9 @@ package hr.algebra.nrako.photoapp_backend.repository;
 import com.google.api.core.ApiFuture;
 import com.google.cloud.firestore.DocumentSnapshot;
 import com.google.cloud.firestore.Firestore;
-import com.google.cloud.firestore.WriteResult; // Dodaj ovaj import
-import com.google.firebase.cloud.FirestoreClient;
+import com.google.cloud.firestore.WriteResult;
+// Uklanjamo ovaj import jer više nećemo koristiti FirestoreClient.getFirestore()
+// import com.google.firebase.cloud.FirestoreClient;
 import hr.algebra.nrako.photoapp_backend.domain.UserPackageData;
 import org.springframework.stereotype.Repository;
 
@@ -15,8 +16,20 @@ import java.util.concurrent.ExecutionException;
 @Repository
 public class UserPackageDataRepository {
 
-    private final Firestore db = FirestoreClient.getFirestore();
-    public static final String COLLECTION_NAME = "user_package_data"; // Dobro je imati konstantu
+    // 1. Promjena: Firestore instanca se više ne inicijalizira direktno ovdje.
+    // Spring će je injektirati putem konstruktora.
+    private final Firestore db;
+    public static final String COLLECTION_NAME = "user_package_data";
+
+    /**
+     * 2. Promjena: Dodan konstruktor za injektiranje Firestore instance.
+     * Spring će automatski osigurati pravilno konfiguriranu Firestore instancu (npr. s emulator postavkama)
+     * definiranu kao Bean u FirebaseTestConfig.
+     * @param firestore Instanca Firestore klijenta koju injektira Spring.
+     */
+    public UserPackageDataRepository(Firestore firestore) {
+        this.db = firestore; // Inicijalizacija 'db' kroz injektirani parametar
+    }
 
     /**
      * Pronalazi UserPackageData za dani Firebase UID.
@@ -29,9 +42,7 @@ public class UserPackageDataRepository {
                 DocumentSnapshot document = future.get();
                 if (document.exists()) {
                     UserPackageData data = document.toObject(UserPackageData.class);
-                    // Ako je ID dokumenta isti kao Firebase UID, ne moraš ga eksplicitno postavljati.
-                    // Ako ti treba u objektu, onda: if (data != null && data.getId() == null) data.setId(document.getId());
-                    return Optional.ofNullable(data);
+                    return Optional.ofNullable(data); // Optional.ofNullable handles null 'data' case
                 } else {
                     return Optional.empty();
                 }
@@ -45,7 +56,8 @@ public class UserPackageDataRepository {
                 // Općenita greška (npr. deserializacija)
                 System.err.println("Unexpected error in findByFirebaseUid for UID " + firebaseUid + ": " + e.getMessage());
                 e.printStackTrace();
-                return Optional.empty();
+                // Bolje je baciti RuntimeException ovdje ako je greška kritična za daljnje izvršavanje
+                throw new RuntimeException("Failed to fetch user package data due to unexpected error.", e);
             }
         });
     }
@@ -79,7 +91,4 @@ public class UserPackageDataRepository {
             }
         });
     }
-
-    // Ukloni ovu metodu jer je findByFirebaseUid dostatna
-    // public CompletableFuture<UserPackageData> getUserPackageData(String uid) { ... }
 }

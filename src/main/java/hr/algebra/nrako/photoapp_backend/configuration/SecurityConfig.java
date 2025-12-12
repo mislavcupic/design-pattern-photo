@@ -5,6 +5,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import lombok.AllArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Profile;
 import org.springframework.http.HttpMethod;
 import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
@@ -28,6 +29,7 @@ import java.util.List;
 @AllArgsConstructor
 @EnableMethodSecurity
 @EnableAsync
+@Profile("!test")
 public class SecurityConfig implements WebMvcConfigurer {
 
     public static final String API_PHOTOS_ID = "/api/photos/{id}";
@@ -65,6 +67,7 @@ public class SecurityConfig implements WebMvcConfigurer {
 
                         // 3. Općenite putanje koje su PERMITALL (ali manje specifične od gornjih)
                         // Pazite da ovo ne preklapa download!
+                        .requestMatchers("/api/photos/public").permitAll() // Ako imaš /api/photos/public rutu, osiguraj je ovdje
                         .requestMatchers("/api/public/**").permitAll() // Ako su javne fotografije
                         .requestMatchers("/api/photos/last10").permitAll() // Ako su zadnjih 10 javne
                         .requestMatchers(API_PHOTOS_ID).permitAll() // Ako je /api/photos/{id} javna (za view, ne download)

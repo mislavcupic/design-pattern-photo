@@ -339,6 +339,8 @@ public class PhotoServiceImpl implements PhotoService, PhotoUploadSubject {
         // Poziva imageProcessingService koji ima stvarnu logiku za detekciju formata
         return imageProcessingService.getOriginalImageFormat(imageBytes);
     }
+
+    //BUILDER
     @Override
     public CompletableFuture<byte[]> downloadPhotoWithFilters(
             Long photoId,
@@ -378,7 +380,6 @@ public class PhotoServiceImpl implements PhotoService, PhotoUploadSubject {
                 } catch (IOException e) {
                     logger.error("Greška prilikom spremanja debug datoteke (original): {}", e.getMessage());
                 }
-                // KRAJ DEBUGGING KODA
 
                 imageProcessorBuilder.reset();
                 ImageProcessingOptions options = imageProcessorBuilder
@@ -424,7 +425,7 @@ public class PhotoServiceImpl implements PhotoService, PhotoUploadSubject {
         });
     }
 
-    // VRAĆENA searchPhotos metoda iz tvog originalnog koda
+
     @Override
     public CompletableFuture<List<Photo>> searchPhotos(
             String searchTerm,

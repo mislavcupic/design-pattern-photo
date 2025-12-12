@@ -2,7 +2,8 @@ package hr.algebra.nrako.photoapp_backend.repository;
 
 import com.google.api.core.ApiFuture;
 import com.google.cloud.firestore.*;
-import com.google.firebase.cloud.FirestoreClient;
+// Uklanjamo ovaj import jer više nećemo koristiti FirestoreClient.getFirestore()
+// import com.google.firebase.cloud.FirestoreClient;
 import hr.algebra.nrako.photoapp_backend.domain.Photo;
 import jakarta.annotation.PreDestroy;
 import org.slf4j.Logger;
@@ -20,19 +21,28 @@ public class PhotoRepository {
     private final Firestore firestore;
     private static final Logger logger = LoggerFactory.getLogger(PhotoRepository.class);
 
-    public PhotoRepository() {
-        this.firestore = FirestoreClient.getFirestore();
-        logger.info("PhotoRepository: Firestore client initialized.");
+    // 1. Promjena: Konstruktor sada prima Firestore instancu kao argument
+    // Spring će automatski injektirati Firestore bean konfiguriran u FirebaseTestConfig.
+    public PhotoRepository(Firestore firestore) {
+        this.firestore = firestore;
+        logger.info("PhotoRepository: Firestore client initialized via dependency injection.");
     }
 
+    // Bilješka: Metoda @PreDestroy bi mogla biti suvišna ako Spring upravlja životnim ciklusom Beana
+    // i samim Firestore beanom, ali je ostavljamo radi sigurnosti.
     @PreDestroy
     public void destroy() {
         if (this.firestore != null) {
             try {
-                this.firestore.shutdown();
-                logger.info("PhotoRepository: Firestore client shut down successfully.");
+                // Važno: Ovdje bi se trebalo voditi računa o tome tko je vlasnik Firestore instance.
+                // Ako je Spring stvara i upravlja njome, možda je on i zadužen za njeno gašenje.
+                // Ručno gašenje ovdje može uzrokovati probleme ako se Firestore instanca koristi negdje drugdje.
+                // Za potrebe testova, često je bolje pustiti Spring da se brine o tome.
+                // Ako ipak ostaviš, provjeri je li to ispravno ponašanje za tvoj Firebase konfiguracijski Bean.
+                // this.firestore.shutdown(); // Komentiraj ako Spring treba upravljati gašenjem
+                logger.info("PhotoRepository: PreDestroy called. Firestore client managed by Spring.");
             } catch (Exception e) {
-                logger.warn("PhotoRepository: Error shutting down Firestore client: {}", e.getMessage(), e);
+                logger.warn("PhotoRepository: Error during Firestore client shutdown in PreDestroy: {}", e.getMessage(), e);
             }
         }
     }
@@ -134,18 +144,19 @@ public class PhotoRepository {
         });
     }
 
-//    public CompletableFuture<Void> deletePhoto(Long photoId) {
-//        return CompletableFuture.runAsync(() -> {
-//            try {
-//                firestore.collection("photos").document(photoId.toString()).delete().get();
-//                logger.info("PhotoRepository: Photo with ID {} deleted from Firestore.", photoId);
-//            } catch (InterruptedException | ExecutionException e) {
-//                logger.error("PhotoRepository: Error deleting photo {}: {}", photoId, e.getMessage(), e);
-//                Thread.currentThread().interrupt();
-//                throw new RuntimeException("Failed to delete photo", e);
-//            }
-//        });
-//    }
+    // Metoda za brisanje fotki, ako je potrebno
+    // public CompletableFuture<Void> deletePhoto(Long photoId) {
+    //     return CompletableFuture.runAsync(() -> {
+    //         try {
+    //             firestore.collection("photos").document(photoId.toString()).delete().get();
+    //             logger.info("PhotoRepository: Photo with ID {} deleted from Firestore.", photoId);
+    //         } catch (InterruptedException | ExecutionException e) {
+    //             logger.error("PhotoRepository: Error deleting photo {}: {}", photoId, e.getMessage(), e);
+    //             Thread.currentThread().interrupt();
+    //             throw new RuntimeException("Failed to delete photo", e);
+    //         }
+    //     });
+    // }
 
     public CompletableFuture<List<Photo>> searchPhotos(String searchTerm, String uploadedByUid) {
         return CompletableFuture.supplyAsync(() -> {

@@ -5,70 +5,94 @@
 
     <modelVersion>4.0.0</modelVersion>
 
+    <parent>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-starter-parent</artifactId>
+        <version>3.4.4</version>
+        <relativePath/>
+    </parent>
+
     <groupId>hr.algebra.nrako</groupId>
     <artifactId>photoapp_backend</artifactId>
     <version>1.0-SNAPSHOT</version>
     <name>photoapp_backend</name>
+
     <repositories>
         <repository>
             <id>central</id>
             <url>https://repo.maven.apache.org/maven2</url>
         </repository>
     </repositories>
+
     <properties>
         <java.version>17</java.version>
-        <junit.version>5.10.2</junit.version>
         <firebase.admin.version>9.4.3</firebase.admin.version>
         <google.cloud.storage.version>2.46.0</google.cloud.storage.version>
         <google.auth.version>1.33.1</google.auth.version>
         <google.cloud.core.version>2.46.0</google.cloud.core.version>
         <okhttp.version>4.11.0</okhttp.version>
-        <spring.boot.version>3.4.4</spring.boot.version>
         <google-auth-library-credentials.version>1.33.1</google-auth-library-credentials.version>
-    </properties>
+        <junit-jupiter.version>5.11.0-M1</junit-jupiter.version> </properties>
 
     <dependencies>
-        <!-- Spring Boot -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-web</artifactId>
-            <version>${spring.boot.version}</version>
         </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-security</artifactId>
-            <version>${spring.boot.version}</version>
         </dependency>
 
-        <!-- Firebase Admin SDK -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-test</artifactId>
+            <scope>test</scope>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.junit.vintage</groupId>
+                    <artifactId>junit-vintage-engine</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+
+        <dependency>
+            <groupId>org.mockito</groupId>
+            <artifactId>mockito-junit-jupiter</artifactId>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.hamcrest</groupId>
+            <artifactId>hamcrest</artifactId>
+            <version>2.2</version> <scope>test</scope>
+        </dependency>
+
+
         <dependency>
             <groupId>com.google.firebase</groupId>
             <artifactId>firebase-admin</artifactId>
             <version>${firebase.admin.version}</version>
         </dependency>
 
-        <!-- Google Auth Library -->
         <dependency>
             <groupId>com.google.auth</groupId>
             <artifactId>google-auth-library-oauth2-http</artifactId>
             <version>${google.auth.version}</version>
         </dependency>
 
-        <!-- Google Cloud Core -->
         <dependency>
             <groupId>com.google.cloud</groupId>
             <artifactId>google-cloud-core</artifactId>
             <version>${google.cloud.core.version}</version>
         </dependency>
 
-        <!-- OkHttp (ako ti treba za HTTP pozive) -->
         <dependency>
             <groupId>com.squareup.okhttp3</groupId>
             <artifactId>okhttp</artifactId>
             <version>${okhttp.version}</version>
         </dependency>
 
-        <!-- Lombok -->
         <dependency>
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
@@ -76,32 +100,17 @@
             <scope>provided</scope>
         </dependency>
 
-        <!-- Hibernate -->
         <dependency>
             <groupId>org.hibernate.orm</groupId>
             <artifactId>hibernate-core</artifactId>
             <version>6.6.0.Final</version>
         </dependency>
 
-        <!-- Test Dependencies -->
-        <dependency>
-            <groupId>org.junit.jupiter</groupId>
-            <artifactId>junit-jupiter-api</artifactId>
-            <version>${junit.version}</version>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.junit.jupiter</groupId>
-            <artifactId>junit-jupiter-engine</artifactId>
-            <version>${junit.version}</version>
-            <scope>test</scope>
-        </dependency>
         <dependency>
             <groupId>org.springframework.security</groupId>
             <artifactId>spring-security-test</artifactId>
             <scope>test</scope>
         </dependency>
-
 
         <dependency>
             <groupId>org.springframework.boot</groupId>
@@ -111,7 +120,8 @@
         <dependency>
             <groupId>net.coobird</groupId>
             <artifactId>thumbnailator</artifactId>
-            <version>0.4.20</version> </dependency>
+            <version>0.4.20</version>
+        </dependency>
         <dependency>
             <groupId>com.twelvemonkeys.imageio</groupId>
             <artifactId>imageio-core</artifactId>
@@ -132,13 +142,15 @@
             <artifactId>imageio-jpeg</artifactId>
             <version>3.12.0</version>
         </dependency>
-
         <dependency>
             <groupId>com.twelvemonkeys.imageio</groupId>
             <artifactId>imageio-webp</artifactId>
             <version>3.12.0</version>
         </dependency>
-
+        <dependency>
+            <groupId>com.google.cloud</groupId>
+            <artifactId>google-cloud-firestore</artifactId>
+            <version>3.30.2</version> </dependency>
     </dependencies>
 
     <build>
@@ -152,14 +164,20 @@
                     <target>17</target>
                 </configuration>
             </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <version>3.2.5</version>
+                <configuration>
+                </configuration>
+                <dependencies>
+                    <dependency>
+                        <groupId>org.junit.jupiter</groupId>
+                        <artifactId>junit-jupiter-engine</artifactId>
+                        <version>${junit-jupiter.version}</version> </dependency>
+                </dependencies>
+            </plugin>
         </plugins>
     </build>
-
-    <parent>
-        <groupId>org.springframework.boot</groupId>
-        <artifactId>spring-boot-starter-parent</artifactId>
-        <version>3.4.4</version>
-        <relativePath/>
-    </parent>
 
 </project>

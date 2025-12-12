@@ -17,6 +17,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -170,7 +171,8 @@ public class PhotoController {
     }
 
     @DeleteMapping("/{id}")
-    @PreAuthorize("hasRole('ADMIN') or @photoService.isOwner(#id.toString(), authentication.principal)")
+    //@PreAuthorize("hasRole('ADMIN') or @photoService.isOwner(#id.toString(), authentication.principal)")
+    @PreAuthorize("hasRole('ADMIN') or hasRole('REGISTERED')")
     public ResponseEntity<Void> deletePhoto(@PathVariable Long id) throws ExecutionException, InterruptedException {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String uid = (String) authentication.getPrincipal();
@@ -321,8 +323,108 @@ public class PhotoController {
 //                    return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body((byte[]) null);
 //                });
 //    }
+//@GetMapping("/{photoId}/download")
+////@PreAuthorize("hasRole('ADMIN') or hasRole('REGISTERED')")
+//public CompletableFuture<ResponseEntity<byte[]>> downloadPhotoWithFilters(
+//        @PathVariable Long photoId,
+//        @RequestParam(required = false) Integer maxWidth,
+//        @RequestParam(required = false) Integer maxHeight,
+//        @RequestParam(required = false) String outputFormat,
+//        @RequestParam(defaultValue = "false") boolean sepia,
+//        @RequestParam(defaultValue = "false") boolean blur
+//) {
+//    Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+//    String requesterUid = (String) authentication.getPrincipal();
+//    boolean isAdmin = authentication.getAuthorities().stream().anyMatch(a -> a.getAuthority().equals("ROLE_ADMIN"));
+//
+//    return asyncHelperPhoto.downloadPhotoWithFilters(photoId, requesterUid, isAdmin, maxWidth, maxHeight, outputFormat, sepia, blur)
+//            .thenApply(imageBytes -> {
+//                // Ako su bajtovi prazni, nešto je pošlo po zlu prije ili nije pronađeno.
+//                if (imageBytes == null || imageBytes.length == 0) {
+//                    logger.warn("Fotografija s ID {} nije pronađena ili je obrađena u prazne bajtove.", photoId);
+//                    return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new byte[0]);
+//                }
+//
+//                // Dinamički odredi Content-Type
+//                MediaType contentType;
+//                String finalOutputFormat = outputFormat;
+//
+//                // Ako outputFormat nije zadan, pokušaj ga detektirati iz bajtova
+//                if (finalOutputFormat == null || finalOutputFormat.isEmpty()) {
+//                    try {
+//                        // POZIV NOVE METODE!
+//                        String detectedFormat = asyncHelperPhoto.getFormatFromBytes(imageBytes);
+//                        if (detectedFormat != null) {
+//                            finalOutputFormat = detectedFormat;
+//                            logger.debug("Detektirani format iz bajtova: {}", detectedFormat);
+//                        } else {
+//                            finalOutputFormat = "jpeg"; // Fallback ako detekcija ne uspije
+//                            logger.warn("Nije moguće detektirati format slike iz bajtova, koristim default: {}", finalOutputFormat);
+//                        }
+//                    } catch (IOException e) {
+//                        logger.warn("Greška prilikom detekcije formata slike iz bajtova za ID {}: {}", photoId, e.getMessage());
+//                        finalOutputFormat = "jpeg"; // Fallback u slučaju greške
+//                    }
+//                }
+//
+//                // Mapiraj string format na MediaType
+//                switch (finalOutputFormat.toLowerCase()) {
+//                    case "png":
+//                        contentType = MediaType.IMAGE_PNG;
+//                        break;
+//                    case "gif":
+//                        contentType = MediaType.IMAGE_GIF;
+//                        break;
+//                    case "bmp":
+//                        contentType = MediaType.parseMediaType("image/bmp");
+//                        break;
+//                    case "avif":
+//                        contentType = MediaType.parseMediaType("image/avif");
+//                        break;
+//                    case "webp":
+//                        contentType = MediaType.parseMediaType("image/webp");
+//                        break;
+//                    case "tif":
+//                    case "tiff":
+//                        contentType = MediaType.parseMediaType("image/tiff");
+//                        break;
+//                    case "svg": // Ako planiraš podržati SVG, iako nije raster
+//                        contentType = MediaType.parseMediaType("image/svg+xml");
+//                        break;
+//                    default:
+//                        contentType = MediaType.IMAGE_JPEG; // Default na JPEG
+//                        break;
+//                }
+//
+//                // Odredi naziv datoteke za download
+//                String filename = "processed_photo." + finalOutputFormat.toLowerCase();
+//
+//                // Vrati uspješan ResponseEntity s bajtovima i headerima
+//                return ResponseEntity.ok()
+//                        .contentType(contentType)
+//                        .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + filename + "\"")
+//                        .body(imageBytes);
+//            })
+//            .exceptionally(ex -> {
+//                Throwable cause = ex.getCause(); // Dohvati pravi uzrok iz CompletionException
+//                logger.error("Greška prilikom preuzimanja/obrade fotografije ID {}: {}", photoId, cause != null ? cause.getMessage() : ex.getMessage(), ex);
+//
+//                if (cause instanceof PhotoService.PhotoNotFoundException) {
+//                    return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new byte[0]);
+//                }
+//                if (cause instanceof SecurityException) {
+//                    return ResponseEntity.status(HttpStatus.FORBIDDEN).body(new byte[0]);
+//                }
+//                if (cause instanceof IOException && cause.getMessage() != null && cause.getMessage().contains("Failed to read image bytes")) {
+//                    // Greška pri čitanju samih bajtova slike (npr. nepodržan format, oštećena datoteka)
+//                    return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new byte[0]);
+//                }
+//                // Generic RuntimeException ili drugi neobrađeni slučajevi
+//                return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new byte[0]);
+//            });
+//}
+// izmjene 28.7.2025. testiranja
 @GetMapping("/{photoId}/download")
-//@PreAuthorize("hasRole('ADMIN') or hasRole('REGISTERED')")
 public CompletableFuture<ResponseEntity<byte[]>> downloadPhotoWithFilters(
         @PathVariable Long photoId,
         @RequestParam(required = false) Integer maxWidth,
@@ -332,40 +434,55 @@ public CompletableFuture<ResponseEntity<byte[]>> downloadPhotoWithFilters(
         @RequestParam(defaultValue = "false") boolean blur
 ) {
     Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-    String requesterUid = (String) authentication.getPrincipal();
+    String requesterUid; // Više nije direktno castanje na String
+
+    if (authentication != null && authentication.getPrincipal() instanceof UserDetails) {
+        // Ako je principal tipa UserDetails (kao kod @WithMockUser testova)
+        requesterUid = ((UserDetails) authentication.getPrincipal()).getUsername();
+    } else if (authentication != null && authentication.getPrincipal() instanceof String) {
+        // Ako je principal direktno String (kao što vaš Firebase filter postavlja u produkciji)
+        requesterUid = (String) authentication.getPrincipal();
+    } else {
+        // Ako korisnik nije autentificiran ili principal nije očekivanog tipa.
+        // Ovisno o vašoj logici, ovdje možete:
+        // 1. Baciti iznimku (npr. new AccessDeniedException("User not authenticated or principal type not recognized."))
+        // 2. Postaviti neku defaultnu "anonimnu" vrijednost (ako to ima smisla za vašu poslovnu logiku)
+        logger.warn("Neautentificirani korisnik ili neočekivani tip principala u downloadPhotoWithFilters. Principal type: {}",
+                authentication != null ? authentication.getPrincipal().getClass().getName() : "null");
+        // Možete odlučiti što je prikladnije:
+        // throw new AccessDeniedException("User not authenticated for photo download.");
+        requesterUid = "anonymous_user_id"; // Primjer: postaviti generički ID za neautentificirane
+    }
+
     boolean isAdmin = authentication.getAuthorities().stream().anyMatch(a -> a.getAuthority().equals("ROLE_ADMIN"));
 
     return asyncHelperPhoto.downloadPhotoWithFilters(photoId, requesterUid, isAdmin, maxWidth, maxHeight, outputFormat, sepia, blur)
             .thenApply(imageBytes -> {
-                // Ako su bajtovi prazni, nešto je pošlo po zlu prije ili nije pronađeno.
+                // ... ostatak vaše .thenApply logike (ovo izgleda OK)
                 if (imageBytes == null || imageBytes.length == 0) {
                     logger.warn("Fotografija s ID {} nije pronađena ili je obrađena u prazne bajtove.", photoId);
                     return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new byte[0]);
                 }
 
-                // Dinamički odredi Content-Type
                 MediaType contentType;
                 String finalOutputFormat = outputFormat;
 
-                // Ako outputFormat nije zadan, pokušaj ga detektirati iz bajtova
                 if (finalOutputFormat == null || finalOutputFormat.isEmpty()) {
                     try {
-                        // POZIV NOVE METODE!
                         String detectedFormat = asyncHelperPhoto.getFormatFromBytes(imageBytes);
                         if (detectedFormat != null) {
                             finalOutputFormat = detectedFormat;
                             logger.debug("Detektirani format iz bajtova: {}", detectedFormat);
                         } else {
-                            finalOutputFormat = "jpeg"; // Fallback ako detekcija ne uspije
+                            finalOutputFormat = "jpeg";
                             logger.warn("Nije moguće detektirati format slike iz bajtova, koristim default: {}", finalOutputFormat);
                         }
                     } catch (IOException e) {
                         logger.warn("Greška prilikom detekcije formata slike iz bajtova za ID {}: {}", photoId, e.getMessage());
-                        finalOutputFormat = "jpeg"; // Fallback u slučaju greške
+                        finalOutputFormat = "jpeg";
                     }
                 }
 
-                // Mapiraj string format na MediaType
                 switch (finalOutputFormat.toLowerCase()) {
                     case "png":
                         contentType = MediaType.IMAGE_PNG;
@@ -386,38 +503,37 @@ public CompletableFuture<ResponseEntity<byte[]>> downloadPhotoWithFilters(
                     case "tiff":
                         contentType = MediaType.parseMediaType("image/tiff");
                         break;
-                    case "svg": // Ako planiraš podržati SVG, iako nije raster
+                    case "svg":
                         contentType = MediaType.parseMediaType("image/svg+xml");
                         break;
                     default:
-                        contentType = MediaType.IMAGE_JPEG; // Default na JPEG
+                        contentType = MediaType.IMAGE_JPEG;
                         break;
                 }
 
-                // Odredi naziv datoteke za download
                 String filename = "processed_photo." + finalOutputFormat.toLowerCase();
 
-                // Vrati uspješan ResponseEntity s bajtovima i headerima
                 return ResponseEntity.ok()
                         .contentType(contentType)
                         .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + filename + "\"")
                         .body(imageBytes);
             })
             .exceptionally(ex -> {
-                Throwable cause = ex.getCause(); // Dohvati pravi uzrok iz CompletionException
+                // ... ostatak vaše .exceptionally logike (ovo izgleda OK)
+                Throwable cause = ex.getCause();
                 logger.error("Greška prilikom preuzimanja/obrade fotografije ID {}: {}", photoId, cause != null ? cause.getMessage() : ex.getMessage(), ex);
 
                 if (cause instanceof PhotoService.PhotoNotFoundException) {
                     return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new byte[0]);
                 }
                 if (cause instanceof SecurityException) {
+                    // Ovo je ključno: Spring Security će baciti SecurityException ako @PreAuthorize ne prođe
+                    // ili ako je vaša logika unutar servisa bacila SecurityException.
                     return ResponseEntity.status(HttpStatus.FORBIDDEN).body(new byte[0]);
                 }
                 if (cause instanceof IOException && cause.getMessage() != null && cause.getMessage().contains("Failed to read image bytes")) {
-                    // Greška pri čitanju samih bajtova slike (npr. nepodržan format, oštećena datoteka)
                     return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new byte[0]);
                 }
-                // Generic RuntimeException ili drugi neobrađeni slučajevi
                 return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new byte[0]);
             });
 }

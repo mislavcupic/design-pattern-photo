@@ -2727,6 +2727,94 @@
           </option>
           <option name="workspaceId" value="drafts" />
         </requestHistoryState>
+        <requestHistoryState>
+          <option name="dateTime" value="1750163864045" />
+          <option name="id" value="275b65bf-28cf-4664-b716-877de4dabad4" />
+          <option name="request">
+            <requestState>
+              <option name="id" value="b523072f-baa2-4c7f-8d0c-da9000ce90d4" />
+              <option name="method" value="GET" />
+              <option name="name" value="Draft (9)" />
+              <option name="url" value="http://localhost:8080/api/admin/users/all" />
+            </requestState>
+          </option>
+          <option name="response">
+            <responseState>
+              <option name="bodyBytesBase64" value="eyJ0aW1lc3RhbXAiOiIyMDI1LTA2LTE3VDEyOjM3OjQ0LjAyMSswMDowMCIsInN0YXR1cyI6NDAxLCJlcnJvciI6IlVuYXV0aG9yaXplZCIsInBhdGgiOiIvYXBpL2FkbWluL3VzZXJzL2FsbCJ9" />
+              <option name="bodyString" value="{&#10;  &quot;timestamp&quot;: &quot;2025-06-17T12:37:44.021+00:00&quot;,&#10;  &quot;status&quot;: 401,&#10;  &quot;error&quot;: &quot;Unauthorized&quot;,&#10;  &quot;path&quot;: &quot;/api/admin/users/all&quot;&#10;}" />
+              <option name="code" value="401" />
+              <option name="connectionEstablishingTime" value="32" />
+              <option name="contentType" value="application/json" />
+              <option name="headers">
+                <list>
+                  <headerState>
+                    <option name="key" value="Vary" />
+                    <option name="value" value="Origin" />
+                  </headerState>
+                  <headerState>
+                    <option name="key" value="Vary" />
+                    <option name="value" value="Access-Control-Request-Method" />
+                  </headerState>
+                  <headerState>
+                    <option name="key" value="Vary" />
+                    <option name="value" value="Access-Control-Request-Headers" />
+                  </headerState>
+                  <headerState>
+                    <option name="key" value="X-Content-Type-Options" />
+                    <option name="value" value="nosniff" />
+                  </headerState>
+                  <headerState>
+                    <option name="key" value="X-XSS-Protection" />
+                    <option name="value" value="0" />
+                  </headerState>
+                  <headerState>
+                    <option name="key" value="Cache-Control" />
+                    <option name="value" value="no-cache, no-store, max-age=0, must-revalidate" />
+                  </headerState>
+                  <headerState>
+                    <option name="key" value="Pragma" />
+                    <option name="value" value="no-cache" />
+                  </headerState>
+                  <headerState>
+                    <option name="key" value="Expires" />
+                    <option name="value" value="0" />
+                  </headerState>
+                  <headerState>
+                    <option name="key" value="X-Frame-Options" />
+                    <option name="value" value="DENY" />
+                  </headerState>
+                  <headerState>
+                    <option name="key" value="Content-Type" />
+                    <option name="value" value="application/json" />
+                  </headerState>
+                  <headerState>
+                    <option name="key" value="Transfer-Encoding" />
+                    <option name="value" value="chunked" />
+                  </headerState>
+                  <headerState>
+                    <option name="key" value="Date" />
+                    <option name="value" value="Tue, 17 Jun 2025 12:37:44 GMT" />
+                  </headerState>
+                  <headerState>
+                    <option name="key" value="Keep-Alive" />
+                    <option name="value" value="timeout=60" />
+                  </headerState>
+                  <headerState>
+                    <option name="key" value="Connection" />
+                    <option name="value" value="keep-alive" />
+                  </headerState>
+                </list>
+              </option>
+              <option name="id" value="275b65bf-28cf-4664-b716-877de4dabad4" />
+              <option name="message" value="Unauthorized" />
+              <option name="prettyResponseType" value="JSON" />
+              <option name="rawBodyString" value="{&quot;timestamp&quot;:&quot;2025-06-17T12:37:44.021+00:00&quot;,&quot;status&quot;:401,&quot;error&quot;:&quot;Unauthorized&quot;,&quot;path&quot;:&quot;/api/admin/users/all&quot;}" />
+              <option name="size" value="111" />
+              <option name="time" value="135" />
+            </responseState>
+          </option>
+          <option name="workspaceId" value="drafts" />
+        </requestHistoryState>
       </list>
     </option>
   </component>
