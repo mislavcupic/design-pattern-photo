@@ -143,7 +143,16 @@ public class PhotoRepository {
             }
         });
     }
-
+    // U PhotoRepository klasi:
+    public void deletePhotoById(String firestoreDocumentId) {
+        try {
+            firestore.collection("photos").document(firestoreDocumentId).delete().get();
+            logger.info("Successfully deleted photo document with ID: {}", firestoreDocumentId);
+        } catch (Exception e) {
+            logger.error("Error deleting photo document ID {}: {}", firestoreDocumentId, e.getMessage(), e);
+            throw new RuntimeException("Failed to delete photo from Firestore", e);
+        }
+    }
     // Metoda za brisanje fotki, ako je potrebno
     // public CompletableFuture<Void> deletePhoto(Long photoId) {
     //     return CompletableFuture.runAsync(() -> {

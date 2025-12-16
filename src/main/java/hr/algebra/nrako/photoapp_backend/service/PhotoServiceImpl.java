@@ -249,6 +249,8 @@ public class PhotoServiceImpl implements PhotoService, PhotoUploadSubject {
                 if (photo.getFilename() != null && !photo.getFilename().isEmpty()) {
                     storageService.deletePhoto(photo.getFilename());
                     logger.info("Deleted file from Storage: {}", photo.getFilename());
+                    photoRepository.deletePhotoById(firestoreDocumentId);
+                    logger.info("Deleted metadata from Firestore: {}", photo.getFilename());
                 } else {
                     logger.warn("Storage path (filename) not found for photo ID: {}. Skipping Storage deletion.", photoId);
                 }
