@@ -1,87 +1,54 @@
 package hr.algebra.nrako.photoapp_backend.domain;
 
 import com.google.cloud.Timestamp;
+import com.google.cloud.firestore.annotation.Exclude;
+import com.google.cloud.firestore.annotation.IgnoreExtraProperties;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
+@Data
+@NoArgsConstructor // Za Firestore (prazan konstruktor)
+@AllArgsConstructor // Generira konstruktor sa svih 6 polja
+@Builder
+@IgnoreExtraProperties
 public class UserPackageData {
     private String firebaseUid;
     private String userPackage;
     private Timestamp lastPackageChangeDateTime;
     private Timestamp nextEligibleChangeDateTime;
-    private int currentDailyUploadCount; // Broj uploadova za tekući dan
-    public UserPackageData() {
-        // Firestore treba prazan konstruktor
-    }
+    private int currentDailyUploadCount;
     private Timestamp lastUploadDate;
 
-
+    // RUČNO DODAJEMO TVOJ STARI KONSTRUKTOR (da kod ne baca grešku koju si naveo)
     public UserPackageData(String firebaseUid, String userPackage, Timestamp lastPackageChangeDateTime) {
         this.firebaseUid = firebaseUid;
         this.userPackage = userPackage;
         this.lastPackageChangeDateTime = lastPackageChangeDateTime;
-        this.nextEligibleChangeDateTime = Timestamp.ofTimeSecondsAndNanos(
-                lastPackageChangeDateTime.getSeconds() + 86400, // +1 dan
-                lastPackageChangeDateTime.getNanos()
-        );
-        this.currentDailyUploadCount = currentDailyUploadCount;
-        this.lastUploadDate = lastUploadDate;
-
+        if (lastPackageChangeDateTime != null) {
+            this.nextEligibleChangeDateTime = Timestamp.ofTimeSecondsAndNanos(
+                    lastPackageChangeDateTime.getSeconds() + 86400, // +1 dan
+                    lastPackageChangeDateTime.getNanos()
+            );
+        }
+        this.currentDailyUploadCount = 0; // Inicijalizacija
     }
 
-    // Getteri i setteri
-
-    public String getFirebaseUid() {
-        return firebaseUid;
-    }
-
-    public void setFirebaseUid(String firebaseUid) {
-        this.firebaseUid = firebaseUid;
-    }
-
-    public String getUserPackage() {
-        return userPackage;
-    }
-
-    public void setUserPackage(String userPackage) {
-        this.userPackage = userPackage;
-    }
-
-    public Timestamp getLastPackageChangeDateTime() {
-        return lastPackageChangeDateTime;
-    }
-
-    public void setLastPackageChangeDateTime(Timestamp lastPackageChangeDateTime) {
-        this.lastPackageChangeDateTime = lastPackageChangeDateTime;
-    }
-
-    public Timestamp getNextEligibleChangeDateTime() {
-        return nextEligibleChangeDateTime;
-    }
-
-    public void setNextEligibleChangeDateTime(Timestamp nextEligibleChangeDateTime) {
-        this.nextEligibleChangeDateTime = nextEligibleChangeDateTime;
-    }
-
-
+    @Exclude // OBAVEZNO: sprječava InvocationTargetException (L15 grešku)
     public UserPackage getUserPackageEnum() {
-        return UserPackage.valueOf(this.userPackage);
+        if (this.userPackage == null) return null;
+        try {
+            return UserPackage.valueOf(this.userPackage);
+        } catch (Exception e) {
+            return null;
+        }
     }
+
+    @Exclude
     public void setUserPackageEnum(UserPackage userPackage) {
-        this.userPackage = userPackage.name();
+        if (userPackage != null) {
+            this.userPackage = userPackage.name();
+        }
     }
-
-    public int getCurrentDailyUploadCount() {
-        return currentDailyUploadCount;
-    }
-    public void setCurrentDailyUploadCount(int currentDailyUploadCount) {
-        this.currentDailyUploadCount = currentDailyUploadCount;
-    }
-    public Timestamp getLastUploadDate() {
-        return lastUploadDate;
-    }
-    public void setLastUploadDate(Timestamp lastUploadDate) {
-        this.lastUploadDate = lastUploadDate;
-    }
-
-
 }
-

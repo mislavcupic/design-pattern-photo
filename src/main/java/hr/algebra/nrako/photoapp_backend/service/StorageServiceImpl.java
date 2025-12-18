@@ -59,16 +59,27 @@ public class StorageServiceImpl implements StorageService {
     @Override
     public String uploadPhoto(MultipartFile file, String filename) {
         try {
-            BlobId blobId = BlobId.of(storageBucket.getName(), filename); // Koristi injektirani bucketName
-            BlobInfo blobInfo = BlobInfo.newBuilder(blobId).setContentType(file.getContentType()).build();
-            // Koristi injektirani googleCloudStorage za operacije
+            // 1. Definiraj ID
+            BlobId blobId = BlobId.of(storageBucket.getName(), filename);
+
+            // 2. Ručno dohvati tip ili postavi default ako je null
+            String contentType = file.getContentType();
+            if (contentType == null || contentType.isEmpty()) {
+                contentType = "image/jpeg";
+            }
+
+            // 3. OVO JE KLJUČNO: Izradi BlobInfo s eksplicitnim ContentType-om
+            BlobInfo blobInfo = BlobInfo.newBuilder(blobId)
+                    .setContentType(contentType)
+                    .build();
+
+            // 4. KORISTI OVU VERZIJU METODE:
+            // storage.create(blobInfo, content, options)
             googleCloudStorage.create(blobInfo, file.getBytes());
 
-            logger.info("Uploaded {} to GCS.", filename);
             return filename;
         } catch (IOException e) {
-            logger.error("Error uploading file {}: {}", filename, e.getMessage(), e);
-            throw new RuntimeException("Failed to upload file to Google Cloud Storage", e);
+            throw new RuntimeException("Failed to upload to GCS", e);
         }
     }
 
