@@ -5,6 +5,7 @@ import io.micrometer.core.instrument.Counter;
 import io.micrometer.core.instrument.Timer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.context.annotation.Profile;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
@@ -18,6 +19,7 @@ import java.util.Locale;
 import java.util.Optional;
 
 @Service
+@Profile("!test")
 public class MetricsExportService {
 
     private static final Logger logger = LoggerFactory.getLogger(MetricsExportService.class);

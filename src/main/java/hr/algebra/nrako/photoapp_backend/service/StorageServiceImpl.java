@@ -64,6 +64,9 @@ public class StorageServiceImpl implements StorageService {
 
             // 2. Ručno dohvati tip ili postavi default ako je null
             String contentType = file.getContentType();
+            logger.info("🔍 DEBUG - file.getContentType(): {}", contentType);
+            logger.info("🔍 DEBUG - file.getOriginalFilename(): {}", file.getOriginalFilename());
+            logger.info("🔍 DEBUG - file.getSize(): {}", file.getSize());
             if (contentType == null || contentType.isEmpty()) {
                 contentType = "image/jpeg";
             }

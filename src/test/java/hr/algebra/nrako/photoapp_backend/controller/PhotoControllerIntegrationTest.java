@@ -2,11 +2,12 @@ package hr.algebra.nrako.photoapp_backend.controller;
 
 import com.google.cloud.Timestamp;
 import com.google.cloud.firestore.Firestore;
+import com.google.cloud.storage.BlobInfo;
 import com.google.cloud.storage.Bucket;
+import com.google.cloud.storage.Storage;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseToken;
 import hr.algebra.nrako.photoapp_backend.domain.Photo;
-import hr.algebra.nrako.photoapp_backend.domain.UserPackageData;
 import hr.algebra.nrako.photoapp_backend.repository.PhotoRepository;
 import hr.algebra.nrako.photoapp_backend.repository.UserPackageDataRepository;
 import org.junit.jupiter.api.*;
@@ -16,8 +17,10 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockMultipartFile;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.ActiveProfiles;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 
@@ -44,7 +47,8 @@ public class PhotoControllerIntegrationTest {
     @Autowired private PhotoRepository photoRepository;
     @Autowired private UserPackageDataRepository userPackageDataRepository;
     @Autowired private Bucket storageBucket;
-
+    @MockitoBean
+    private Storage googleCloudStorage;
     private final String testUserUid = "test_user_123";
 
     @BeforeEach
@@ -79,27 +83,36 @@ public class PhotoControllerIntegrationTest {
     @Test
     @Order(3)
     void testUploadPhoto() throws Exception {
-        // 1. Kreiraj file, ali pazi na redoslijed parametara
+        String testUserUid = "test_user_123";
+
+        // Priprema mockova
+        Mockito.when(storageBucket.getName()).thenReturn("test-bucket");
+        mockAuth(testUserUid, "REGISTERED");
+
+        // Kreiranje datoteke s eksplicitnim MIME tipom "image/jpeg"
         MockMultipartFile file = new MockMultipartFile(
-                "file",           // ime parametra u kontroleru
-                "test.jpg",       // original filename
-                "image/jpeg",     // content type (MORA BITI STRING "image/jpeg")
-                "image content".getBytes()
+                "file",
+                "test-photo.jpg",
+                MediaType.IMAGE_JPEG_VALUE,
+                "test image content".getBytes()
         );
 
         mockMvc.perform(multipart("/api/photos/upload")
                         .file(file)
-                        // 2. DODAJ OVO RUČNO - prisili multipart/form-data
-                        .contentType(MediaType.MULTIPART_FORM_DATA)
-                        .param("description", "D")
-                        .param("uid", testUserUid)
-                        .param("hashtags", "#test #fun")
+                        .param("description", "Integration test description")
+                        .param("hashtags", "#test")
                         .param("isPrivate", "false")
                         .with(csrf())
-                        .with(user(testUserUid).roles("USER"))) // Koristi testUserUid
+                        // Koristimo .authorities jer tvoj filter puni SecurityContext s "REGISTERED"
+                        .with(user(testUserUid).authorities(new SimpleGrantedAuthority("REGISTERED"))))
                 .andExpect(status().isOk());
-    }
 
+        // Provjera da je servis stvarno pozvan (opcionalno, ali dobro za test)
+        Mockito.verify(googleCloudStorage, Mockito.atLeastOnce()).create(
+                Mockito.any(BlobInfo.class),
+                Mockito.any(byte[].class)
+        );
+    }
     @Test @Order(4)
     void testTogglePrivacy() throws Exception {
         String testUid = "test_user_123"; // UID koji koristiš
