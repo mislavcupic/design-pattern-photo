@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.concurrent.CompletableFuture;
 
 @Service
@@ -21,26 +22,44 @@ public class AdminServiceImpl implements AdminService {
     public AdminServiceImpl(Firestore firestore) {
         this.firestore = firestore;
     }
+//funkcionalno
+@Override
+public CompletableFuture<List<User>> getAllUsers() {
+    return CompletableFuture.supplyAsync(() -> {
+        try {
+            QuerySnapshot documents = firestore.collection("users").get().get();
 
-    @Override
-    public CompletableFuture<List<User>> getAllUsers() {
-        return CompletableFuture.supplyAsync(() -> {
-            List<User> users = new ArrayList<>();
-            CollectionReference usersCollection = firestore.collection("users");
-            ApiFuture<QuerySnapshot> future = usersCollection.get();
-            try {
-                QuerySnapshot documents = future.get();
-                for (DocumentSnapshot document : documents) {
-                    User user = document.toObject(User.class);
-                    users.add(user);
-                }
-                return users;
-            } catch (Exception e) {
-                e.printStackTrace();
-                return new ArrayList<>();
-            }
-        });
-    }
+            // FUNKCIONALNI STIL:
+            return documents.getDocuments().stream()      // 1. Primjer: Stream API
+                    .map(doc -> doc.toObject(User.class)) // 2. Primjer: Mapiranje (Method reference)
+                    .filter(Objects::nonNull)             // 3. Primjer: Filtriranje
+                    .toList();                            // 4. Primjer: Terminalna operacija
+
+        } catch (Exception e) {
+            throw new RuntimeException("Greška", e);
+        }
+    });
+}
+//inicijalno postavljena metoda, bez functional programming priče
+//    @Override
+//    public CompletableFuture<List<User>> getAllUsers() {
+//        return CompletableFuture.supplyAsync(() -> {
+//            List<User> users = new ArrayList<>();
+//            CollectionReference usersCollection = firestore.collection("users");
+//            ApiFuture<QuerySnapshot> future = usersCollection.get();
+//            try {
+//                QuerySnapshot documents = future.get();
+//                for (DocumentSnapshot document : documents) {
+//                    User user = document.toObject(User.class);
+//                    users.add(user);
+//                }
+//                return users;
+//            } catch (Exception e) {
+//                e.printStackTrace();
+//                return new ArrayList<>();
+//            }
+//        });
+//    }
 
     @Override
     public CompletableFuture<User> getUserByUid(String uid) {
