@@ -4,6 +4,7 @@ import com.google.cloud.NoCredentials;
 import com.google.cloud.firestore.Firestore;
 import com.google.cloud.firestore.FirestoreOptions;
 import com.google.cloud.storage.Bucket;
+import com.google.cloud.storage.BucketInfo;
 import com.google.cloud.storage.Storage;
 import com.google.cloud.storage.StorageOptions;
 import com.google.firebase.auth.FirebaseAuth;
@@ -17,10 +18,13 @@ import org.springframework.context.annotation.Profile;
 @Profile("test")
 public class FirebaseTestConfig {
 
+    private static final String PROJECT_ID = "demo-project";
+    private static final String BUCKET_NAME = "demo-project.appspot.com";
+
     static {
         System.setProperty("FIRESTORE_EMULATOR_HOST", "localhost:8085");
         System.setProperty("FIREBASE_STORAGE_EMULATOR_HOST", "localhost:8083");
-        System.setProperty("GCLOUD_PROJECT", "demo-project");
+        System.setProperty("GCLOUD_PROJECT", PROJECT_ID);
     }
 
     @Bean
@@ -33,7 +37,7 @@ public class FirebaseTestConfig {
     @Primary
     public Firestore firestore() {
         return FirestoreOptions.newBuilder()
-                .setProjectId("demo-project")
+                .setProjectId(PROJECT_ID)
                 .setHost("localhost:8085")
                 .setCredentials(NoCredentials.getInstance())
                 .build()
@@ -44,8 +48,8 @@ public class FirebaseTestConfig {
     @Primary
     public Storage googleCloudStorage() {
         return StorageOptions.newBuilder()
-                .setProjectId("demo-project")
-                .setHost("http://localhost:8083")
+                .setProjectId(PROJECT_ID)
+                .setHost("http://localhost:8083") // ✅ http:// prefiks obavezan
                 .setCredentials(NoCredentials.getInstance())
                 .build()
                 .getService();
@@ -54,20 +58,25 @@ public class FirebaseTestConfig {
     @Bean
     @Primary
     public Bucket storageBucket(Storage storage) {
-        String bucketName = "demo-test.appspot.com";
         try {
-            // Pokušaj dohvatiti bucket
-            Bucket bucket = storage.get(bucketName);
-            if (bucket != null) return bucket;
+            // ✅ Pokušaj kreirati bucket ako ne postoji
+            Bucket bucket = storage.get(BUCKET_NAME);
 
-            // Ako bucket ne postoji, a emulator ne dopušta create (501),
-            // vraćamo mock objekt kako se Spring Context ne bi srušio
-            Bucket mockBucket = Mockito.mock(Bucket.class);
-            Mockito.when(mockBucket.getName()).thenReturn(bucketName);
-            return mockBucket;
+            if (bucket == null || !bucket.exists()) {
+                System.out.println("📦 Creating test bucket: " + BUCKET_NAME);
+                bucket = storage.create(BucketInfo.of(BUCKET_NAME));
+            }
+
+            System.out.println("✅ Storage bucket initialized: " + BUCKET_NAME);
+            return bucket;
+
         } catch (Exception e) {
-            // U slučaju "501 Not Implemented", vraćamo mock
-            return Mockito.mock(Bucket.class);
+            // ✅ Ako emulator nije spreman, vrati mock bucket
+            System.err.println("⚠️ Storage emulator not ready, using mock bucket: " + e.getMessage());
+            Bucket mockBucket = Mockito.mock(Bucket.class);
+            Mockito.when(mockBucket.getName()).thenReturn(BUCKET_NAME);
+            Mockito.when(mockBucket.exists()).thenReturn(true);
+            return mockBucket;
         }
     }
 }

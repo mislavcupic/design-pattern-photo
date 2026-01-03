@@ -90,6 +90,10 @@ public class PhotoController {
             @RequestParam("description") String description,
             @RequestParam("hashtags") String hashtags,
             @RequestParam("isPrivate") Boolean isPrivate) throws ExecutionException, InterruptedException {
+        if (file == null || file.isEmpty()) {
+            logger.warn("Upload rejected - file is null or empty");
+            return ResponseEntity.badRequest().build();  // 400 Bad Request
+        }
 
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String uid = extractUserUid(authentication); // ✅ ZAMIJENJEN CAST

@@ -1,23 +1,26 @@
 {
-  "firestore": {
-    "rules": "firestore.rules"
+  "emulators": {
+    "auth": {
+      "port": 9099,
+      "host": "localhost"
+    },
+    "firestore": {
+      "port": 8085,
+      "host": "localhost"
+    },
+    "storage": {
+      "port": 8083,
+      "host": "localhost"
+    },
+    "ui": {
+      "enabled": true,
+      "port": 4000
+    }
   },
   "storage": {
     "rules": "storage.rules"
   },
-  "emulators": {
-    "firestore": {
-      "port": 8085
-    },
-    "ui": {
-      "enabled": true
-    },
-    "singleProjectMode": true,
-    "storage": {
-      "port": 8083
-    },
-    "auth": {
-      "port": 9099
-    }
+  "firestore": {
+    "rules": "firestore.rules"
   }
 }

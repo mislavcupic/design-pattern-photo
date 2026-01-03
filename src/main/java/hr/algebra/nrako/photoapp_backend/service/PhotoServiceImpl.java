@@ -88,27 +88,44 @@ public class PhotoServiceImpl implements PhotoService, PhotoUploadSubject {
 
     @Override
     public CompletableFuture<Photo> uploadPhoto(MultipartFile file, String description, String hashtags, String uid, String fileUrl, Boolean isPrivate) {
-        return CompletableFuture.supplyAsync(() -> "userPhotos/" + uid + "/" + System.currentTimeMillis() + "_" + file.getOriginalFilename())
-                .thenApply(fullPath -> {
-                    storageService.uploadPhoto(file, fullPath);
-                    return fullPath;
-                })
-                .thenApply(fullPath -> {
-                    Photo photo = new Photo();
-                    photo.setId(System.currentTimeMillis());
-                    photo.setFilename(fullPath);
-                    photo.setDescription(description);
-                    photo.setHashtags(hashtags);
-                    photo.setUploadedBy(uid);
-                    photo.setUploadDate(Timestamp.now());
-                    photo.setIsPrivate(isPrivate);
-                    photo.setFileUrl(generatePublicUrl(fullPath));
-                    photoRepository.savePhoto(photo);
-                    notifyObservers(uid);
-                    return photo;
-                });
-    }
+        try {
+            // 1. IZVUCI PODATKE ODMAH (Dok je request živ)
+            byte[] fileBytes = file.getBytes();
+            String contentType = file.getContentType();
+            String originalFilename = file.getOriginalFilename();
 
+            // 2. Pokreni asinkroni proces
+            return CompletableFuture.supplyAsync(() -> {
+                        // Generiraj putanju unutar niti
+                        String fullPath = "userPhotos/" + uid + "/" + System.currentTimeMillis() + "_" + originalFilename;
+
+                        // Koristi novu metodu sa bajtovima (rješava Missing Content Type)
+                        storageService.uploadPhoto(fileBytes, fullPath, contentType);
+
+                        return fullPath;
+                    }) // Koristi svoj executor ako ga imaš, ako ne, obriši ovaj parametar
+                    .thenApply(fullPath -> {
+                        // 3. TVOJA ORIGINALNA LOGIKA (ostaje netaknuta)
+                        Photo photo = new Photo();
+                        photo.setId(System.currentTimeMillis());
+                        photo.setFilename(fullPath);
+                        photo.setDescription(description);
+                        photo.setHashtags(hashtags);
+                        photo.setUploadedBy(uid);
+                        photo.setUploadDate(Timestamp.now());
+                        photo.setIsPrivate(isPrivate);
+
+                        // Tvoje specifične metode
+                        photo.setFileUrl(generatePublicUrl(fullPath));
+                        photoRepository.savePhoto(photo);
+                        notifyObservers(uid);
+
+                        return photo;
+                    });
+        } catch (IOException e) {
+            throw new RuntimeException("Greška pri čitanju datoteke: " + e.getMessage());
+        }
+    }
     private String generatePublicUrl(String path) {
         try {
             String encoded = URLEncoder.encode(path, StandardCharsets.UTF_8.toString()).replace("+", "%20");

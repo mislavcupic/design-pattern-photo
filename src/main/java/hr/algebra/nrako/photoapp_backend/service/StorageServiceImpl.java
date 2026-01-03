@@ -1,15 +1,17 @@
 package hr.algebra.nrako.photoapp_backend.service;
 
+import com.google.cloud.WriteChannel;
 import com.google.cloud.storage.*;
 import jakarta.annotation.PreDestroy;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired; // Dodaj @Autowired
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.ByteBuffer;
 import java.nio.channels.Channels;
 
 @Service
@@ -33,11 +35,23 @@ public class StorageServiceImpl implements StorageService {
     // Konstruktor za Dependency Injection
     // Spring će automatski pronaći i injektirati beane tipa Bucket i Storage
     // Koji bean će se injektirati ovisi o aktivnom profilu (test vs produkcija)
-    public StorageServiceImpl(Bucket storageBucket, Storage googleCloudStorage) {
-        this.storageBucket = storageBucket;
+//    public StorageServiceImpl(Bucket storageBucket, Storage googleCloudStorage) {
+//        this.storageBucket = storageBucket;
+//        this.googleCloudStorage = googleCloudStorage;
+//        logger.info("StorageServiceImpl: Bucket i Google Cloud Storage klijent injektirani putem konstruktora.");
+//        logger.info("Injected Bucket Name (if available from Bucket object): {}", storageBucket.getName());
+//    }
+    @Autowired // Spring će ovdje ubaciti @Primary Bean iz tvoje konfiguracije
+    public StorageServiceImpl(Storage googleCloudStorage, Bucket storageBucket) {
         this.googleCloudStorage = googleCloudStorage;
-        logger.info("StorageServiceImpl: Bucket i Google Cloud Storage klijent injektirani putem konstruktora.");
-        logger.info("Injected Bucket Name (if available from Bucket object): {}", storageBucket.getName());
+        this.storageBucket = storageBucket;
+
+        // DEBUG: Provjeri je li bucket stvarno stigao
+        if (this.storageBucket == null) {
+            System.out.println("DEBUG ERROR: storageBucket je NULL u servisu!");
+        } else {
+            System.out.println("DEBUG SUCCESS: Injektiran bucket: " + storageBucket.getName());
+        }
     }
 
     // Ukloni @PostConstruct metodu jer se inicijalizacija sada radi preko DI
@@ -56,33 +70,44 @@ public class StorageServiceImpl implements StorageService {
     }
 
 
+
     @Override
     public String uploadPhoto(MultipartFile file, String filename) {
         try {
-            // 1. Definiraj ID
-            BlobId blobId = BlobId.of(storageBucket.getName(), filename);
+            // Stara metoda samo pretvori file u bajtove i zove novu metodu
+            return uploadPhoto(file.getBytes(), filename, file.getContentType());
+        } catch (IOException e) {
+            throw new RuntimeException("Greška pri čitanju datoteke", e);
+        }
+    }
 
-            // 2. Ručno dohvati tip ili postavi default ako je null
-            String contentType = file.getContentType();
-            logger.info("🔍 DEBUG - file.getContentType(): {}", contentType);
-            logger.info("🔍 DEBUG - file.getOriginalFilename(): {}", file.getOriginalFilename());
-            logger.info("🔍 DEBUG - file.getSize(): {}", file.getSize());
-            if (contentType == null || contentType.isEmpty()) {
+    @Override
+    public String uploadPhoto(byte[] content, String filename, String contentType) {
+        try {
+            String bucketName = storageBucket.getName();
+
+            // Emulator zahtijeva validan Content-Type
+            if (contentType == null || contentType.trim().isEmpty()) {
                 contentType = "image/jpeg";
             }
 
-            // 3. OVO JE KLJUČNO: Izradi BlobInfo s eksplicitnim ContentType-om
+            BlobId blobId = BlobId.of(bucketName, filename);
             BlobInfo blobInfo = BlobInfo.newBuilder(blobId)
                     .setContentType(contentType)
                     .build();
 
-            // 4. KORISTI OVU VERZIJU METODE:
-            // storage.create(blobInfo, content, options)
-            googleCloudStorage.create(blobInfo, file.getBytes());
+            // ✅ RJEŠENJE: Koristi WriteChannel API umjesto create()
+            // Firebase Storage emulator ima bug sa storage.create() ali RADI sa writer()
+            try (WriteChannel writer = googleCloudStorage.writer(blobInfo)) {
+                writer.write(ByteBuffer.wrap(content));
+            }
 
+            logger.info("✅ File uploaded successfully: {}", filename);
             return filename;
-        } catch (IOException e) {
-            throw new RuntimeException("Failed to upload to GCS", e);
+
+        } catch (Exception e) {
+            logger.error("❌ GCS Upload Error: {}", e.getMessage());
+            throw new RuntimeException("GCS Upload failed", e);
         }
     }
 
