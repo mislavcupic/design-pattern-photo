@@ -2,13 +2,12 @@ services:
   # BACKEND: Spring Boot (direktno u rootu)
   backend:
     build:
-      context: .  # Točka znači: "ovdje je moj Dockerfile i moj src"
+      context: .  # "ovdje je moj Dockerfile i moj src"
       dockerfile: Dockerfile
     ports:
       - "8080:8080"
-    volumes:
-      # Pazi na putanju do ključa ako je src u rootu
-      - ./src/main/resources/firebase-key.json:/app/config/serviceAccount.json
+#    volumes:
+#      - ./src/main/resources/serviceAccount.json:/app/config/serviceAccount.json
     environment:
       - GOOGLE_APPLICATION_CREDENTIALS=/app/config/serviceAccount.json
     networks:
