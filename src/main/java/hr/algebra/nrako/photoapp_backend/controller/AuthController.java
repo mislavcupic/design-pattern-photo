@@ -27,6 +27,7 @@ import java.util.concurrent.ExecutionException;
 @Data
 public class AuthController {
 
+    public static final String BEARER = "Bearer ";
     private final UserService userService;
     private final AsyncHelperAuth asyncHelperAuth;
     private final FirebaseService firebaseService;
@@ -67,7 +68,7 @@ public class AuthController {
             @RequestHeader("Authorization") String authorization,
             @RequestBody UpdateUserRequest request) {
 
-        String idToken = authorization.replace("Bearer ", "");
+        String idToken = authorization.replace(BEARER, "");
 
         try {
             FirebaseToken decodedToken = FirebaseAuth.getInstance().verifyIdToken(idToken);
@@ -89,7 +90,7 @@ public class AuthController {
     @DeleteMapping("/delete")
     @PreAuthorize("isAuthenticated() or hasRole('ADMIN') or hasRole('REGISTERED')")
     public ResponseEntity<String> deleteAccount(@RequestHeader("Authorization") String authHeader) {
-        String idToken = authHeader.replace("Bearer ", "");
+        String idToken = authHeader.replace(BEARER, "");
 
         try {
             asyncHelperAuth.deleteAccount(idToken); // Now synchronous (void or boolean)
@@ -103,7 +104,7 @@ public class AuthController {
     @PreAuthorize("isAuthenticated()")
     public ResponseEntity<String> logout(@RequestHeader("Authorization") String authHeader) {
         try {
-            String idToken = authHeader.replace("Bearer ", "");
+            String idToken = authHeader.replace(BEARER, "");
             asyncHelperAuth.logout(idToken); // Now synchronous
             return ResponseEntity.ok("Odjavili ste se");
         } catch (Exception e) {

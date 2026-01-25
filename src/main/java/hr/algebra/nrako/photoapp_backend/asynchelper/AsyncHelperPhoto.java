@@ -3,6 +3,8 @@ package hr.algebra.nrako.photoapp_backend.asynchelper;
 import hr.algebra.nrako.photoapp_backend.domain.Photo;
 import hr.algebra.nrako.photoapp_backend.service.PhotoService;
 import lombok.RequiredArgsConstructor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -15,6 +17,7 @@ import java.util.concurrent.ExecutionException;
 @RequiredArgsConstructor
 public class AsyncHelperPhoto {
     private final PhotoService photoService;
+    private Logger log = LoggerFactory.getLogger(AsyncHelperPhoto.class);
 
     public Photo uploadPhoto(MultipartFile file, String description, String hashtags, String uid, String fileUrl, Boolean isPrivate) throws ExecutionException, InterruptedException {
         return photoService.uploadPhoto(file, description, hashtags, uid, fileUrl, isPrivate).get();
@@ -29,7 +32,7 @@ public class AsyncHelperPhoto {
     }
 
     public List<Photo> getLast10Photos() throws ExecutionException, InterruptedException {
-        System.out.println("bla " + photoService.getLast10Photos().get().size());
+        log.error("Error {}",photoService.getLast10Photos().get().size());
         return photoService.getLast10Photos().get();
     }
 
@@ -55,9 +58,7 @@ public class AsyncHelperPhoto {
         return photoService.togglePhotoPrivacy(photoId, authenticatedFirebaseUid).get();
     }
 
-    // **************** KLJUČNE PROMJENE OVDJE ****************
-    // Ove metode SADA vraćaju CompletableFuture, kao što PhotoService vraća.
-    // Uklonjen je .get() poziv.
+
 
     public CompletableFuture<byte[]> downloadPhotoWithFilters(
             Long photoId,
@@ -81,8 +82,5 @@ public class AsyncHelperPhoto {
         return photoService.searchPhotos(searchTerm, uploadedByUid, requesterUid, isAdmin);
     }
 
-//    public List<Photo> getPhotosByUser(String requestedUid, String authenticatedUid, boolean isAdmin) throws ExecutionException, InterruptedException {
-//        // Poziva service metodu koja će imati logiku filtriranja
-//        return photoService.getPhotosByUser(requestedUid).get();
-//    }
+
 }

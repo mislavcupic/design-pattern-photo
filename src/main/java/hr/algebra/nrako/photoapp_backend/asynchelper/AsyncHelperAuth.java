@@ -6,7 +6,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
-import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 
 @Service
@@ -43,12 +42,5 @@ public class AsyncHelperAuth {
         return userService.deleteAccount(idToken).get();
     }
 
-    public void setAdminUserType(String firebaseUid)
-    {
-        return;
-    }
-    public void setUserType(String firebaseUid, String userType)
-    {
-        userService.setUserType(firebaseUid, userType);
-    }
+
 }

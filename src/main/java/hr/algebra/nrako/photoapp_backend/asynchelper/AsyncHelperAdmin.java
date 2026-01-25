@@ -6,8 +6,8 @@ import hr.algebra.nrako.photoapp_backend.service.AdminService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.Collections;
 import java.util.List;
-import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 
 @Service
@@ -30,6 +30,11 @@ public class AsyncHelperAdmin {
 
     public UserPackageData getUserPackageByUid(String uid) throws ExecutionException, InterruptedException {
         return adminService.getUserPackageByUid(uid).get();
+    }
+
+    public List<Object> updateUserRole(String uid, String newRole) throws ExecutionException, InterruptedException {
+        // Pozivamo implementaciju i čekamo rezultat
+        return Collections.singletonList(adminService.updateUserRole(uid, newRole).get());
     }
 }
 

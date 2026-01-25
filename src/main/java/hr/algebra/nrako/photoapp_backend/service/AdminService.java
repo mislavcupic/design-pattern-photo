@@ -11,4 +11,6 @@ public interface AdminService {
     CompletableFuture<User> getUserByUid(String uid);
     CompletableFuture<List<UserPackageData>> getAllUserPackages();
     CompletableFuture<UserPackageData> getUserPackageByUid(String uid);
+
+    CompletableFuture<List<Object>> updateUserRole(String uid, String newRole);
 }

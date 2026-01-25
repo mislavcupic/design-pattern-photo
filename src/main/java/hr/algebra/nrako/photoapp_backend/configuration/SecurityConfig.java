@@ -53,6 +53,7 @@ public class SecurityConfig implements WebMvcConfigurer {
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests((auth) -> auth
                         // 1. Najspecifičnije i posebne HTTP metode (OPTIONS uvijek prvi za CORS)
+                        .requestMatchers("/api/admin/**").hasRole("ADMIN")
                         .requestMatchers(HttpMethod.DELETE, "/auth/delete").hasAnyRole("REGISTERED", "ADMIN") // Samo registrirani korisnici ili admin mogu brisati svoj account
                         .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
                         .requestMatchers("/error").permitAll() // Greška endpoint
@@ -71,6 +72,7 @@ public class SecurityConfig implements WebMvcConfigurer {
                         .requestMatchers("/api/public/**").permitAll() // Ako su javne fotografije
                         .requestMatchers("/api/photos/last10").permitAll() // Ako su zadnjih 10 javne
                         .requestMatchers(API_PHOTOS_ID).permitAll() // Ako je /api/photos/{id} javna (za view, ne download)
+
 
                         // 4. Sve ostalo zahtijeva autentifikaciju
                         .anyRequest().authenticated()

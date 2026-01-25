@@ -1,0 +1,11 @@
+/* Možeš dodati dodatne stilove ovdje ako je potrebno */
+.admin-panel .card-header {
+    border-bottom: 1px solid rgba(0,0,0,.125);
+    padding: 1rem 1.25rem;
+    background-color: white; /* Osigurava bijelu pozadinu zaglavlja */
+}
+
+.admin-panel .card-title {
+    font-size: 1.2rem;
+    margin-bottom: 0;
+}

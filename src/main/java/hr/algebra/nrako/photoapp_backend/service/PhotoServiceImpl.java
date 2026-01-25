@@ -1,6 +1,7 @@
 package hr.algebra.nrako.photoapp_backend.service;
 
 import com.google.cloud.Timestamp;
+import com.google.cloud.firestore.QueryDocumentSnapshot;
 import hr.algebra.nrako.photoapp_backend.domain.ImageProcessingOptions;
 import hr.algebra.nrako.photoapp_backend.domain.Photo;
 import hr.algebra.nrako.photoapp_backend.observer.PhotoUploadObserver;
@@ -34,6 +35,7 @@ public class PhotoServiceImpl implements PhotoService, PhotoUploadSubject {
 
     // Koristimo CopyOnWriteArrayList radi thread-safe funkcionalne iteracije
     private final List<PhotoUploadObserver> observers = new CopyOnWriteArrayList<>();
+    private boolean isAdmin;
 
     public PhotoServiceImpl(PhotoRepository photoRepository, StorageService storageService,
                             ImageProcessingService imageProcessingService,
@@ -72,40 +74,38 @@ public class PhotoServiceImpl implements PhotoService, PhotoUploadSubject {
 
     // 1. METODA: notifyObservers
     // prije promjene u funkcionalno programiranje
-    /*
+
     @Override
     public void notifyObservers(String userId) {
         for (PhotoUploadObserver observer : observers) {
             observer.onPhotoUploaded(userId);
         }
     }
-    */
+
     // funkcionalno programiranje
-    @Override
+   /* @Override
     public void notifyObservers(String userId) {
         observers.forEach(observer -> observer.onPhotoUploaded(userId));
     }
-
+*/
     @Override
     public CompletableFuture<Photo> uploadPhoto(MultipartFile file, String description, String hashtags, String uid, String fileUrl, Boolean isPrivate) {
         try {
-            // 1. IZVUCI PODATKE ODMAH (Dok je request živ)
             byte[] fileBytes = file.getBytes();
             String contentType = file.getContentType();
             String originalFilename = file.getOriginalFilename();
 
-            // 2. Pokreni asinkroni proces
             return CompletableFuture.supplyAsync(() -> {
-                        // Generiraj putanju unutar niti
+                        // Generiram putanju unutar niti
                         String fullPath = "userPhotos/" + uid + "/" + System.currentTimeMillis() + "_" + originalFilename;
 
-                        // Koristi novu metodu sa bajtovima (rješava Missing Content Type)
+                        // Koristim novu metodu sa bajtovima (rješava Missing Content Type)
                         storageService.uploadPhoto(fileBytes, fullPath, contentType);
 
                         return fullPath;
-                    }) // Koristi svoj executor ako ga imaš, ako ne, obriši ovaj parametar
+                    }) // Koristim svoj executor ako ga imaš, ako ne, obriši ovaj parametar
                     .thenApply(fullPath -> {
-                        // 3. TVOJA ORIGINALNA LOGIKA (ostaje netaknuta)
+
                         Photo photo = new Photo();
                         photo.setId(System.currentTimeMillis());
                         photo.setFilename(fullPath);
@@ -146,9 +146,9 @@ public class PhotoServiceImpl implements PhotoService, PhotoUploadSubject {
                 );
     }
 
-    // 2. METODA: getPhotoDetails
+
     // prije promjene u funkcionalno programiranje
-    /*
+
     @Override
     public CompletableFuture<Photo> getPhotoDetails(Long id) {
         return CompletableFuture.supplyAsync(() -> {
@@ -161,7 +161,7 @@ public class PhotoServiceImpl implements PhotoService, PhotoUploadSubject {
             return photo;
         });
     }
-    */
+    /*
     // funkcionalno programiranje
     @Override
     public CompletableFuture<Photo> getPhotoDetails(Long id) {
@@ -173,7 +173,7 @@ public class PhotoServiceImpl implements PhotoService, PhotoUploadSubject {
                 .thenApply(opt -> opt.filter(p -> !p.getIsPrivate() || p.getUploadedBy().equals(authUid) || isAdmin)
                         .orElseThrow(() -> new RuntimeException("Unauthorized or Photo not found")));
     }
-
+*/
     @Override
     public CompletableFuture<List<Photo>> getLast10Photos() {
         return photoRepository.findTop10ByOrderByUploadDateDesc()
@@ -182,9 +182,9 @@ public class PhotoServiceImpl implements PhotoService, PhotoUploadSubject {
                         .collect(Collectors.toList()));
     }
 
-    // 3. METODA: updatePhotoMetadata
+
     // prije promjene u funkcionalno programiranje
-    /*
+
     @Override
     public CompletableFuture<Photo> updatePhotoMetadata(Long photoId, String newDescription, String newHashtags, String uid, Boolean isPrivate, boolean isAdmin) {
         return CompletableFuture.supplyAsync(() -> {
@@ -197,7 +197,7 @@ public class PhotoServiceImpl implements PhotoService, PhotoUploadSubject {
             return photo;
         });
     }
-    */
+    /*
     // funkcionalno programiranje
     @Override
     public CompletableFuture<Photo> updatePhotoMetadata(Long photoId, String newDesc, String newTags, String uid, Boolean isPriv, boolean isAdmin) {
@@ -222,10 +222,10 @@ public class PhotoServiceImpl implements PhotoService, PhotoUploadSubject {
                         .collect(Collectors.joining(", ")))
                 .orElse("");
     }
-
+*/
     // 4. METODA: deletePhoto
     // prije promjene u funkcionalno programiranje
-    /*
+
     @Override
     public CompletableFuture<Void> deletePhoto(Long photoId, String requesterUid, boolean isAdmin) {
         return CompletableFuture.runAsync(() -> {
@@ -235,7 +235,7 @@ public class PhotoServiceImpl implements PhotoService, PhotoUploadSubject {
             } catch (Exception e) { throw new RuntimeException(e); }
         });
     }
-    */
+    /*
     // funkcionalno programiranje
     @Override
     public CompletableFuture<Void> deletePhoto(Long photoId, String requesterUid, boolean isAdmin) {
@@ -248,7 +248,7 @@ public class PhotoServiceImpl implements PhotoService, PhotoUploadSubject {
                         }, () -> { throw new RuntimeException("Delete failed: Unauthorized or Not Found"); })
         );
     }
-
+*/
     @Override
     public CompletableFuture<List<Photo>> getAllPhotos() {
         return photoRepository.getAllPhotos()
@@ -259,34 +259,57 @@ public class PhotoServiceImpl implements PhotoService, PhotoUploadSubject {
 
     // 5. METODA: togglePhotoPrivacy
     // prije promjene u funkcionalno programiranje
-    /*
     @Override
     public CompletableFuture<Boolean> togglePhotoPrivacy(String photoId, String authenticatedFirebaseUid) {
+        // 1. UNIT: supplyAsync pokreće asinkroni zadatak (Impure)
+        return CompletableFuture.supplyAsync(() -> photoRepository.getPhotoById(photoId))
+                // 2. MONADA: Optional rješava problem NULL-a bez if-ova (Eliminacija NPE)
+                .thenApply(Optional::ofNullable)
+                // 3. PURE LOGIKA: filter koristi authenticatedFirebaseUid (iz Closure-a)
+                // Ovdje isAdmin mora biti polje klase (npr. iz AdminServicea) da bi radilo bez mijenjanja interfacea
+                .thenApply(opt -> opt.filter(p -> p.getUploadedBy().equals(authenticatedFirebaseUid) || this.isAdmin))
+                // 4. BIND/MAP: Ako slika prođe filter, mijenjamo stanje i spremamo (Impure Side Effect)
+                .thenApply(opt -> opt.map(p -> {
+                    p.setIsPrivate(!p.getIsPrivate());
+                    photoRepository.savePhoto(p);
+                    return true;
+                }).orElse(false)); // Siguran izlaz: ako bilo što gore zakaže, vraća false
+    }
+    /*
+    @Override
+    public CompletableFuture<Boolean> togglePhotoPrivacy(String photoId, String uid, boolean isAdmin) {
         return CompletableFuture.supplyAsync(() -> {
             Photo photo = photoRepository.getPhotoById(photoId);
+
+            // PROBLEM 1: Ručna provjera null-a (NPE rizik koji Optional rješava)
             if (photo == null) return false;
+
+            // PROBLEM 2: Sada 'uid' i 'isAdmin' rade jer su gore u parametrima
+            // Ovo je sada Closure - lambda "zarobljava" ove varijable
             if (!photo.getUploadedBy().equals(uid) && !isAdmin) return false;
+
+            // IMPURE: Mutacija stanja (Side effect)
             photo.setIsPrivate(!photo.getIsPrivate());
             photoRepository.savePhoto(photo);
+
             return true;
         });
-    }
-    */
+    } */
     // funkcionalno programiranje
-    @Override
-    public CompletableFuture<Boolean> togglePhotoPrivacy(String photoId, String authUid) {
-        String currentUid = getAuthUid();
-        boolean isAdmin = isCurrentUserAdmin();
-
-        return CompletableFuture.supplyAsync(() -> photoRepository.getPhotoById(photoId))
-                .thenApply(Optional::ofNullable)
-                .thenApply(opt -> opt.filter(p -> p.getUploadedBy().equals(currentUid) || isAdmin)
-                        .map(p -> {
-                            p.setIsPrivate(!p.getIsPrivate());
-                            photoRepository.savePhoto(p);
-                            return true;
-                        }).orElse(false));
-    }
+//    @Override
+//    public CompletableFuture<Boolean> togglePhotoPrivacy(String photoId, String authUid) {
+//        String currentUid = getAuthUid();
+//        boolean isAdmin = isCurrentUserAdmin();
+//
+//        return CompletableFuture.supplyAsync(() -> photoRepository.getPhotoById(photoId))
+//                .thenApply(Optional::ofNullable)
+//                .thenApply(opt -> opt.filter(p -> p.getUploadedBy().equals(currentUid) || isAdmin)
+//                        .map(p -> {
+//                            p.setIsPrivate(!p.getIsPrivate());
+//                            photoRepository.savePhoto(p);
+//                            return true;
+//                        }).orElse(false));
+//    }
 
     @Override
     public boolean isOwner(String photoId, String firebaseUid) {
@@ -300,21 +323,43 @@ public class PhotoServiceImpl implements PhotoService, PhotoUploadSubject {
         return imageProcessingService.getOriginalImageFormat(imageBytes);
     }
 
+
     // 6. METODA: downloadPhotoWithFilters
-    // prije promjene u funkcionalno programiranje
-    /*
+// PRIJE promjene u funkcionalno programiranje - IMPURE I PROCEDURALNO
     @Override
-    public CompletableFuture<byte[]> downloadPhotoWithFilters(...) {
+    public CompletableFuture<byte[]> downloadPhotoWithFilters(Long photoId, String requesterUid, boolean isAdmin,
+                                                              Integer w, Integer h, String fmt, boolean sepia, boolean blur) {
         return CompletableFuture.supplyAsync(() -> {
             try {
+                // IMPURE: Direktna komunikacija s bazom (side effect)
                 Photo photo = photoRepository.getPhotoById(photoId.toString());
-                // ... puno if-ova, try-catch-ova i fos.write() debugginga ...
-            } catch (Exception e) { throw new RuntimeException(e); }
+
+                // PROBLEM: Ručna provjera null-a. Ako ovo zaboravimo, riskiramo NullPointerException u runtimeu.
+                if (photo == null) {
+                    throw new SecurityException("Photo not found");
+                }
+
+                // IMPURE LOGIKA: Autorizacija isprepletena s proceduralnim if-ovima
+                if (photo.getIsPrivate() && !photo.getUploadedBy().equals(requesterUid) && !isAdmin) {
+                    throw new SecurityException("Unauthorized");
+                }
+
+                // IMPURE: I/O operacija dohvaćanja bajtova s diska
+                byte[] bytes = storageService.downloadPhotoAsBytes(photo.getFilename());
+
+                // Ovdje se parametri (w, h, fmt, sepia, blur) prosljeđuju dalje u dubinu
+                // Teško je pratiti tko mijenja stanje i gdje nastaje bug.
+                return imageProcessingService.processImage(bytes, w, h, fmt, sepia, blur);
+
+            } catch (Exception e) {
+                // Loša izolacija: bilo koja greška u lancu (baza, disk, procesor) završava ovdje.
+                throw new RuntimeException("Greška u nefunkcionalnom bloku: " + e.getMessage());
+            }
         });
     }
-    */
+
     // funkcionalno programiranje
-    @Override
+   /* @Override
     public CompletableFuture<byte[]> downloadPhotoWithFilters(
             Long photoId, String requesterUid, boolean isAdmin,
             Integer w, Integer h, String fmt, boolean sepia, boolean blur) {
@@ -338,7 +383,7 @@ public class PhotoServiceImpl implements PhotoService, PhotoUploadSubject {
                     }
                 });
     }
-
+*/
     @Override
     public CompletableFuture<List<Photo>> searchPhotos(String searchTerm, String uploadedByUid, String requesterUid, boolean isAdmin) {
         return photoRepository.searchPhotos(searchTerm, uploadedByUid)

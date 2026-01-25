@@ -63,6 +63,13 @@ class CompleteUserFlowTest extends BaseSeleniumTest {
         System.out.println("✓ Logout stranica učitana");
 
         System.out.println("\n=== ✅ KOMPLETAN FLOW USPJEŠNO ZAVRŠEN ===");
+
+        //6.NAVIGACIJA NA DELETE
+        System.out.println("\n=== KORAK 6: Delete ===");
+        navigateToFrontend("/");
+        homePage.clickDeleteLink();
+        assertTrue(driver.getCurrentUrl().contains("/delete-account"));
+        System.out.println("✓ Delete stranica učitana");
     }
 
     @Test

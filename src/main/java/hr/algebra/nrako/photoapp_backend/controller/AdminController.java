@@ -8,6 +8,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.ExecutionException;
 
 @RestController
@@ -26,22 +27,30 @@ public class AdminController {
         List<User> users = asyncHelperAdmin.getAllUsers();
         return ResponseEntity.ok(users);
     }
-
     @GetMapping("/users/{uid}")
     public ResponseEntity<User> getUserByUid(@PathVariable String uid) throws ExecutionException, InterruptedException {
         User user = asyncHelperAdmin.getUserByUid(uid);
         return ResponseEntity.ok(user);
     }
-
     @GetMapping("/user-packages/all")
     public ResponseEntity<List<UserPackageData>> getAllUserPackages() throws ExecutionException, InterruptedException {
         List<UserPackageData> packages = asyncHelperAdmin.getAllUserPackages();
         return ResponseEntity.ok(packages);
     }
-
     @GetMapping("/user-packages/{uid}")
     public ResponseEntity<UserPackageData> getUserPackageByUid(@PathVariable String uid) throws ExecutionException, InterruptedException {
         UserPackageData userPackage = asyncHelperAdmin.getUserPackageByUid(uid);
         return ResponseEntity.ok(userPackage);
+    }
+    @PutMapping("/users/{uid}/role")
+    public ResponseEntity<?> updateUserRole(@PathVariable String uid, @RequestBody Map<String, String> body) {
+        String newRole = body.get("role");
+        try {
+            asyncHelperAdmin.updateUserRole(uid, newRole);
+            // Vraćamo JSON objekt umjesto praznog tijela
+            return ResponseEntity.ok(Map.of("message", "Uloga uspješno ažurirana na " + newRole));
+        } catch (Exception e) {
+            return ResponseEntity.status(500).body(Map.of("error", e.getMessage()));
+        }
     }
 }

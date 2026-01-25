@@ -19,7 +19,6 @@ public abstract class BaseSeleniumTest {
     protected WebDriverWait wait;
 
     @LocalServerPort
-    protected int backendPort;
 
     protected final String TEST_USER_EMAIL = "admin@admin.hr";
     protected final String TEST_USER_PASSWORD = "admin12345!";
@@ -27,7 +26,6 @@ public abstract class BaseSeleniumTest {
 
     @BeforeEach
     void setUp() {
-        // ✅ UMJESTO System.setProperty - automatski download!
         WebDriverManager.chromedriver().setup();
 
         ChromeOptions options = new ChromeOptions();

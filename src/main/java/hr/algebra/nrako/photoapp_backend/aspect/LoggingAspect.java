@@ -15,7 +15,7 @@ public class LoggingAspect {
 
     /**
      * @Around - Presreće metodu "oko" nje (prije i poslije).
-     * Pointcut cilja tvoj paket sa servisima: AdminService, UserService, UserPackageService, itd.
+     * Pointcut cilja paket sa servisima: AdminService, UserService, UserPackageService, itd.
      */
     @Around("execution(* hr.algebra.nrako.photoapp_backend.service.*.*(..))")
     public Object logServiceMethodExecution(ProceedingJoinPoint joinPoint) throws Throwable {

@@ -21,6 +21,9 @@ public class HomePage extends BasePage {
     @FindBy(linkText = "Registracija")
     private WebElement registracijaLink;
 
+    @FindBy(linkText = "Obriši račun")
+    private WebElement deleteLink;
+
     @FindBy(linkText = "Odjava")
     private WebElement odjavaLink;
 
@@ -43,6 +46,8 @@ public class HomePage extends BasePage {
     public void clickRegistracijaLink() {
         clickElement(registracijaLink);
     }
+
+    public void clickDeleteLink() {clickElement(deleteLink);}
 
     public void clickOdjavaLink() {
         clickElement(odjavaLink);

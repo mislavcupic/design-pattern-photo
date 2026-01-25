@@ -30,13 +30,18 @@ function Login() {
     }, []); // Uklonjen 'user' iz dependency arraya da se ne re-runna nepotrebno
 
     const handleLogin = async () => {
-        setError(""); // Clear previous errors
+        setError("");
         setIsLoading(true);
         try {
             const userCredential = await signInWithEmailAndPassword(auth, email, password);
             const idToken = await userCredential.user.getIdToken();
+            // 1. Spremi token (to već radiš)
             localStorage.setItem("idToken", idToken);
 
+
+
+            // 3. Javi aplikaciji da osvježi Navbar
+            window.dispatchEvent(new Event('storage'));
             const response = await fetch("http://localhost:8080/auth/login", {
                 method: "POST",
                 headers: {
@@ -50,7 +55,21 @@ function Login() {
             });
 
             if (response.ok) {
-                // const data = await response.json(); // Nije potrebno hvatati odgovor ako ga ne koristimo
+                const data = await response.json();
+                console.log("Podaci s backenda:", data);
+
+                // Spremi token
+                localStorage.setItem("idToken", data.accessToken);
+
+                // ISPRAVNA PUTANJA: data -> user -> userType
+                if (data.user && data.user.userType) {
+                    const role = data.user.userType;
+                    localStorage.setItem("role", role); // Spremamo "ADMIN" pod ključ "role"
+                    console.log("Uspješno spremljena uloga:", role);
+                }
+
+                // Obavijesti App.js da osvježi Navbar
+                window.dispatchEvent(new Event('storage'));
                 navigate("/profile");
             } else {
                 const errorText = await response.text();
@@ -63,7 +82,6 @@ function Login() {
             setIsLoading(false);
         }
     };
-
     const handleLogout = async () => {
         setError(""); // Clear previous errors
         setIsLoading(true); // Maybe show a spinner for logout too

@@ -1,6 +1,7 @@
-// src/firebase.js
+// src/components/Firebase.js
 import { initializeApp } from "firebase/app";
 import { getAuth } from "firebase/auth";
+import { getFirestore } from "firebase/firestore"; // Osiguraj da je ovo točno ovako
 
 const firebaseConfig = {
     apiKey: "AIzaSyA_6XtbsDR4CT2ocwlBAnJdZJNiUE8x_IU",
@@ -12,6 +13,6 @@ const firebaseConfig = {
 };
 
 const app = initializeApp(firebaseConfig);
-const auth = getAuth(app);
 
-export { auth };
+export const auth = getAuth(app);
+export const db = getFirestore(app); // Ovo će sada raditi

@@ -1,23 +1,28 @@
 import React from 'react';
-import { Routes, Route, Link, useNavigate } from 'react-router-dom';
+import { Routes, Route, Link, Navigate } from 'react-router-dom';
 import { Navbar, Nav, Container } from 'react-bootstrap';
+import { useAuth } from './context/AuthContext'; // DODANO: Da može čitati stvarnu ulogu
 import ProfilePage from './components/ProfilePage';
 import Login from './components/Login';
 import Register from './components/Register';
-import Upload from './components/Upload';
 import DeleteAccount from "./components/DeleteAccount";
 import Logout from "./components/Logout";
+import AdminDashboard from "./components/AdminDashboard";
+import HomePage from "./components/HomePage";
+import UserRow from "./components/UserRow";
 import './App.css';
 
-import PhotoUploadForm from "./components/PhotoUploadCard";
-import HomePage from "./components/HomePage"; // Dodatni CSS za specifične stilove
-
 function App() {
-    const navigate = useNavigate();
+    const { user, loading } = useAuth(); // Koristimo tvoj AuthContext
+
+    // Čekamo da se uloga učita iz baze da te ne izbaci greškom
+    if (loading) return null;
+
+    // Uzimamo ulogu iz objekta koji tvoj AuthContext puni iz Firestore-a
+    const userRole = user?.role || localStorage.getItem('role');
 
     return (
         <>
-            {/* Navigacijski meni */}
             <Navbar bg="dark" variant="dark" expand="lg" className="shadow-sm">
                 <Container>
                     <Navbar.Brand as={Link} to="/">Naslovna</Navbar.Brand>
@@ -27,39 +32,43 @@ function App() {
                             <Nav.Item>
                                 <Nav.Link as={Link} to="/profile">Profil</Nav.Link>
                             </Nav.Item>
-                            {/*<Nav.Item>*/}
-                            {/*    <Nav.Link as={Link} to="/photouploadform">Upload</Nav.Link>*/}
-                            {/*</Nav.Item>*/}
-                            <Nav.Item>
-                                <Nav.Link as={Link} to="/login">Prijava</Nav.Link>
-                            </Nav.Item>
-                            <Nav.Item>
-                                <Nav.Link as={Link} to="/register">Registracija</Nav.Link>
-                            </Nav.Item>
-                            <Nav.Item>
-                                <Nav.Link as={Link} to="/delete-account">Obriši račun</Nav.Link>
-                            </Nav.Item>
-                            <Nav.Item>
-                                <Nav.Link as={Link} to="/logout">Odjava</Nav.Link>
-                            </Nav.Item>
+
+                            {userRole === 'ADMIN' && (
+                                <Nav.Item>
+                                    <Nav.Link as={Link} to="/admin" className="text-warning fw-bold">Admin Panel</Nav.Link>
+                                </Nav.Item>
+                            )}
+
+                            {!user ? (
+                                <>
+                                    <Nav.Item><Nav.Link as={Link} to="/login">Prijava</Nav.Link></Nav.Item>
+                                    <Nav.Item><Nav.Link as={Link} to="/register">Registracija</Nav.Link></Nav.Item>
+                                </>
+                            ) : (
+                                <>
+                                    <Nav.Item><Nav.Link as={Link} to="/delete-account">Obriši račun</Nav.Link></Nav.Item>
+                                    <Nav.Item><Nav.Link as={Link} to="/logout">Odjava</Nav.Link></Nav.Item>
+                                </>
+                            )}
                         </Nav>
                     </Navbar.Collapse>
                 </Container>
             </Navbar>
 
-            {/* Routing: Definiramo koje komponente se prikazuju za svaku rutu */}
             <Container className="mt-4">
                 <Routes>
-                    <Route path="/" element={<HomePage/>} />
+                    <Route path="/" element={<HomePage />} />
                     <Route path="/profile" element={<ProfilePage />} />
                     <Route path="/login" element={<Login />} />
                     <Route path="/register" element={<Register />} />
-                    {/*<Route path="/photouploadcard" element={<PhotoUploadCard />} />*/}
                     <Route path="/delete-account" element={<DeleteAccount />} />
                     <Route path="/logout" element={<Logout />} />
-                    {/*<Route path="/admin" element={<AdminPanel/>} />*/}
-                    {/*<Route path="/user-row" element={<UserRow/>} />*/}
 
+                    <Route
+                        path="/admin"
+                        element={userRole === 'ADMIN' ? <AdminDashboard /> : <Navigate to="/" replace />}
+                    />
+                    <Route path="/user-row" element={<UserRow />} />
                 </Routes>
             </Container>
         </>

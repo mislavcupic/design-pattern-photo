@@ -1,0 +1,33 @@
+services:
+  # BACKEND: Spring Boot (direktno u rootu)
+  backend:
+    build:
+      context: .  # Točka znači: "ovdje je moj Dockerfile i moj src"
+      dockerfile: Dockerfile
+    ports:
+      - "8080:8080"
+    volumes:
+      # Pazi na putanju do ključa ako je src u rootu
+      - ./src/main/resources/firebase-key.json:/app/config/serviceAccount.json
+    environment:
+      - GOOGLE_APPLICATION_CREDENTIALS=/app/config/serviceAccount.json
+    networks:
+      - photoapp-network
+
+  # FRONTEND: React
+  frontend:
+    build:
+      context: ./frontend/photoapp-frontend
+      dockerfile: Dockerfile
+    ports:
+      - "3000:3000"
+    environment:
+      - REACT_APP_API_URL=http://localhost:8080
+    networks:
+      - photoapp-network
+    stdin_open: true
+    tty: true
+
+networks:
+  photoapp-network:
+    driver: bridge

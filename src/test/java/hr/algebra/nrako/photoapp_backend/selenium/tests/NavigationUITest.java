@@ -2,6 +2,7 @@ package hr.algebra.nrako.photoapp_backend.selenium.tests;
 
 import hr.algebra.nrako.photoapp_backend.selenium.BaseSeleniumTest;
 import hr.algebra.nrako.photoapp_backend.selenium.pages.HomePage;
+import hr.algebra.nrako.photoapp_backend.selenium.pages.LoginPage;
 import org.junit.jupiter.api.*;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -63,9 +64,27 @@ class NavigationUITest extends BaseSeleniumTest {
         // Povratak na home
         navigateToFrontend("/");
 
+        LoginPage loginPage = new LoginPage(driver);
+        navigateToFrontend("/login");
+        loginPage.login(TEST_USER_EMAIL, TEST_USER_PASSWORD);
+        loginPage.waitForProfileRedirect();
+
+        // Sada idi na homepage gdje je korisnik prijavljen
+        navigateToFrontend("/");
+
+        // Sada "Obriši račun" link POSTOJI!
+        homePage.clickDeleteLink();
+        assertTrue(driver.getCurrentUrl().contains("/delete-account"));
+        System.out.println("✓ Delete link radi");
+
+        // Povratak na home
+        navigateToFrontend("/");
+
         // Test Odjava link
         homePage.clickOdjavaLink();
         assertTrue(driver.getCurrentUrl().contains("/logout"));
         System.out.println("✓ Odjava link radi");
+
+
     }
 }
