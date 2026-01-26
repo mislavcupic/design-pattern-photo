@@ -22,6 +22,7 @@ import org.springframework.http.ResponseEntity;
 // import org.springframework.security.core.context.SecurityContextHolder; // Više ti ne treba ako ne testiras updateUser
 
 import java.util.Optional;
+import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -170,7 +171,7 @@ class AuthControllerTest {
         String authHeader = "Bearer someIdToken";
         doNothing().when(asyncHelperAuth).logout(anyString());
 
-        ResponseEntity<String> response = authController.logout(authHeader);
+        CompletableFuture<ResponseEntity<Object>> response = authController.logout(authHeader);
 
         assertEquals(HttpStatus.OK, response.getStatusCode());
         assertEquals("Odjavili ste se", response.getBody());

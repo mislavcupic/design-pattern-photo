@@ -214,7 +214,7 @@ public class PhotoServiceImpl implements PhotoService, PhotoUploadSubject {
                         })
                         .orElseThrow(() -> new RuntimeException("Update failed: Unauthorized or Not Found")));
     }
-*/
+
     private String parseTagsFunctional(String tags) {
         return Optional.ofNullable(tags)
                 .map(t -> Arrays.stream(t.split(" "))
@@ -223,7 +223,7 @@ public class PhotoServiceImpl implements PhotoService, PhotoUploadSubject {
                         .collect(Collectors.joining(", ")))
                 .orElse("");
     }
-
+*/
     // 4. METODA: deletePhoto
     // prije promjene u funkcionalno programiranje
 

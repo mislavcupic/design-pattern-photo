@@ -1,67 +1,63 @@
 package hr.algebra.nrako.photoapp_backend.controller;
 
-import hr.algebra.nrako.photoapp_backend.asynchelper.AsyncHelperDataUserPackage;
 import hr.algebra.nrako.photoapp_backend.domain.UserPackage;
 import hr.algebra.nrako.photoapp_backend.domain.UserPackageData;
 import hr.algebra.nrako.photoapp_backend.service.UserPackageService;
 import hr.algebra.nrako.photoapp_backend.util.FirebaseTokenUtils;
 import jakarta.servlet.http.HttpServletRequest;
-import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.core.task.TaskExecutor;
 import org.springframework.web.bind.annotation.*;
 
-
 import java.time.LocalDateTime;
-import java.util.concurrent.ExecutionException;
+import java.util.concurrent.CompletableFuture;
 
-@CrossOrigin(origins = "http://localhost:3000", allowedHeaders = {"Authorization", "Content-Type"}, methods = {RequestMethod.GET, RequestMethod.POST, RequestMethod.PUT, RequestMethod.DELETE, RequestMethod.OPTIONS}, allowCredentials = "true")
 @RestController
 @RequestMapping("/user-package")
 public class UserPackageController {
 
-    private final AsyncHelperDataUserPackage asyncHelperData;
+    private final UserPackageService userPackageService;
     private final FirebaseTokenUtils firebaseTokenUtils;
 
-    public UserPackageController(UserPackageService userPackageService, AsyncHelperDataUserPackage asyncHelperData, FirebaseTokenUtils firebaseTokenUtils, @Qualifier("taskExecutor") TaskExecutor taskExecutor) {
-        this.asyncHelperData = asyncHelperData;
+    public UserPackageController(UserPackageService userPackageService, FirebaseTokenUtils firebaseTokenUtils) {
+        this.userPackageService = userPackageService;
         this.firebaseTokenUtils = firebaseTokenUtils;
     }
 
-    @GetMapping("/can-change")
-    public Boolean canChangePackage(HttpServletRequest request) throws ExecutionException, InterruptedException {
+    @GetMapping("/data")
+    public CompletableFuture<ResponseEntity<UserPackageData>> getUserPackageData(HttpServletRequest request) {
         String uid = firebaseTokenUtils.extractUidFromRequest(request);
-        return asyncHelperData.canChangePackage(uid);
-    }
-
-    @GetMapping("/user-package-data")
-    public UserPackageData getUserPackageData(HttpServletRequest request) throws ExecutionException, InterruptedException {
-        String uid = firebaseTokenUtils.extractUidFromRequest(request);
-        return asyncHelperData.getUserPackageData(uid);
+        return userPackageService.getUserPackageData(uid)
+                .thenApply(ResponseEntity::ok);
     }
 
     @PostMapping("/change-package")
-    public Void changeUserPackage(@RequestBody UserPackage newUserPackage, HttpServletRequest request) throws ExecutionException, InterruptedException {
+    public CompletableFuture<ResponseEntity<Void>> changeUserPackage(@RequestBody UserPackage newUserPackage, HttpServletRequest request) {
         String uid = firebaseTokenUtils.extractUidFromRequest(request);
-        return asyncHelperData.changeUserPackage(uid, newUserPackage);
+        return userPackageService.changeUserPackage(uid, newUserPackage)
+                .thenApply(v -> ResponseEntity.ok().build());
     }
 
     @GetMapping("/next-eligible-change")
-    public LocalDateTime getNextEligibleChange(HttpServletRequest request) throws ExecutionException, InterruptedException {
+    public CompletableFuture<ResponseEntity<LocalDateTime>> getNextEligibleChange(HttpServletRequest request) {
         String uid = firebaseTokenUtils.extractUidFromRequest(request);
-        return asyncHelperData.getNextEligibleChange(uid);
+        return userPackageService.getNextEligibleChange(uid)
+                .thenApply(ResponseEntity::ok);
     }
 
     @PreAuthorize("hasRole('REGISTERED') or hasRole('ADMIN')")
     @GetMapping("/user-package")
-    public UserPackage getUserPackage(HttpServletRequest request) throws ExecutionException, InterruptedException {
+    public CompletableFuture<ResponseEntity<UserPackage>> getUserPackage(HttpServletRequest request) {
         String uid = firebaseTokenUtils.extractUidFromRequest(request);
-        return asyncHelperData.getUserPackage(uid);
+        return userPackageService.getUserPackage(uid)
+                .thenApply(ResponseEntity::ok);
     }
 
     @GetMapping("/remaining-uploads")
-    public Integer getRemainingUploads(HttpServletRequest request) throws ExecutionException, InterruptedException {
+    public CompletableFuture<ResponseEntity<Integer>> getRemainingUploads(HttpServletRequest request) {
         String uid = firebaseTokenUtils.extractUidFromRequest(request);
-        return asyncHelperData.getRemainingUploads(uid);
+        // Pretpostavka: Metoda u servisu je asinkrona
+        return userPackageService.getRemainingUploads(uid)
+                .thenApply(ResponseEntity::ok);
     }
 }
