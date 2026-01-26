@@ -24,6 +24,7 @@ public abstract class BasePage {
         wait.until(ExpectedConditions.elementToBeClickable(element));
     }
 
+
     protected void waitForElementToBeVisible(WebElement element) {
         wait.until(ExpectedConditions.visibilityOf(element));
     }
