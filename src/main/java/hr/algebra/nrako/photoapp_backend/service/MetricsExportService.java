@@ -36,7 +36,7 @@ public class MetricsExportService {
         if (!file.exists()) {
             try (PrintWriter writer = new PrintWriter(new FileWriter(CSV_FILE_PATH))) {
                 // Točno 6 stupaca kako smo definirali
-                writer.println("Timestamp,TotalUploads,SystemErrors,AvgProcessingTimeMS,JvmMemoryUsedMB,ActiveHttpRequests");
+                writer.println("Timestamp,TotalUploads,TotalDeletions,SystemErrors,AvgProcessingTimeMS,JvmMemoryUsedMB,ActiveHttpRequests");
                 logger.info("CSV datoteka uspješno inicijalizirana sa zaglavljima.");
             } catch (IOException e) {
                 logger.error("Greška pri inicijalizaciji CSV datoteke", e);
@@ -50,6 +50,7 @@ public class MetricsExportService {
 
         // Dohvaćanje 5 metrika (3 custom + 2 standardne)
         double uploads = getCounterValue("photo.uploads.total");
+        double deletions = getCounterValue("photo.deletions.total");
         double errors = getCounterValue("photo.system.errors");
         double avgTime = getTimerMean("photo.processing.duration");
 
@@ -63,7 +64,7 @@ public class MetricsExportService {
         // Koristimo Locale.US da decimale budu točke (.), ne zarezi (,)
         try (PrintWriter writer = new PrintWriter(new FileWriter(CSV_FILE_PATH, true))) {
             writer.printf(Locale.US, "%s,%.0f,%.0f,%.2f,%.2f,%.0f%n",
-                    timestamp, uploads, errors, avgTime, jvmMem, httpReqs);
+                    timestamp, uploads,deletions, errors, avgTime, jvmMem, httpReqs);
             logger.info("Metrike zapisane u CSV.");
         } catch (IOException e) {
             logger.error("Greška pri pisanju u CSV", e);

@@ -214,7 +214,7 @@ public class PhotoServiceImpl implements PhotoService, PhotoUploadSubject {
                         })
                         .orElseThrow(() -> new RuntimeException("Update failed: Unauthorized or Not Found")));
     }
-*/
+
     private String parseTagsFunctional(String tags) {
         return Optional.ofNullable(tags)
                 .map(t -> Arrays.stream(t.split(" "))
@@ -223,7 +223,7 @@ public class PhotoServiceImpl implements PhotoService, PhotoUploadSubject {
                         .collect(Collectors.joining(", ")))
                 .orElse("");
     }
-
+*/
     // 4. METODA: deletePhoto
     // prije promjene u funkcionalno programiranje
 
@@ -231,10 +231,25 @@ public class PhotoServiceImpl implements PhotoService, PhotoUploadSubject {
     public CompletableFuture<Void> deletePhoto(Long photoId, String requesterUid, boolean isAdmin) {
         return CompletableFuture.runAsync(() -> {
             try {
+                // 1. Dohvaćanje liste dokumenata
                 List<QueryDocumentSnapshot> docs = photoRepository.getPhotoDocumentByLongId(photoId);
-                // ... ostatak imperativne logike ...
-            } catch (Exception e) { throw new RuntimeException(e); }
+
+                if (!docs.isEmpty()) {
+                    Photo p = docs.get(0).toObject(Photo.class);
+                    // 2. Provjera prava
+                    if (p.getUploadedBy().equals(requesterUid) || isAdmin) {
+                        // 3. Brisanje
+                        storageService.deletePhoto(p.getFilename());
+                        photoRepository.deletePhotoById(photoId.toString());
+                    } else {
+                        throw new RuntimeException("Unauthorized");
+                    }
+                }
+            } catch (Exception e) {
+                throw new RuntimeException(e);
+            }
         });
+
     }
 /*
     // funkcionalno programiranje
@@ -248,8 +263,7 @@ public class PhotoServiceImpl implements PhotoService, PhotoUploadSubject {
                             photoRepository.deletePhotoById(photoId.toString());
                         }, () -> { throw new RuntimeException("Delete failed: Unauthorized or Not Found"); })
         );
-    }
-*/
+    } */
     @Override
     public CompletableFuture<List<Photo>> getAllPhotos() {
         return photoRepository.getAllPhotos()

@@ -9,6 +9,7 @@ import com.google.firebase.auth.FirebaseAuth;
 import hr.algebra.nrako.photoapp_backend.domain.User;
 import hr.algebra.nrako.photoapp_backend.domain.UserPackageData;
 import hr.algebra.nrako.photoapp_backend.exceptions.FailedToGetUsersException;
+import jakarta.persistence.Cacheable;
 import org.springframework.stereotype.Service;
 
 import java.util.*;

@@ -13,18 +13,26 @@ import org.springframework.stereotype.Component;
 @Component
 public class PhotoMetricsAspect {
     private final Counter uploadCounter;
+    private final Counter deleteCounter; // NOVO
     private final Counter errorCounter;
     private final MeterRegistry meterRegistry;
 
     public PhotoMetricsAspect(MeterRegistry meterRegistry) {
         this.meterRegistry = meterRegistry;
         this.uploadCounter = Counter.builder("photo.uploads.total").register(meterRegistry);
+        this.deleteCounter = Counter.builder("photo.deletions.total").register(meterRegistry); // NOVO
         this.errorCounter = Counter.builder("photo.system.errors").register(meterRegistry);
     }
 
     @AfterReturning("execution(* hr.algebra.nrako.photoapp_backend.service.PhotoServiceImpl.uploadPhoto(..))")
     public void trackUpload() {
         uploadCounter.increment();
+    }
+
+
+    @AfterReturning("execution(* hr.algebra.nrako.photoapp_backend.service.PhotoServiceImpl.deletePhoto(..))")
+    public void trackDelete() {
+        deleteCounter.increment();
     }
 
     @Around("execution(* hr.algebra.nrako.photoapp_backend.service.PhotoServiceImpl.downloadPhotoWithFilters(..))")

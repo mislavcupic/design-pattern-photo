@@ -6,8 +6,11 @@ services:
       dockerfile: Dockerfile
     ports:
       - "8080:8080"
-#    volumes:
-#      - ./src/main/resources/serviceAccount.json:/app/config/serviceAccount.json
+    volumes:
+    #  Mapiraj folder za slike da bude "živ" i izvan kontejnera
+      - ./uploads:/app/uploads
+    # Obavezno odkomentiraj i ovo ako ti treba ključ
+      - ./src/main/resources/serviceAccount.json:/app/config/serviceAccount.json
     environment:
       - GOOGLE_APPLICATION_CREDENTIALS=/app/config/serviceAccount.json
     networks:
