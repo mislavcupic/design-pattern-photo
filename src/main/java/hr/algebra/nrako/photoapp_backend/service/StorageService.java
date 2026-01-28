@@ -5,11 +5,23 @@ import java.io.InputStream;
 
 public interface StorageService {
     String uploadPhoto(MultipartFile file, String filename);
-
-    String uploadPhoto(byte[] content, String filename, String contentType);
-
+    // Optimiziran upload direktno iz InputStream-a
+    String uploadPhotoFromStream(InputStream content, String filename, String contentType);
     void deletePhoto(String filename);
+    // Optimiziran download bez byte[]
     InputStream downloadPhotoAsStream(String filename);
-    byte[] downloadPhotoAsBytes(String filename); // <-- DODANA LINIJA
-
-}
+}//package hr.algebra.nrako.photoapp_backend.service;
+//
+//import org.springframework.web.multipart.MultipartFile;
+//import java.io.InputStream;
+//
+//public interface StorageService {
+//    String uploadPhoto(MultipartFile file, String filename);
+//
+//    String uploadPhoto(byte[] content, String filename, String contentType);
+//
+//    void deletePhoto(String filename);
+//    InputStream downloadPhotoAsStream(String filename);
+//    byte[] downloadPhotoAsBytes(String filename); // <-- DODANA LINIJA
+//
+//}

@@ -20,6 +20,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.servlet.mvc.method.annotation.StreamingResponseBody;
 
 import java.io.IOException;
 import java.security.Principal;
@@ -234,9 +235,8 @@ public class PhotoController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Greška pri promjeni statusa privatnosti: " + e.getMessage());
         }
     }
-
     @GetMapping("/{photoId}/download")
-    public CompletableFuture<ResponseEntity<byte[]>> downloadPhotoWithFilters(
+    public ResponseEntity<StreamingResponseBody> downloadPhotoWithFilters(
             @PathVariable Long photoId,
             @RequestParam(required = false) Integer maxWidth,
             @RequestParam(required = false) Integer maxHeight,
@@ -245,93 +245,159 @@ public class PhotoController {
             @RequestParam(defaultValue = "false") boolean blur
     ) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        String requesterUid = extractUserUid(authentication);
+        String uidFromToken = extractUserUid(authentication);
 
-        if (requesterUid == null) {
-            logger.warn("Neautentificirani korisnik u downloadPhotoWithFilters.");
-            requesterUid = "anonymous_user_id";
-        }
+        // RJEŠENJE ZA FINAL PROBLEM:
+        // Koristimo finalnu varijablu koja se inicijalizira odmah i više se ne mijenja.
+        // Ovo omogućuje njezino korištenje unutar StreamingResponseBody lambde.
+        final String finalRequesterUid = (uidFromToken != null) ? uidFromToken : "anonymous_user_id";
 
         boolean isAdmin = authentication != null && authentication.getAuthorities().stream()
                 .anyMatch(a -> a.getAuthority().equals("ROLE_ADMIN"));
 
-        return asyncHelperPhoto.downloadPhotoWithFilters(photoId, requesterUid, isAdmin, maxWidth, maxHeight, outputFormat, sepia, blur)
-                .thenApply(imageBytes -> {
-                    if (imageBytes == null || imageBytes.length == 0) {
-                        logger.warn("Fotografija s ID {} nije pronađena ili je obrađena u prazne bajtove.", photoId);
-                        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new byte[0]);
-                    }
+        // 1. Pripremamo StreamingResponseBody
+        StreamingResponseBody responseBody = outputStream -> {
+            try {
+                // Zovemo helper s finalnom varijablom.
+                // Maknut .get() jer downloadAndProcessToStream vraća void.
+                asyncHelperPhoto.downloadAndProcessToStream(
+                        photoId,
+                        finalRequesterUid,
+                        isAdmin,
+                        maxWidth,
+                        maxHeight,
+                        outputFormat,
+                        sepia,
+                        blur,
+                        outputStream
+                );
 
-                    MediaType contentType;
-                    String finalOutputFormat = outputFormat;
+                logger.info("Streaming slike ID {} uspješno završen.", photoId);
+            } catch (Exception e) {
+                logger.error("Greška prilikom strujanja slike ID {}: {}", photoId, e.getMessage());
+                throw new IOException("Greška u obradi slike", e);
+            }
+        };
 
-                    if (finalOutputFormat == null || finalOutputFormat.isEmpty()) {
-                        try {
-                            String detectedFormat = asyncHelperPhoto.getFormatFromBytes(imageBytes);
-                            if (detectedFormat != null) {
-                                finalOutputFormat = detectedFormat;
-                                logger.debug("Detektirani format iz bajtova: {}", detectedFormat);
-                            } else {
-                                finalOutputFormat = "jpeg";
-                                logger.warn("Nije moguće detektirati format slike iz bajtova, koristim default: {}", finalOutputFormat);
-                            }
-                        } catch (IOException e) {
-                            logger.warn("Greška prilikom detekcije formata slike iz bajtova za ID {}: {}", photoId, e.getMessage());
-                            finalOutputFormat = "jpeg";
-                        }
-                    }
+        // 2. Određivanje Media Type-a (ovaj dio ostaje tvoj originalni)
+        MediaType contentType = determineMediaType(outputFormat);
+        String extension = (outputFormat != null) ? outputFormat.toLowerCase() : "jpg";
 
-                    switch (finalOutputFormat.toLowerCase()) {
-                        case "png":
-                            contentType = MediaType.IMAGE_PNG;
-                            break;
-                        case "gif":
-                            contentType = MediaType.IMAGE_GIF;
-                            break;
-                        case "bmp":
-                            contentType = MediaType.parseMediaType("image/bmp");
-                            break;
-                        case "avif":
-                            contentType = MediaType.parseMediaType("image/avif");
-                            break;
-                        case "webp":
-                            contentType = MediaType.parseMediaType("image/webp");
-                            break;
-                        case "tif":
-                        case "tiff":
-                            contentType = MediaType.parseMediaType("image/tiff");
-                            break;
-                        case "svg":
-                            contentType = MediaType.parseMediaType("image/svg+xml");
-                            break;
-                        default:
-                            contentType = MediaType.IMAGE_JPEG;
-                            break;
-                    }
-
-                    String filename = "processed_photo." + finalOutputFormat.toLowerCase();
-
-                    return ResponseEntity.ok()
-                            .contentType(contentType)
-                            .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + filename + "\"")
-                            .body(imageBytes);
-                })
-                .exceptionally(ex -> {
-                    Throwable cause = ex.getCause();
-                    logger.error("Greška prilikom preuzimanja/obrade fotografije ID {}: {}", photoId, cause != null ? cause.getMessage() : ex.getMessage(), ex);
-
-                    if (cause instanceof PhotoService.PhotoNotFoundException) {
-                        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new byte[0]);
-                    }
-                    if (cause instanceof SecurityException) {
-                        return ResponseEntity.status(HttpStatus.FORBIDDEN).body(new byte[0]);
-                    }
-                    if (cause instanceof IOException && cause.getMessage() != null && cause.getMessage().contains("Failed to read image bytes")) {
-                        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new byte[0]);
-                    }
-                    return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new byte[0]);
-                });
+        return ResponseEntity.ok()
+                .contentType(contentType)
+                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"photo." + extension + "\"")
+                .body(responseBody);
     }
+
+    // Pomoćna metoda za čišći kod kontrolera
+    private MediaType determineMediaType(String format) {
+        if (format == null) return MediaType.IMAGE_JPEG;
+        switch (format.toLowerCase()) {
+            case "png": return MediaType.IMAGE_PNG;
+            case "gif": return MediaType.IMAGE_GIF;
+            case "bmp": return MediaType.parseMediaType("image/bmp");
+            case "webp": return MediaType.parseMediaType("image/webp");
+            default: return MediaType.IMAGE_JPEG;
+        }
+    }
+
+//    @GetMapping("/{photoId}/download")
+//    public CompletableFuture<ResponseEntity<byte[]>> downloadPhotoWithFilters(
+//            @PathVariable Long photoId,
+//            @RequestParam(required = false) Integer maxWidth,
+//            @RequestParam(required = false) Integer maxHeight,
+//            @RequestParam(required = false) String outputFormat,
+//            @RequestParam(defaultValue = "false") boolean sepia,
+//            @RequestParam(defaultValue = "false") boolean blur
+//    ) {
+//        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+//        String requesterUid = extractUserUid(authentication);
+//
+//        if (requesterUid == null) {
+//            logger.warn("Neautentificirani korisnik u downloadPhotoWithFilters.");
+//            requesterUid = "anonymous_user_id";
+//        }
+//
+//        boolean isAdmin = authentication != null && authentication.getAuthorities().stream()
+//                .anyMatch(a -> a.getAuthority().equals("ROLE_ADMIN"));
+//
+//        return asyncHelperPhoto.downloadPhotoWithFilters(photoId, requesterUid, isAdmin, maxWidth, maxHeight, outputFormat, sepia, blur)
+//                .thenApply(imageBytes -> {
+//                    if (imageBytes == null || imageBytes.length == 0) {
+//                        logger.warn("Fotografija s ID {} nije pronađena ili je obrađena u prazne bajtove.", photoId);
+//                        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new byte[0]);
+//                    }
+//
+//                    MediaType contentType;
+//                    String finalOutputFormat = outputFormat;
+//
+//                    if (finalOutputFormat == null || finalOutputFormat.isEmpty()) {
+//                        try {
+//                            String detectedFormat = asyncHelperPhoto.getFormatFromBytes(imageBytes);
+//                            if (detectedFormat != null) {
+//                                finalOutputFormat = detectedFormat;
+//                                logger.debug("Detektirani format iz bajtova: {}", detectedFormat);
+//                            } else {
+//                                finalOutputFormat = "jpeg";
+//                                logger.warn("Nije moguće detektirati format slike iz bajtova, koristim default: {}", finalOutputFormat);
+//                            }
+//                        } catch (IOException e) {
+//                            logger.warn("Greška prilikom detekcije formata slike iz bajtova za ID {}: {}", photoId, e.getMessage());
+//                            finalOutputFormat = "jpeg";
+//                        }
+//                    }
+//
+//                    switch (finalOutputFormat.toLowerCase()) {
+//                        case "png":
+//                            contentType = MediaType.IMAGE_PNG;
+//                            break;
+//                        case "gif":
+//                            contentType = MediaType.IMAGE_GIF;
+//                            break;
+//                        case "bmp":
+//                            contentType = MediaType.parseMediaType("image/bmp");
+//                            break;
+//                        case "avif":
+//                            contentType = MediaType.parseMediaType("image/avif");
+//                            break;
+//                        case "webp":
+//                            contentType = MediaType.parseMediaType("image/webp");
+//                            break;
+//                        case "tif":
+//                        case "tiff":
+//                            contentType = MediaType.parseMediaType("image/tiff");
+//                            break;
+//                        case "svg":
+//                            contentType = MediaType.parseMediaType("image/svg+xml");
+//                            break;
+//                        default:
+//                            contentType = MediaType.IMAGE_JPEG;
+//                            break;
+//                    }
+//
+//                    String filename = "processed_photo." + finalOutputFormat.toLowerCase();
+//
+//                    return ResponseEntity.ok()
+//                            .contentType(contentType)
+//                            .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + filename + "\"")
+//                            .body(imageBytes);
+//                })
+//                .exceptionally(ex -> {
+//                    Throwable cause = ex.getCause();
+//                    logger.error("Greška prilikom preuzimanja/obrade fotografije ID {}: {}", photoId, cause != null ? cause.getMessage() : ex.getMessage(), ex);
+//
+//                    if (cause instanceof PhotoService.PhotoNotFoundException) {
+//                        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new byte[0]);
+//                    }
+//                    if (cause instanceof SecurityException) {
+//                        return ResponseEntity.status(HttpStatus.FORBIDDEN).body(new byte[0]);
+//                    }
+//                    if (cause instanceof IOException && cause.getMessage() != null && cause.getMessage().contains("Failed to read image bytes")) {
+//                        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new byte[0]);
+//                    }
+//                    return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new byte[0]);
+//                });
+//    }
 
     @GetMapping("/search")
     public CompletableFuture<ResponseEntity<List<PhotoDto>>> searchPhotos(

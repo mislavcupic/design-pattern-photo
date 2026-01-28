@@ -17,6 +17,151 @@ import javax.imageio.stream.ImageInputStream;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+;
+
+import net.coobird.thumbnailator.Thumbnails;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Service;
+
+import javax.imageio.ImageIO;
+import javax.imageio.ImageReader;
+import javax.imageio.stream.ImageInputStream;
+import java.awt.image.BufferedImage;
+import java.awt.image.ConvolveOp;
+import java.awt.image.Kernel;
+import java.io.*;
+import java.util.Iterator;
+
+@Service
+public class ImageProcessingServiceImpl implements ImageProcessingService {
+
+    private static final Logger logger = LoggerFactory.getLogger(ImageProcessingServiceImpl.class);
+    private static final int MARK_READ_LIMIT = 1024 * 1024; // 1MB buffer za detekciju formata
+
+    @Override
+    public void processImage(InputStream inputStream, OutputStream outputStream,
+                             Integer maxWidth, Integer maxHeight, String outputFormat,
+                             boolean applySepia, boolean applyBlur) throws IOException {
+
+        // 1. Priprema streama za višekratno čitanje (mark/reset)
+        BufferedInputStream bufferedInput = new BufferedInputStream(inputStream);
+        bufferedInput.mark(MARK_READ_LIMIT);
+
+        // 2. Detekcija originalnog formata prije čitanja cijele slike
+        String detectedFormat = getOriginalImageFormat(bufferedInput);
+        bufferedInput.reset(); // Vraćamo se na početak streama
+
+        // 3. Čitanje slike u BufferedImage
+        BufferedImage image = ImageIO.read(bufferedInput);
+        if (image == null) {
+            throw new IOException("Nije moguće pročitati sliku. Format: " + detectedFormat);
+        }
+
+        BufferedImage processedImage = image;
+
+        // 4. Promjena veličine (Resize)
+        if (maxWidth != null || maxHeight != null) {
+            processedImage = resizeImageInternal(processedImage, maxWidth, maxHeight);
+        }
+
+        // 5. Primjena filtera
+        if (applySepia) {
+            processedImage = applySepiaFilter(processedImage);
+        }
+        if (applyBlur) {
+            processedImage = applyBlurFilter(processedImage);
+        }
+
+        // 6. Određivanje izlaznog formata i pisanje u OutputStream
+        String finalFormat = (outputFormat != null && !outputFormat.isEmpty())
+                ? outputFormat.toLowerCase()
+                : (detectedFormat != null ? detectedFormat : "png");
+
+        boolean written = ImageIO.write(processedImage, finalFormat, outputStream);
+        if (!written) {
+            throw new IOException("ImageIO nije pronašao writer za format: " + finalFormat);
+        }
+
+        outputStream.flush();
+        logger.info("Slika uspješno procesirana i poslana u stream. Format: {}", finalFormat);
+    }
+
+    private BufferedImage resizeImageInternal(BufferedImage originalImage, Integer maxWidth, Integer maxHeight) throws IOException {
+        int currentWidth = originalImage.getWidth();
+        int currentHeight = originalImage.getHeight();
+
+        int targetWidth = maxWidth != null ? maxWidth : currentWidth;
+        int targetHeight = maxHeight != null ? maxHeight : currentHeight;
+
+        // Thumbnailator automatski održava aspect ratio ako koristimo .size()
+        return Thumbnails.of(originalImage)
+                .size(targetWidth, targetHeight)
+                .asBufferedImage();
+    }
+
+    @Override
+    public BufferedImage applySepiaFilter(BufferedImage originalImage) {
+        BufferedImage sepiaImage = new BufferedImage(originalImage.getWidth(), originalImage.getHeight(), BufferedImage.TYPE_INT_RGB);
+
+        for (int y = 0; y < originalImage.getHeight(); y++) {
+            for (int x = 0; x < originalImage.getWidth(); x++) {
+                int rgb = originalImage.getRGB(x, y);
+                int r = (rgb >> 16) & 0xFF;
+                int g = (rgb >> 8) & 0xFF;
+                int b = rgb & 0xFF;
+
+                int tr = (int) (0.393 * r + 0.769 * g + 0.189 * b);
+                int tg = (int) (0.349 * r + 0.686 * g + 0.168 * b);
+                int tb = (int) (0.272 * r + 0.534 * g + 0.131 * b);
+
+                sepiaImage.setRGB(x, y, (Math.min(tr, 255) << 16) | (Math.min(tg, 255) << 8) | Math.min(tb, 255));
+            }
+        }
+        return sepiaImage;
+    }
+
+    @Override
+    public BufferedImage applyBlurFilter(BufferedImage originalImage) {
+        float[] matrix = new float[49]; // 7x7 kernel za jači blur
+        for (int i = 0; i < 49; i++) matrix[i] = 1.0f / 49.0f;
+
+        Kernel kernel = new Kernel(7, 7, matrix);
+        ConvolveOp op = new ConvolveOp(kernel, ConvolveOp.EDGE_NO_OP, null);
+
+        BufferedImage dest = new BufferedImage(originalImage.getWidth(), originalImage.getHeight(), originalImage.getType());
+        return op.filter(originalImage, dest);
+    }
+
+    @Override
+    public String getOriginalImageFormat(InputStream is) throws IOException {
+        // ImageIO.createImageInputStream ne zatvara originalni InputStream, što nam treba za reset()
+        try (ImageInputStream iis = ImageIO.createImageInputStream(is)) {
+            Iterator<ImageReader> readers = ImageIO.getImageReaders(iis);
+            if (readers.hasNext()) {
+                ImageReader reader = readers.next();
+                String format = reader.getFormatName().toLowerCase();
+                reader.dispose();
+                return format;
+            }
+        }
+        return null;
+    }
+
+    // --- Ove metode su ostavljene radi kompatibilnosti s interfaceom ako zatrebaju ---
+    @Override
+    public BufferedImage resizeImage(BufferedImage originalImage, int targetWidth, int targetHeight) {
+        try {
+            return Thumbnails.of(originalImage).size(targetWidth, targetHeight).asBufferedImage();
+        } catch (IOException e) {
+            throw new UncheckedIOException(e);
+        }
+    }
+
+
+}
+
+/*
 
 @Service
 public class ImageProcessingServiceImpl implements ImageProcessingService {
@@ -172,3 +317,4 @@ public class ImageProcessingServiceImpl implements ImageProcessingService {
         return null; // Nije moguće odrediti format
     }
 }
+*/
